@@ -1,8 +1,4 @@
 package {
-	import nanosome.notify.bind.BinderTest;
-	import nanosome.notify.bind.WatchTest;
-	import nanosome.notify.field.FieldTest;
-	import nanosome.notify.observe.PropertyBroadcasterTest;
 	import nanosome.util.CreateInstanceTest;
 	import nanosome.util.DisposableSpriteTest;
 	import nanosome.util.EnterFrameTest;
@@ -43,11 +39,7 @@ package {
 				ExitFrameTest,
 				DisposableSpriteTest,
 				PoolTest,
-				PropertyBroadcasterTest,
-				WatchTest,
 				AccessorTest,
-				FieldTest,
-				BinderTest,
 				CreateInstanceTest,
 			];
 			

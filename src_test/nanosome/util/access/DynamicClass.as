@@ -1,8 +1,9 @@
 package nanosome.util.access {
-
-	import nanosome.notify.observe.Observable;
-
-	public dynamic class DynamicClass extends Observable {
+	
+	import nanosome.util.ILockable;
+	import nanosome.util.UID;
+	
+	public dynamic class DynamicClass extends UID implements ILockable {
 		
 		private var _uid: uint;
 		
@@ -31,14 +32,14 @@ package nanosome.util.access {
 		}
 		
 		public function set observable( observable: Array ): void {
-			if( _observable != observable ) notifyPropertyChange( "observable", _observable, _observable = observable );
+			_observable = observable;
 		}
 		
 		public var wasLocked: Boolean;
 		public var wasUnlocked: Boolean;
 		
-		override public function set locked(locked : Boolean) : void {
-			if( locked != this.locked ) {
+		public function set locked(locked : Boolean) : void {
+			if( locked != _locked ) {
 				if( locked ) {
 					wasLocked = true;
 					wasUnlocked = false;
@@ -46,8 +47,22 @@ package nanosome.util.access {
 					wasUnlocked = true;
 				}
 			}
-			super.locked = locked;
+			_locked = locked;
 		}
+		
+		public function get locked(): Boolean {
+			return _locked;
+		}
+		
+		public function lock(): void {
+			locked = true;
+		}
+		
+		public function unlock(): void {
+			locked = false;
+		}
+		
+		private var _locked: Boolean;
 	}
 }
 

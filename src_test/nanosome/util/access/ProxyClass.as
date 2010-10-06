@@ -1,11 +1,13 @@
 package nanosome.util.access {
+	import nanosome.util.UID;
 	import nanosome.util.ChangedPropertyNode;
-	import nanosome.notify.observe.ObservableSprite;
+
+	import flash.display.Sprite;
 
 	/**
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 */
-	public class ProxyClass extends ObservableSprite implements ISetterProxy, IGetterProxy {
+	public class ProxyClass extends Sprite implements ISetterProxy, IGetterProxy {
 		
 		public var normal: Array;
 		
@@ -20,13 +22,19 @@ package nanosome.util.access {
 		
 		private var _changedProperties : Object = {};
 		
+		private var _uid: uint = UID.next();
+		
+		public function get uid(): uint {
+			return _uid;
+		}
+		
 		[Observable]
 		public function get observable(): Array {
 			return _observable;
 		}
 		
 		public function set observable( observable: Array) : void {
-			if( _observable != observable ) notifyPropertyChange( "observable", _observable, _observable = observable );
+			_observable = observable;
 		}
 		
 		public function write(name : String, value : *) : Boolean {

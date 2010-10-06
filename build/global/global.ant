@@ -36,6 +36,7 @@
 		</svn>
 		<property name="build.version" value="${project.version}r${revision}" />
 		<property name="build.file" value="${temp.path}${project.file}.${DSTAMP}.${build.version}" />
+		<property name="build.swc.file" value="${swc.path}${project.file}.swc" />
 	</target>
 	
 	<target name="prepare-temp" depends="init">
@@ -84,6 +85,8 @@
 			<arg line="-output"/>
 			<arg path="${build.file}.swc"/>
 		</exec>
+		<mkdir dir="../swc"/>
+		<copy file="${build.file}.swc" tofile="${build.swc.file}"/>
 	</target>
 
 	<target name="prepare-build" description="Prepares a src folder with all files of a build"
