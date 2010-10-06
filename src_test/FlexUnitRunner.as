@@ -19,8 +19,8 @@ package {
 	[SWF(backgroundColor="#FFFFFF", frameRate="31", width="640", height="480")]
 
 	public class FlexUnitRunner extends Sprite {
+		
 		private var core : FlexUnitCore;
-		private var _tests : Array;
 
 		public function FlexUnitRunner() {
 			//Instantiate the core.
@@ -29,7 +29,7 @@ package {
 			//Add any listeners. In this case, the TraceListener has been added to display results.
 			core.addListener(new TraceListener());
 			
-			_tests = [
+			core.run( [
 				MergeArraysTest,
 				UIDTest,
 				ListTest,
@@ -41,9 +41,7 @@ package {
 				PoolTest,
 				AccessorTest,
 				CreateInstanceTest,
-			];
-			
-			core.run( _tests);
+			] );
 		}
 	}
 }

@@ -16,7 +16,7 @@ package nanosome.util.access {
 		private var _te: uint;
 		
 		public function test2(): void {
-			
+			_te;
 		}
 	}
 }

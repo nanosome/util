@@ -64,7 +64,7 @@
 			depends="prepare-temp,prepare-sources">
 		
 		<echo>Creating API docs from ${temp.path}src</echo>
-		<exec executable="${flex.sdkv4.1}/bin/asdoc${exec}" >
+		<exec executable="${flex.sdkv4.1}/bin/asdoc${exec}" failonerror="true">
 			<arg line="-ds" />
 			<arg path="${temp.path}src" />
 			<arg line="-output" />
@@ -78,12 +78,21 @@
 	</target>
 	
 	<target name="create-swc" depends="prepare-temp,prepare-sources">
-		<echo>Creating SWC from ${temp.path}src</echo>
-		<exec executable="${flex.sdkv4.1}/bin/compc${exec}" >
+		<echo>Creating ${build.file}.swc from ${temp.path}src</echo>
+		<exec executable="${flex.sdkv4.1}/bin/compc${exec}" failonerror="true">
+			<arg line="-compiler.optimize"/>
+			<arg line="-compiler.strict"/>
+			<arg line="-compiler.keep-as3-metadata Observable"/>
 			<arg line="-include-sources"/>
 			<arg path="${temp.path}src"/>
+			<arg line="-metadata.creator Nanosome"/>
+			<arg line="-metadata.title '${project.name}'"/>
+			<arg line="-metadata.contributor '${project.contributor}'"/>
+			<arg line="-compiler.external-library-path"/>
+			<arg path="${flex.sdkv4.1}/frameworks/libs/player/10.1/playerglobal.swc"/>
 			<arg line="-output"/>
 			<arg path="${build.file}.swc"/>
+			<arg line="${project.swcs}"/>
 		</exec>
 		<mkdir dir="../swc"/>
 		<copy file="${build.file}.swc" tofile="${build.swc.file}"/>
