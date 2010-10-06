@@ -3,6 +3,7 @@
 <stringAttribute key="APP_ARGUMENTS" value=""/>
 <stringAttribute key="ARGUMENTS" value=""/>
 <booleanAttribute key="KILL_PREVIUOS_VIEWER" value="false"/>
+<stringAttribute key="LAUNCHER_DEPENDENCIES" value="[Self]"/>
 <stringAttribute key="MAIN_CLASS" value="src_test/FlexUnitRunner.as"/>
 <stringAttribute key="OUTPUT" value="bin/FlexUnitRunner.swf"/>
 <booleanAttribute key="PASS_CP" value="true"/>
