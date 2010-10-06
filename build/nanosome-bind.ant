@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Nanosome-core">
+	<description>
+		Build file specific to the nanosome project
+	</description>
+	
+	<property file="local.properties"/>
+	<property file="project.properties"/>
+	
+	<import file="global/global.ant" />
+</project>

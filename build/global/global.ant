@@ -1,0 +1,137 @@
+<project name="nanosome-global" default="build-to-zip" basedir=".">
+	
+	<description>
+		Common deploy scripts for all nanosome projects. Creates asdoc, swc, etc.
+	</description>
+	
+	<property file="global/global.properties" />
+	
+	<condition property="windows" >
+		<os family="windows"/>
+	</condition>
+	
+	<taskdef name="svn" classname="org.tigris.subversion.svnant.SvnTask">
+		<classpath>
+			<fileset dir="./">
+				<include name="**/svn*.jar"/>
+			</fileset>
+		</classpath>
+	</taskdef>
+	
+	<target name="init-win" if="windows">
+		<echo>Setting windows environment variables</echo>
+		<property name="exec" value=".exe" environment="true"/>
+	</target>
+	
+	<target name="init-nonwin" unless="windows">
+		<echo>Setting non-windows environment variables</echo>
+		<property name="exec" value="" environment="true"/>
+	</target>
+	
+	<target name="init" depends="init-win, init-nonwin">
+		<echo>Setting up basic variables</echo>
+		<tstamp/>
+		<svn>
+			<status path="../src" revisionProperty="revision"/>
+		</svn>
+		<property name="build.version" value="${project.version}r${revision}" />
+		<property name="build.file" value="${temp.path}${project.file}.${DSTAMP}.${build.version}" />
+	</target>
+	
+	<target name="prepare-temp" depends="init">
+		<mkdir dir="${temp.path}" />
+	</target>
+	
+	<target name="prepare-sources" description="Prepares all sources to be ready for compile etc."
+			depends="prepare-temp">
+		
+		<loadfile property="license" srcfile="../license.short.txt"/>
+		<filter token="license" value="${license}"/>
+		<filter token="version" value="${build.version}"/>
+		<filter token="date" value="${DSTAMP}"/>
+		<delete dir="${temp.path}src" />
+		
+		<echo>Replacing @license@, @version@ and @date@ while copying sources from ../src to ${temp.path}src</echo>
+		<copy includeemptydirs="false" overwrite="true" todir="${temp.path}src" filtering="true">
+			<fileset dir="../src/" excludes=".svn"/>
+		</copy>
+		<echo>Fixing all sources in temp directory</echo>
+		<fixcrlf srcdir="${temp.path}src" encoding="utf-8" casesensitive="true" eol="unix"/>
+	</target>
+	
+	<target name="create-api-docs" description="create the api documentation"
+			depends="prepare-temp,prepare-sources">
+		
+		<echo>Creating API docs from ${temp.path}src</echo>
+		<exec executable="${flex.sdkv4.1}/bin/asdoc${exec}" >
+			<arg line="-ds" />
+			<arg path="${temp.path}src" />
+			<arg line="-output" />
+			<arg value="${temp.path}asdoc"/>
+			<arg line="-window-title"/>
+			<arg value="${project.name}"/>
+		</exec>
+		<zip destfile="${build.file}.asdoc.zip">
+			<fileset dir="${temp.path}asdoc/" includes="**/*.*" />
+		</zip>
+	</target>
+	
+	<target name="create-swc" depends="prepare-temp,prepare-sources">
+		<echo>Creating SWC from ${temp.path}src</echo>
+		<exec executable="${flex.sdkv4.1}/bin/compc${exec}" >
+			<arg line="-include-sources"/>
+			<arg path="${temp.path}src"/>
+			<arg line="-output"/>
+			<arg path="${build.file}.swc"/>
+		</exec>
+	</target>
+
+	<target name="prepare-build" description="Prepares a src folder with all files of a build"
+			depends="clean,create-api-docs,create-swc,prepare-sources">
+		
+		<echo>Preparing build directory in ${build.path}</echo>
+		<delete dir="${build.path}" />
+		<mkdir dir="${build.path}" />
+		<copy todir="${build.path}">
+			<fileset dir="${temp.path}">
+				<include name="*.swc"/>
+				<include name="*.zip"/>
+			</fileset>
+		</copy>
+		<copy todir="${build.path}" file="../license.txt" />
+		<copy todir="${build.path}/src">
+			<fileset dir="${temp.path}/src" />
+		</copy>
+		
+	</target>
+	
+	<target name="build-to-svn" description="Builds a version and pushes it to the SVN"
+			depends="build-to-zip">
+		
+		<property name="svn.build.path" value="${svn.path}/build/${project.file}.${DSTAMP}.${project.version}/"/>
+		
+		<svn javahl="${javahl}" svnkit="${svnkit}">
+			<mkdir path="${svn.build.path}" message="Build preparation" />
+			<checkout url="${svn.build.path}" destpath="${build.path}/" />
+			<add recurse="true">
+				<fileset dir="${build.path}" >
+					<include name="**/*.*"/>
+				</fileset>
+			</add>
+			<commit message="Tagged version: ${project.version}" dir="${build.path}/" />
+		</svn>
+		
+	</target>
+			
+	<target name="build-to-zip" description="Builds a version and zips it"
+			depends="prepare-build">
+		<zip destfile="${build.file}.zip">
+			<fileset dir="${build.path}"/>
+		</zip>
+	</target>
+	
+	<target name="clean" depends="prepare-temp">
+		<delete dir="${temp.path}" />
+	</target>
+	
+</project>

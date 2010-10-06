@@ -1,0 +1,15 @@
+#Tue Oct 05 22:42:07 JST 2010
+=false
+com.powerflasher.fdt.core.CompilerArguments=-target-player\={playerVersion}\n-library-path {flexSDK}/frameworks/locale/en_US\n-compiler.keep-as3-metadata Observable\n-static-rsls\=true
+com.powerflasher.fdt.core.DefaultOutputFolder=bin
+com.powerflasher.fdt.core.Language=AS3
+com.powerflasher.fdt.core.PassClasspath=true
+com.powerflasher.fdt.core.PassMainclass=true
+com.powerflasher.fdt.core.PassRsls=false
+com.powerflasher.fdt.core.PassSwcs=true
+com.powerflasher.fdt.core.PlayerVersion=10.1
+com.powerflasher.fdt.core.ProjectTypeHint=AS 3
+com.powerflasher.fdt.core.Runtime=Flash_Player
+com.powerflasher.fdt.core.SdkName=Flex 4.1
+com.powerflasher.fdt.core.useProjectFormatterSettings=false
+eclipse.preferences.version=1
