@@ -71,6 +71,9 @@
 			<arg value="${temp.path}asdoc"/>
 			<arg line="-window-title"/>
 			<arg value="${project.name}"/>
+			<arg line="-compiler.external-library-path"/>
+			<arg path="${flex.sdkv4.1}/frameworks/libs/player/10.1/playerglobal.swc"/>
+			<arg line="${project.swcs}"/>
 		</exec>
 		<zip destfile="${build.file}.asdoc.zip">
 			<fileset dir="${temp.path}asdoc/" includes="**/*.*" />
