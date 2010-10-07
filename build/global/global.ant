@@ -36,7 +36,9 @@
 		</svn>
 		<property name="build.version" value="${project.version}r${revision}" />
 		<property name="build.file" value="${temp.path}${project.file}.${DSTAMP}.${build.version}" />
-		<property name="build.swc.file" value="${swc.path}${project.file}.swc" />
+		<property name="swc.file" value="${swc.path}${project.file}.swc" />
+		<property name="swc.withDependencies.file" value="${swc.path}${project.file}.withDependencies.swc" />
+		<property name="lib.path" value="${build.path}/lib/"/>
 	</target>
 	
 	<target name="prepare-temp" depends="init">
@@ -50,14 +52,24 @@
 		<filter token="license" value="${license}"/>
 		<filter token="version" value="${build.version}"/>
 		<filter token="date" value="${DSTAMP}"/>
+		<filter token="contributors" value="${project.contributors}"/>
 		<delete dir="${temp.path}src" />
 		
-		<echo>Replacing @license@, @version@ and @date@ while copying sources from ../src to ${temp.path}src</echo>
-		<copy includeemptydirs="false" overwrite="true" todir="${temp.path}src" filtering="true">
-			<fileset dir="../src/" excludes=".svn"/>
+		<echo>Replacing @license@, @version@, @contributors@ and @date@ while copying sources from ../src to ${temp.path}src</echo>
+		<copy includeemptydirs="false" overwrite="true" todir="${temp.path}src" filtering="true" preservelastmodified="true">
+			<fileset dir="../src/" excludes=".svn" includes="*.as"/>
 		</copy>
+		<copy includeemptydirs="false" overwrite="true" todir="${temp.path}src" preservelastmodified="true">
+			<fileset dir="../src/">
+				<exclude name=".as"/>
+				<exclude name=".svn"/>
+			</fileset>
+		</copy>
+		<zip destfile="${build.file}.src.zip">
+			<fileset dir="${temp.path}/src" />
+		</zip>
 		<echo>Fixing all sources in temp directory</echo>
-		<fixcrlf srcdir="${temp.path}src" encoding="utf-8" casesensitive="true" eol="unix"/>
+		<fixcrlf srcdir="${temp.path}src" encoding="utf-8" casesensitive="true" eol="unix" includes="*.as"/>
 	</target>
 	
 	<target name="create-api-docs" description="create the api documentation"
@@ -73,14 +85,14 @@
 			<arg value="${project.name}"/>
 			<arg line="-compiler.external-library-path"/>
 			<arg path="${flex.sdkv4.1}/frameworks/libs/player/10.1/playerglobal.swc"/>
-			<arg line="${project.swcs}"/>
+			<arg line="${project.compiler-options}"/>
 		</exec>
 		<zip destfile="${build.file}.asdoc.zip">
 			<fileset dir="${temp.path}asdoc/" includes="**/*.*" />
 		</zip>
 	</target>
 	
-	<target name="create-swc" depends="prepare-temp,prepare-sources">
+	<target name="create-swc" depends="prepare-temp,prepare-sources,create-withDependencies-swc">
 		<echo>Creating ${build.file}.swc from ${temp.path}src</echo>
 		<exec executable="${flex.sdkv4.1}/bin/compc${exec}" failonerror="true">
 			<arg line="-compiler.optimize"/>
@@ -95,14 +107,35 @@
 			<arg path="${flex.sdkv4.1}/frameworks/libs/player/10.1/playerglobal.swc"/>
 			<arg line="-output"/>
 			<arg path="${build.file}.swc"/>
-			<arg line="${project.swcs}"/>
+			<arg line="${project.compiler-options}"/>
 		</exec>
 		<mkdir dir="../swc"/>
-		<copy file="${build.file}.swc" tofile="${build.swc.file}"/>
+		<copy file="${build.file}.swc" tofile="${swc.file}"/>
 	</target>
-
+	
+	<target name="create-withDependencies-swc" if="project.compiler-withDependencies-options">
+		<echo>Creating ${build.file}.withDependencies.swc from ${temp.path}src</echo>
+		<exec executable="${flex.sdkv4.1}/bin/compc${exec}" failonerror="true">
+			<arg line="-compiler.optimize"/>
+			<arg line="-compiler.strict"/>
+			<arg line="-compiler.keep-as3-metadata Observable"/>
+			<arg line="-include-sources"/>
+			<arg path="${temp.path}src"/>
+			<arg line="-metadata.creator Nanosome"/>
+			<arg line="-metadata.title '${project.name} (with dependencies)'"/>
+			<arg line="-metadata.contributor '${project.contributor}'"/>
+			<arg line="-compiler.external-library-path"/>
+			<arg path="${flex.sdkv4.1}/frameworks/libs/player/10.1/playerglobal.swc"/>
+			<arg line="-output"/>
+			<arg path="${build.file}.withDependencies.swc"/>
+			<arg line="${project.compiler-withDependencies-options}"/>
+		</exec>
+		<mkdir dir="../swc"/>
+		<copy file="${build.file}.withDependencies.swc" tofile="${swc.withDependencies.file}"/>
+	</target>
+	
 	<target name="prepare-build" description="Prepares a src folder with all files of a build"
-			depends="clean,create-api-docs,create-swc,prepare-sources">
+			depends="clean,svn-update,create-api-docs,create-swc,prepare-sources">
 		
 		<echo>Preparing build directory in ${build.path}</echo>
 		<delete dir="${build.path}" />
@@ -114,11 +147,16 @@
 			</fileset>
 		</copy>
 		<copy todir="${build.path}" file="../license.txt" />
-		<copy todir="${build.path}/src">
-			<fileset dir="${temp.path}/src" />
-		</copy>
-		
+		<antcall target="copy-dependencies-to-build-path" />
 	</target>
+	
+	<target name="svn-update">
+		<svn>
+			<update dir="../"/>
+		</svn>
+	</target>
+	
+	<target name="copy-dependencies-to-build-path" ></target>
 	
 	<target name="build-to-svn" description="Builds a version and pushes it to the SVN"
 			depends="build-to-zip">
@@ -141,7 +179,7 @@
 	<target name="build-to-zip" description="Builds a version and zips it"
 			depends="prepare-build">
 		<zip destfile="${build.file}.zip">
-			<fileset dir="${build.path}"/>
+			<fileset dir="${build.path}" />
 		</zip>
 	</target>
 	
