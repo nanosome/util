@@ -1,11 +1,12 @@
 // @license@
 package nanosome.util.access {
 	import nanosome.util.ChangedPropertyNode;
-	
 	import nanosome.util.ILockable;
+	import nanosome.util.UID;
 	import nanosome.util.createInstance;
 
 	import flash.events.IEventDispatcher;
+	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
@@ -46,7 +47,7 @@ package nanosome.util.access {
 	 * @see IGetterProxy
 	 * @see ILockable
 	 */
-	public final class Accessor {
+	public final class Accessor extends UID {
 		
 		/**
 		 * Cached qualified name of the ILockable class.
@@ -79,8 +80,18 @@ package nanosome.util.access {
 		
 		// Stores modifier intances for each class
 		// Maps class name to Modifier instance
-		private static var _objectMap: Object /* String -> Modifier */= {};
-
+		private static var _objectMap : Object /* String -> Modifier */ = {};
+		
+		private static const SIMPLE_TYPE: Dictionary = new Dictionary();
+		{
+			SIMPLE_TYPE[ int ] = true;
+			SIMPLE_TYPE[ uint ] = true;
+			SIMPLE_TYPE[ Number ] = true;
+			SIMPLE_TYPE[ Boolean ] = true;
+			SIMPLE_TYPE[ String ] = true;
+		}
+		
+		
 		/**
 		 * Retrieves a <code>Accessor</code> that allows proper access to
 		 * variables of a class.
@@ -274,52 +285,60 @@ package nanosome.util.access {
 		 * @see ISetterProxy
 		 */
 		public function write( target: *, name: String, value: * ): Boolean {
-			if( _isAnnonymous ) {
+			if( !name || !target ) {
+				return false;
+				
+			} else if( _isAnnonymous ) {
+				
 				try {
-					// Annonymous classes allow 
-					var formerValue: * = target[name];
 					target[name] = value;
-					if( target[name] === value ) {
-						return true;
-					} else {
-						target[name] = formerValue;
-						return false;
-					}
+					return target[name] == value;
 				} catch( e: Error ){}
 				return false;
 				
 			} else if( _isSetterProxy ) {
 				
 				return ISetterProxy( target ).write( name, value );
+			
+			} else {
 				
-			} else if( _writableLookup && _writableLookup[ name ] ) {
+				var type: Class;
+				if( _writableTypeLookup ) {
+					type = _writableTypeLookup[ name ];
+				}
 				
-				const type: * = _writableTypeLookup[ name ];
 				if( type ) {
-					if( value is type || value == null ) {
-						target[ name ] = value;
-						return true;
-					} else {
-						return false;
-					}
-				} else {
 					// If the type can't be verified i.E. when the type was internal
 					// then a try/catch is necessary.
+					if( type == String || type == int || type == uint || type == Boolean ) {
+						var temp: *  = type( value );
+						if( temp != value ) {
+							try {
+								target[ name ] = 0;
+							} catch( e: Error ) {}
+							return false;
+						}
+					} else if( !( value is type ) ) {
+						return false;
+					}
 					try {
 						target[ name ] = value;
 						return true;
 					} catch( e: Error ) {}
 					return false;
+					
+				} else if( _isDynamic ) {
+					
+					try {
+						target[name] = value;
+						return target[name] == value;
+					} catch( e: Error ){}
+					return false;
+					
+					
+				} else {
+					return false;
 				}
-				
-			} else if( _isDynamic ) {
-				
-				target[ name ] = value;
-				return true;
-				
-			} else {
-				
-				return false;
 			}
 		}
 		
@@ -331,21 +350,33 @@ package nanosome.util.access {
 		 * 
 		 * @param target target that should be modified.
 		 * @param properties Object that maps property-names to values to be set
+		 * @return list of nodes that couldn't be written, null if all could have
 		 */
-		public function writeAll( target: *, properties: Object ): void {
-			var doUnlock: Boolean = false;
-			if( _isLockable ) {
-				const lockable: ILockable = ILockable( target );
-				if( !lockable.locked ) {
-					doUnlock = true;
-					lockable.lock();
+		public function writeAll( target: *, properties: Object ): Array {
+			if( target && properties ) {
+				var doUnlock: Boolean = false;
+				if( _isLockable ) {
+					const lockable: ILockable = ILockable( target );
+					if( !lockable.locked ) {
+						doUnlock = true;
+						lockable.lock();
+					}
 				}
+				
+				var failed: Array = null;
+				var i: int = 0;
+				
+				for( var name: String in properties ) {
+					if( !write( target, name, properties[ name ] ) ) {
+						( failed || (failed = []) )[ i++ ] = name;
+					}
+				}
+				
+				if( doUnlock ) lockable.unlock();
+				
+				return failed;
 			}
-			
-			for( var name: String in properties )
-				write( target, name, properties[ name ] );
-			
-			if( doUnlock ) lockable.unlock();
+			return null;
 		}
 		
 		/**
@@ -354,9 +385,12 @@ package nanosome.util.access {
 		 * 
 		 * @param target target instance that should be written to
 		 * @param changed Nodes that were changed
+		 * @param map Mapping of the changed properties to the object properties
+		 * @return list of properties that couldn't be written (unmapped, as in the
+		 *          ChangedPropertyNode), null if all could have
 		 * @see IPropertyObserver
 		 */
-		public function writeAllByNodes( target: *, changed: ChangedPropertyNode ): void {
+		public function writeAllByNodes( target: *, changed: ChangedPropertyNode, map: Object = null ): Array {
 			var doUnlock: Boolean = false;
 			if( _isLockable ) {
 				const lockable: ILockable = ILockable( target );
@@ -366,13 +400,49 @@ package nanosome.util.access {
 				}
 			}
 			
-			var current: ChangedPropertyNode = changed;
-			while( current ) {
-				write( target, current.name, current.newValue );
-				current = current.next;
+			var failed: Array = null;
+			var i: int = 0;
+			
+			if( map ) {
+				while( changed ) {
+					if( !write( target, map[ changed.name ], changed.newValue ) ) {
+						( failed || (failed = []) )[ i++ ] = changed.name;
+					};
+					changed = changed.next;
+				}
+			} else {
+				while( changed ) {
+					write( target, changed.name, changed.newValue );
+					changed = changed.next;
+				}
 			}
 			
 			if( doUnlock ) lockable.unlock();
+			
+			return failed;
+		}
+		
+		public function remove( source: *, property: String ): Boolean {
+			if( _isSetterProxy ) {
+				return ISetterProxy( source ).remove( property );
+			}
+				
+			if( _writableLookup && _writableLookup[ property ] ) {
+				try {
+					source[ property ] = null;
+				} catch( e: Error ) {
+					return false;
+				}
+				return true;
+			} else {
+				try {
+					source[ property ] = null;
+				} catch( e: Error ) {
+					return false;
+				}
+				delete source[ property ];
+				return true;
+			}
 		}
 		
 		public function readMapped( source: *, propertyMap: Object ): Object {
@@ -383,44 +453,45 @@ package nanosome.util.access {
 			return result;
 		}
 		
-		public function compareWithStorage( source: *, storage: Object ): ChangedPropertyNode {
+		public function updateStorage( source: *, storage: Object, limitToFields: Object = null ): Changes {
 			
 			var field: String;
-			var changes: ChangedPropertyNode;
-			var lastChange: ChangedPropertyNode;
 			var newValue: *;
 			var oldValue: *;
-			var change: ChangedPropertyNode;
+			var changes: Changes;
 			
 			if( _isGetterProxy ) {
 				
-				return IGetterProxy( source ).compareWithStorage( source, storage );
+				source =  IGetterProxy( source ).readAll( limitToFields );
 				
-			} else if( _isDynamic ) {
+			} else if( _normalReadable ) {
 				
-				for( field in storage ) {
-					try {
-						newValue = source[ field ];
-					} catch( e: Error ) {
-						newValue = null;
-					}
-					oldValue = storage[ field ];
-					if( oldValue != newValue ) {
-						if( newValue === null || newValue === undefined ) {
-							delete storage[ field ];
-						} else {
-							storage[ field ] = newValue;
+				var i: int = _normalReadable.length;
+				var dontCheck: Boolean = !limitToFields;
+				var checkArray: Array = limitToFields as Array;
+				while( --i-(-1) ) {
+					field = _normalReadable[i];
+					if( dontCheck || checkArray ? checkArray.indexOf( field ) : limitToFields[ field ] ) {
+						try {
+							newValue = source[ field ];
+						} catch( e: Error ) {
+							newValue = null;
 						}
-						change = ChangedPropertyNode.POOL.getOrCreate();
-						change.name = field;
-						change.oldValue = oldValue;
-						change.newValue = newValue;
-						lastChange = change.addTo( lastChange );
-						if( !changes ) {
-							changes = lastChange;
+						oldValue = storage[ field ];
+						if( oldValue != newValue ) {
+							storage[ field ] = newValue;
+							if( !changes ) {
+								changes = Changes.POOL.getOrCreate();
+							}
+							changes.oldValues[ field ] = oldValue;
+							changes.newValues[ field ] = newValue;
 						}
 					}
 				}
+			}
+			
+			
+			if( _isDynamic || _isGetterProxy ) {
 				
 				for( field in source ) {
 					try {
@@ -430,48 +501,29 @@ package nanosome.util.access {
 					}
 					oldValue = storage[ field ];
 					if( oldValue != newValue ) {
-						if( newValue === null || newValue === undefined ) {
-							delete storage[ field ];
-						} else {
-							storage[ field ] = newValue;
-						}
-						change = ChangedPropertyNode.POOL.getOrCreate();
-						change.name = field;
-						change.oldValue = oldValue;
-						change.newValue = newValue;
-						lastChange = change.addTo( lastChange );
+						storage[ field ] = newValue;
 						if( !changes ) {
-							changes = lastChange;
+							changes = Changes.POOL.getOrCreate();
 						}
+						changes.oldValues[ field ] = oldValue;
+						changes.newValues[ field ] = newValue;
 					}
 				}
 				
-			} else {
+				var sourceAsObject: Object = source;
 				
-				var i: int = _normalReadable.length;
-				while( --i-(-1) ) {
-					field = _normalReadable[i];
-					
-					try {
-						newValue = source[ field ];
-					} catch( e: Error ) {
-						newValue = null;
-					}
-					oldValue = storage[ field ];
-					if( oldValue != newValue ) {
-						storage[ field ] = newValue;
-						change = ChangedPropertyNode.POOL.getOrCreate();
-						change.name = field;
-						change.oldValue = oldValue;
-						change.newValue = newValue;
-						lastChange = change.addTo( lastChange );
+				for( field in storage ) {
+					if( !sourceAsObject.hasOwnProperty( field ) ) {
 						if( !changes ) {
-							changes = lastChange;
+							changes = Changes.POOL.getOrCreate();
 						}
+						changes.oldValues[ field ] = storage[ field ];
+						changes.newValues[ field ] = DELETED;
+						delete storage[ field ];
 					}
-					
 				}
 			}
+			
 			return changes;
 		}
 		
@@ -486,57 +538,57 @@ package nanosome.util.access {
 		 * instance.getAll</code> will be utilized.</p>
 		 * 
 		 * @param instance Instance whose properties are requested
-		 * @param observableOnly <code>true</code> to list only properties that are
-		 *        eigther <code>[Bindable]</code> or <code>[Observable]</code>
+		 * @param dynamicOnly <code>true</code> to list only properties that are
+		 *        not registered</code>
+		 * @param addDynamic <code>true</code> adds the dynamic fields too.
 		 * @return <code>Object</code> that contains all the properties requested.
 		 */
-		public function readAll( instance: *, fields: Array = null, observableOnly: Boolean = false ): Object {
-			if( fields ) {
-				
-				throw new Error( "not implemented" );
-				
+		public function readAll( instance: *, fields: Array = null, addDynamic: Boolean = true ): Object {
+			if( _isGetterProxy ) {
+					
+				return IGetterProxy( instance ).readAll( fields, addDynamic );
+					
 			} else {
 				
-				if( _isObject ) {
-					
-					return instance;
-					
-				} else if( _isGetterProxy ) {
-					
-					return IGetterProxy( instance ).readAll( fields, observableOnly );
-					
+				var name: String;
+				var i: int;
+				var result: Object = {};
+				
+				if( fields ) {
+					i = fields.length;
+					while ( --i-(-1) ) {
+						name = fields[ i ];
+						try {
+							result[ name ] = instance[ name ];
+						} catch( e: Error ) {}
+					}
 				} else {
-					
-					var result: Object = {};
-					var i: int;
-					var name: String;
-					
 					if( _sendingEventReadable ) {
 						i = _sendingEventReadable.length;
 						
-						while( --i-(-1) )
-							result[ name = _sendingEventReadable[ i ] ] = instance[ name ];
+						while( --i-(-1) ) {
+							name = _sendingEventReadable[ i ];
+							result[ name ] = instance[ name ];
+						}
 					}
 					
-					if( !observableOnly ) {
+					if( _normalReadable ) {
+						i = _normalReadable.length;
 						
-						if( _normalReadable ) {
-							i = _normalReadable.length;
-							
-							while( --i-(-1) )
-								result[ name = _normalReadable[ i ] ] = instance[ name ];
-						}
-						
-						if( _isDynamic ) {
-							
-							// Add still missing properties
-							for( name in instance )
-								if( !result[ name ] )
-									result[ name ] = instance[ name ];
+						while( --i-(-1) ) {
+							name = _sendingEventReadable[ i ];
+							result[ name ] = instance[ name ];
 						}
 					}
-					return result;
 				}
+				
+				if( addDynamic &&_isDynamic ) {
+					
+					for( name in instance )
+						result[ name ] = instance[ name ];
+				}
+				
+				return result;
 			}
 		}
 		
@@ -556,7 +608,11 @@ package nanosome.util.access {
 				
 			} else if( instance && ( _isDynamic || ( _readableLookup && _readableLookup[ name ] ) ) ) {
 				
-				return instance[ name ];
+				try {
+					return instance[ name ];
+				} catch ( e: Error ) {
+					return null;
+				}
 				
 			} else {
 				
@@ -585,7 +641,7 @@ package nanosome.util.access {
 			return _normalReadable;
 		}
 		
-		public function get observableReadableProperties(): Array {
+		public function get eventSendingReadableProperties(): Array {
 			return _sendingEventReadable;
 		}
 		
@@ -607,6 +663,10 @@ package nanosome.util.access {
 		
 		public function get hasBindable() : Boolean {
 			return _bindables != null;
+		}
+		
+		public function get hasObservable() : Boolean {
+			return _observables != null;
 		}
 		
 		public function isBindable( name: String ): Boolean {

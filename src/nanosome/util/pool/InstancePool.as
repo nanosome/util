@@ -3,7 +3,7 @@
 package nanosome.util.pool {
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.describeType;
-	import nanosome.util.pools;
+	
 	
 	import nanosome.util.IDisposable;
 	import nanosome.util.UID;

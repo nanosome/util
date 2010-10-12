@@ -1,6 +1,6 @@
 // @license@
-package nanosome.util {
-	import nanosome.util.pool.PoolList;
+package nanosome.util.pool {
+	
 	
 	/**
 	 * Instance of a <code>PoolList</code>.

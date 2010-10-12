@@ -1,5 +1,6 @@
 // @license@
 package nanosome.util {
+	import nanosome.util.pool.pools;
 	
 	
 	import nanosome.util.pool.InstancePool;

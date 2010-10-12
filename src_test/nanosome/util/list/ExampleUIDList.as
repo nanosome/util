@@ -1,6 +1,6 @@
 package nanosome.util.list {
 	import nanosome.util.IUID;
-	import nanosome.util.pools;
+	import nanosome.util.pool.pools;
 	
 	
 

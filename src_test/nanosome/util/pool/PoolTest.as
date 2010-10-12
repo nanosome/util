@@ -1,5 +1,5 @@
 package nanosome.util.pool {
-	import nanosome.util.pools;
+	
 	
 	import flexunit.framework.TestCase;
 

@@ -1,5 +1,5 @@
 package nanosome.util.pool {
-	import nanosome.util.pools;
+	
 	import nanosome.util.IDisposable;
 	
 	import flash.utils.Dictionary;
@@ -12,7 +12,7 @@ package nanosome.util.pool {
 		public static const POOL: IInstancePool = pools.getOrCreate( WeakDictionary );
 		
 		public function WeakDictionary() {
-			super( true);
+			super( true );
 		}
 		
 		public function dispose() : void {

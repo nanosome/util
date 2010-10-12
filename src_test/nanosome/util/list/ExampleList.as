@@ -1,7 +1,7 @@
 package nanosome.util.list {
 	
 	
-	import nanosome.util.pools;
+	import nanosome.util.pool.pools;
 
 	/**
 	 * @author Martin Heidegger mh@leichtgewicht.at

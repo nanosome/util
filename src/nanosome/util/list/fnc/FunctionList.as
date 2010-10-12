@@ -3,7 +3,7 @@ package nanosome.util.list.fnc {
 	
 	import nanosome.util.list.ListNode;
 	import nanosome.util.list.List;
-	import nanosome.util.pools;
+	import nanosome.util.pool.pools;
 
 	import flash.events.Event;
 	

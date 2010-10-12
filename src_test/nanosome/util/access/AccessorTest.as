@@ -3,7 +3,7 @@ package nanosome.util.access {
 	import flexunit.framework.TestCase;
 
 	import nanosome.util.pool.InstancePool;
-	import nanosome.util.pools;
+	import nanosome.util.pool.pools;
 
 	
 

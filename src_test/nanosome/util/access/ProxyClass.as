@@ -1,6 +1,5 @@
 package nanosome.util.access {
 	import nanosome.util.UID;
-	import nanosome.util.ChangedPropertyNode;
 
 	import flash.display.Sprite;
 
@@ -52,18 +51,17 @@ package nanosome.util.access {
 		public function read(name : *) : * {
 		}
 		
-		public function readAll( fields: Array = null, connectableOnly : Boolean = false ) : Object {
+		public function readAll( fields: Object = null, connectableOnly : Boolean = false ) : Object {
 			return {
 			};
 		}
 		
+		public function remove( field: String ): Boolean {
+			return false;
+		}
+		
 		public function get changedProperties() : Object {
 			return _changedProperties;
-		}
-
-		public function compareWithStorage(source : *, storage : Object) : ChangedPropertyNode {
-			// TODO: Auto-generated method stub
-			return null;
 		}
 	}
 }

@@ -24,5 +24,7 @@ package nanosome.util.access {
 		 * @return <code>true</code> if the property was accepted properly
 		 */
 		function write( name: String, value: * ): Boolean;
+
+		function remove( property: String ): Boolean;
 	}
 }
