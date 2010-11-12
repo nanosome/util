@@ -18,6 +18,14 @@
 		</classpath>
 	</taskdef>
 	
+	<property name="FLEX_HOME" value="global/flex" environment="true"  />
+	
+	<taskdef resource="${FLEX_HOME}/ant/flexTasks.tasks" >
+		<classpath>
+			<fileset file="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
+		</classpath>
+	</taskdef>
+	
 	<target name="init-win" if="windows">
 		<echo>Setting windows environment variables</echo>
 		<property name="exec" value=".exe" environment="true"/>
@@ -49,20 +57,23 @@
 			depends="prepare-temp">
 		
 		<loadfile property="license" srcfile="../license.short.txt"/>
-		<filter token="license" value="${license}"/>
-		<filter token="version" value="${build.version}"/>
-		<filter token="date" value="${DSTAMP}"/>
-		<filter token="contributors" value="${project.contributors}"/>
-		<delete dir="${temp.path}src" />
+		<delete dir="${temp.path}src"/>
 		
-		<echo>Replacing @license@, @version@, @contributors@ and @date@ while copying sources from ../src to ${temp.path}src</echo>
+		<echo>Replacing @license@, @version@ with ${build.version}, @contributors@ with ${project.contributors} and @date@ with ${DSTAMP} while copying sources from ${basedir}../src to ${basedir}${temp.path}src</echo>
+		
 		<copy includeemptydirs="false" overwrite="true" todir="${temp.path}src" filtering="true" preservelastmodified="true">
-			<fileset dir="../src/" excludes=".svn" includes="*.as"/>
+			<fileset dir="../src/" excludes="**/*.svn" includes="**/*.as"/>
+			<filterset>
+				<filter token="license" value="${license}"/>
+				<filter token="version" value="${build.version}"/>
+				<filter token="date" value="${DSTAMP}"/>
+				<filter token="contributors" value="${project.contributors}"/>
+			</filterset>
 		</copy>
 		<copy includeemptydirs="false" overwrite="true" todir="${temp.path}src" preservelastmodified="true">
 			<fileset dir="../src/">
-				<exclude name=".as"/>
-				<exclude name=".svn"/>
+				<exclude name="**/*.as"/>
+				<exclude name="**/*.svn"/>
 			</fileset>
 		</copy>
 		<zip destfile="${build.file}.src.zip">
@@ -76,17 +87,20 @@
 			depends="prepare-temp,prepare-sources">
 		
 		<echo>Creating API docs from ${temp.path}src</echo>
-		<exec executable="${flex.sdkv4.1}/bin/asdoc${exec}" failonerror="true">
-			<arg line="-ds" />
-			<arg path="${temp.path}src" />
-			<arg line="-output" />
-			<arg value="${temp.path}asdoc"/>
-			<arg line="-window-title"/>
-			<arg value="${project.name}"/>
-			<arg line="-compiler.external-library-path"/>
-			<arg path="${flex.sdkv4.1}/frameworks/libs/player/10.1/playerglobal.swc"/>
-			<arg line="${project.compiler-options}"/>
-		</exec>
+		<delete dir="${temp.path}/asdoc-xml" />
+		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
+			taskname="asdoc-fix" >
+			<classpath>
+				<pathelement location="${ant.home}/lib/ant-launcher.jar"/>
+			</classpath>
+			<env key="FLEX_HOME" value="${basedir}/${FLEX_HOME}"/>
+			<arg value="-Dtemp.path=${basedir}/${temp.path}"/>
+			<arg value="-Dproject.name=${project.name}"/>
+			<arg value="-buildfile"/>
+			<arg value="global/asdoc.ant"/>
+			<arg value="create-asdoc"/>
+		</java>
+		<move file="${temp.path}/asdoc/tempdita" tofile="${temp.path}/asdoc-xml"></move>
 		<zip destfile="${build.file}.asdoc.zip">
 			<fileset dir="${temp.path}asdoc/" includes="**/*.*" />
 		</zip>
@@ -94,42 +108,63 @@
 	
 	<target name="create-swc" depends="prepare-temp,prepare-sources,create-withDependencies-swc">
 		<echo>Creating ${build.file}.swc from ${temp.path}src</echo>
-		<exec executable="${flex.sdkv4.1}/bin/compc${exec}" failonerror="true">
-			<arg line="-compiler.optimize"/>
-			<arg line="-compiler.strict"/>
-			<arg line="-compiler.keep-as3-metadata Observable"/>
-			<arg line="-include-sources"/>
-			<arg path="${temp.path}src"/>
-			<arg line="-metadata.creator Nanosome"/>
-			<arg line="-metadata.title '${project.name}'"/>
-			<arg line="-metadata.contributor '${project.contributor}'"/>
-			<arg line="-compiler.external-library-path"/>
-			<arg path="${flex.sdkv4.1}/frameworks/libs/player/10.1/playerglobal.swc"/>
-			<arg line="-output"/>
-			<arg path="${build.file}.swc"/>
-			<arg line="${project.compiler-options}"/>
-		</exec>
+		<compc output="${build.file}.swc" failonerror="true"
+				compiler.optimize="true"
+				compiler.strict="true">
+			<include-sources dir="${temp.path}src">
+				<include name="**/*.*" />
+			</include-sources>
+			<compiler.keep-as3-metadata>Observable</compiler.keep-as3-metadata>
+			<compiler.external-library-path dir="${FLEX_HOME}">
+				<include name="libs/player/10.1/playerglobal.swc" />
+			</compiler.external-library-path>
+			<metadata title="${project.name}">
+				<creator>Nanosome</creator>
+			</metadata>
+			<load-config>compiler.conf.xml</load-config>
+		</compc>
+		<echo>Adding asdoc to the swc</echo>
+		<zip destfile="${build.file}.swc" update="true">
+			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs">
+				<include name="*.*"/>
+				<exclude name="ASDoc_Config.xml"/>
+				<exclude name="overviews.xml"/>
+			</zipfileset>
+		</zip>
 		<mkdir dir="../swc"/>
 		<copy file="${build.file}.swc" tofile="${swc.file}"/>
 	</target>
 	
-	<target name="create-withDependencies-swc" if="project.compiler-withDependencies-options">
+	<condition property="project.compiler-withDependencies-options">
+		<available file="compiler.dependencies.xml" />
+	</condition>
+	
+	<target name="create-withDependencies-swc" if="project.compiler-dependencies-available" depends="create-api-docs">
 		<echo>Creating ${build.file}.withDependencies.swc from ${temp.path}src</echo>
-		<exec executable="${flex.sdkv4.1}/bin/compc${exec}" failonerror="true">
-			<arg line="-compiler.optimize"/>
-			<arg line="-compiler.strict"/>
-			<arg line="-compiler.keep-as3-metadata Observable"/>
-			<arg line="-include-sources"/>
-			<arg path="${temp.path}src"/>
-			<arg line="-metadata.creator Nanosome"/>
-			<arg line="-metadata.title '${project.name} (with dependencies)'"/>
-			<arg line="-metadata.contributor '${project.contributor}'"/>
-			<arg line="-compiler.external-library-path"/>
-			<arg path="${flex.sdkv4.1}/frameworks/libs/player/10.1/playerglobal.swc"/>
-			<arg line="-output"/>
-			<arg path="${build.file}.withDependencies.swc"/>
-			<arg line="${project.compiler-withDependencies-options}"/>
-		</exec>
+		<compc output="${build.file}.withDependencies.swc" failonerror="true"
+				compiler.optimize="true"
+				compiler.strict="true">
+			<include-sources dir="${temp.path}src">
+				<include name="**/*.*" />
+			</include-sources>
+			<compiler.keep-as3-metadata>Observable</compiler.keep-as3-metadata>
+			<compiler.external-library-path dir="${FLEX_HOME}">
+				<include name="libs/player/10.1/playerglobal.swc" />
+			</compiler.external-library-path>
+			<metadata title="${project.name}">
+				<creator>Nanosome</creator>
+			</metadata>
+			<load-config>compiler.conf.xml</load-config>
+			<load-config>compiler.dependencies.xml</load-config>
+		</compc>
+		<echo>Adding asdoc to the swc</echo>
+		<zip destfile="${build.file}.withDependencies.swc" update="true">
+			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs">
+				<include name="*.*"/>
+				<exclude name="ASDoc_Config.xml"/>
+				<exclude name="overviews.xml"/>
+			</zipfileset>
+		</zip>
 		<mkdir dir="../swc"/>
 		<copy file="${build.file}.withDependencies.swc" tofile="${swc.withDependencies.file}"/>
 	</target>
