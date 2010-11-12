@@ -38,7 +38,9 @@ package nanosome.util.pool {
 		 * @param objectsCleanedPerRun Amount of objects (max.) cleaned per run 
 		 * @param runEach Time distance in milliseconds between each run
 		 */
-		public function PoolList() {}
+		public function PoolList() {
+			super();
+		}
 		
 		/**
 		 * Adds a instance pool to be sequentially cleaned on the next runs.

@@ -22,6 +22,10 @@ package nanosome.util {
 		// Id provider
 		private const _uid: uint = UID.next();
 		
+		public function DisposableSprite() {
+			super();
+		}
+		
 		/**
 		 * @inheritDoc
 		 */

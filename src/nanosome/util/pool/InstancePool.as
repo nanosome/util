@@ -24,6 +24,7 @@ package nanosome.util.pool {
 		private var _inPoolsList: Boolean = false;
 		
 		public function InstancePool( clazz: Class ) {
+			super();
 			_clazz = clazz;
 			_disposable = describeType( clazz ).factory.implementsInterface.(@type==IDISPOSABLE).length() > 0;
 		}

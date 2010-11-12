@@ -52,6 +52,10 @@ package nanosome.util {
 		 */
 		public var prev: ChangedPropertyNode;
 		
+		public function ChangedPropertyNode() {
+			super();
+		}
+		
 		/**
 		 * @inheritDoc
 		 */

@@ -1,4 +1,4 @@
-#Tue Oct 05 22:42:07 JST 2010
+#Tue Oct 12 16:05:05 JST 2010
 =false
 com.powerflasher.fdt.core.CompilerArguments=-target-player\={playerVersion}\n-library-path {flexSDK}/frameworks/locale/en_US\n-compiler.keep-as3-metadata Observable\n-static-rsls\=true
 com.powerflasher.fdt.core.DefaultOutputFolder=bin
@@ -11,5 +11,5 @@ com.powerflasher.fdt.core.PlayerVersion=10.1
 com.powerflasher.fdt.core.ProjectTypeHint=AS 3
 com.powerflasher.fdt.core.Runtime=Flash_Player
 com.powerflasher.fdt.core.SdkName=Flex 4.1
-com.powerflasher.fdt.core.useProjectFormatterSettings=false
+com.powerflasher.fdt.core.useProjectFormatterSettings=true
 eclipse.preferences.version=1

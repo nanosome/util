@@ -29,7 +29,13 @@ package nanosome.util.list {
 		
 		// Map for all entries in the queue that stores whether each entry should
 		// be weak or not.
+		
 		private var _addQueueWeakMap: WeakDictionary /* Object -> Boolean */;
+		
+		public function AbstractList() {
+			super();
+		}
+		
 		
 		/**
 		 * Size of the list
@@ -69,6 +75,10 @@ package nanosome.util.list {
 				_addQueueWeakMap = null;
 			}
 			_iterDepth = -1;
+		}
+		
+		public function get containsNonWeak(): Boolean {
+			return false;
 		}
 		
 		/**

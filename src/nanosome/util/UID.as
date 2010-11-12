@@ -29,6 +29,10 @@ package nanosome.util {
 		// Id associated with this instance.
 		private const _id: uint = UID.next();
 		
+		public function UID() {
+			super();
+		}
+		
 		/**
 		 * @inheritDoc
 		 */

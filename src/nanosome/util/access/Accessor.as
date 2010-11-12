@@ -37,7 +37,7 @@ package nanosome.util.access {
 	 * <code>writeAllByNodes</code> will make use of the <code>ILockable</code>
 	 * interface.</p>
 	 * 
-	 * @example <listening>
+	 * @example <listening version="3.0">
 	 *   accessFor( {} ).write( {}, "test", 1 ); // returns true because the object is dynamic
 	 * </listening>
 	 * 
@@ -172,6 +172,7 @@ package nanosome.util.access {
 		 *        <code>null</code> will be treatened as "unaccessable".
 		 */
 		public function Accessor( typeName: String, object: * ) {
+			super();
 			_isObject = (typeName == "Object");
 			_isAnnonymous = !typeName;
 			
@@ -539,7 +540,7 @@ package nanosome.util.access {
 		 * 
 		 * @param instance Instance whose properties are requested
 		 * @param dynamicOnly <code>true</code> to list only properties that are
-		 *        not registered</code>
+		 *        not registered
 		 * @param addDynamic <code>true</code> adds the dynamic fields too.
 		 * @return <code>Object</code> that contains all the properties requested.
 		 */

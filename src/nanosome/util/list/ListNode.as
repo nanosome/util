@@ -18,7 +18,11 @@ package nanosome.util.list {
 		
 		private var _strong : *;
 		
-		private var _isWeak : Boolean;
+		private var _isWeak: Boolean;
+		
+		public function ListNode() {
+			super();
+		}
 		
 		public function set next( node: ListNode ): void {
 			_next = node;

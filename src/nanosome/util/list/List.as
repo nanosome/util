@@ -29,7 +29,7 @@ package nanosome.util.list {
 	 * <p>To have cast free types, it is (of course) necessary to extend <code>List</code>
 	 * with your custom list. It is also required to create your own list node.</p>
 	 * 
-	 * <listing>
+	 * <listing version="3.0">
 	 *    import nanosome.bind.pool.pool;
 	 *    import nanosome.bind.list.List;
 	 *    
@@ -86,7 +86,7 @@ package nanosome.util.list {
 	 * 
 	 * <p>In this first step its possible to have a easy iteration to functions, entirely typed:</p>
 	 * 
-	 * <listing>
+	 * <listing version="3">
 	 *   class MyList {
 	 *     ...
 	 *     public function iterate(): void {
@@ -112,7 +112,7 @@ package nanosome.util.list {
 	 * propery for having more than one iteration possible within a call stack.
 	 * </p>
 	 * 
-	 * <listing>
+	 * <listing version="3">
 	 *   class MyList extends List {
 	 *     ...
 	 *     public function iterate(): void {
@@ -196,6 +196,7 @@ package nanosome.util.list {
 		 * @see nanosome.bind.pool.pool
 		 */
 		public function List( nodePool: IInstancePool ) {
+			super();
 			_nodePool = nodePool;
 		}
 		
@@ -376,12 +377,12 @@ package nanosome.util.list {
 		 */
 		override protected function startIterate(): int {
 			var iter: int = super.startIterate();
-			if( iter == 1 ) {
+			if( iter > 0 ) {
 				// Just create a stack if the iteration depth is bigger 0!
-				_nextStack = ARRAY_POOL.getOrCreate();
-			}
-			// Add the current value of next and preserve it to resume the former iteratio
-			if( _nextStack ) {
+				if( !_nextStack ) {
+					_nextStack = ARRAY_POOL.getOrCreate();
+				}
+				// Add the current value of next and preserve it to resume the former iteratio
 				_nextStack.push( next );
 			}
 			return iter;
@@ -460,6 +461,10 @@ package nanosome.util.list {
 			}
 		}
 		
+		override public function get containsNonWeak(): Boolean {
+			return _registry != null;
+		}
+		
 		/**
 		 * Override this method to the list which the first entry should be.
 		 * 
@@ -496,20 +501,6 @@ package nanosome.util.list {
 		 */
 		protected function set next( node: ListNode ): void {
 			throw new Error( "Abstract method" );
-		}
-		
-		/**
-		 * Clears all weak entries that don't contain a value anymore
-		 */
-		protected function clearEmptyWeak(): void {
-			var current: ListNode = first;
-			while( current ) {
-				var next: ListNode = current.next;
-				if( current.isWeak && current.weak == null ) {
-					removeNode( current );
-				}
-				current = next;
-			}
 		}
 	}
 }

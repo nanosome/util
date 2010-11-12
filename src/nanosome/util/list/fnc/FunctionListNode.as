@@ -17,6 +17,10 @@ package nanosome.util.list.fnc {
 		// Holder for the node succeeding this one
 		internal var _next: FunctionListNode;
 		
+		public function FunctionListNode() {
+			super();
+		}
+		
 		/**
 		 * @inheritDoc
 		 */

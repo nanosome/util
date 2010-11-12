@@ -43,6 +43,7 @@ package nanosome.util.list {
 		 * @see nanosome.bind.pool.pool
 		 */
 		public function UIDList( nodePool: IInstancePool ) {
+			super();
 			_nodePool = nodePool;
 		}
 		
@@ -103,6 +104,10 @@ package nanosome.util.list {
 		 */
 		override public function get size(): uint {
 			return super.size + _size;
+		}
+		
+		override public function get containsNonWeak(): Boolean {
+			return _registry != null;
 		}
 		
 		/**

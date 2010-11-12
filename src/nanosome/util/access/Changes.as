@@ -14,6 +14,10 @@ package nanosome.util.access {
 		public const oldValues: Object = OBJECT_POOL.getOrCreate();
 		public const newValues: Object = OBJECT_POOL.getOrCreate();
 		
+		public function Changes() {
+			super();
+		}
+		
 		public function dispose(): void {
 			cleanObject( oldValues );
 			OBJECT_POOL.returnInstance( oldValues );

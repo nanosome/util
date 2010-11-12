@@ -18,10 +18,14 @@ package nanosome.util.list {
 		
 		private var _next: UIDListNode;
 		private var _weak: Dictionary;
-		private var _isWeak : Boolean;
+		private var _isWeak: Boolean;
+		private var _strong: IUID;
 		
-		public var contentUID : uint;
-		private var _strong : IUID;
+		public var contentUID: uint;
+		
+		public function UIDListNode() {
+			super();
+		}
 		
 		public function set next( node: UIDListNode ): void {
 			_next = node;
@@ -74,7 +78,7 @@ package nanosome.util.list {
 			return null;
 		}
 		
-		private function clearWeak() : void {
+		private function clearWeak(): void {
 			_weak = null;
 			_isWeak = false;
 		}
