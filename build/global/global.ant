@@ -20,7 +20,7 @@
 	
 	<property name="FLEX_HOME" value="global/flex" environment="true"  />
 	
-	<taskdef resource="${FLEX_HOME}/ant/flexTasks.tasks" >
+	<taskdef resource="flexTasks.tasks" >
 		<classpath>
 			<fileset file="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
 		</classpath>
