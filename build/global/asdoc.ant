@@ -18,7 +18,7 @@
 				<creator>Nanosome</creator>
 			</metadata>
 			<doc-sources path-element="${temp.path}src"/>
-			<load-config >../asdoc.conf.xml</load-config>
+			<load-config>../asdoc.conf.xml</load-config>
 		</asdoc>
 	</target>
 	
