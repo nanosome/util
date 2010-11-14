@@ -8,7 +8,7 @@ package nanosome.util.pool {
 	 */
 	public function returnInstance( instance: * ): void {
 		try {
-			pools.getOrCreate(
+			POOL_LIST.getOrCreate(
 				getDefinitionByName( getQualifiedClassName( instance ) ) as Class
 			).returnInstance( instance );
 		} catch( e: ReferenceError ) {

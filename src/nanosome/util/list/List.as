@@ -224,11 +224,7 @@ package nanosome.util.list {
 		 * @return <code>true</code> if there has been a change in the list
 		 */
 		public function remove( value: * ): Boolean {
-			if( removeFromLinkedList( value ) || removeInternal( value ) ) {
-				return true;
-			} else {
-				return false;
-			}
+			return removeFromLinkedList( value ) || removeInternal( value );
 		}
 		
 		/**

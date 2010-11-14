@@ -1,11 +1,12 @@
 // @license@
+
 package nanosome.util.list.fnc {
-	
-	import nanosome.util.list.ListNode;
 	import nanosome.util.list.List;
-	import nanosome.util.pool.pools;
+	import nanosome.util.list.ListNode;
+	import nanosome.util.pool.poolFor;
 
 	import flash.events.Event;
+	
 	
 	/**
 	 * List of functions to be executed in a row.
@@ -29,7 +30,7 @@ package nanosome.util.list.fnc {
 		 * Creates a new <code>FunctionList</code> instance
 		 */
 		public function FunctionList( onEmpty: Function = null ) {
-			super( pools.getOrCreate( FunctionListNode ) );
+			super( poolFor( FunctionListNode ) );
 			_onEmpty = onEmpty;
 		}
 		

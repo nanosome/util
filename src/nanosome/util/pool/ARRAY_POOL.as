@@ -10,5 +10,5 @@ package nanosome.util.pool {
 	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 */
-	public const ARRAY_POOL: IInstancePool = pools.getOrCreate( Array );
+	public const ARRAY_POOL: IInstancePool = POOL_LIST.getOrCreate( Array );
 }

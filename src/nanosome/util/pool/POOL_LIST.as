@@ -9,5 +9,5 @@ package nanosome.util.pool {
 	 * @version 1.0
 	 * @see PoolList
 	 */
-	public var pools: PoolList = new PoolList();
+	public const POOL_LIST: PoolList = new PoolList();
 }

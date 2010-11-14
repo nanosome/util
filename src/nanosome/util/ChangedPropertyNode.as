@@ -1,9 +1,7 @@
 // @license@
 package nanosome.util {
-	import nanosome.util.pool.pools;
-	
-	
-	import nanosome.util.pool.InstancePool;
+	import nanosome.util.pool.IInstancePool;
+	import nanosome.util.pool.poolFor;
 	
 	
 	/**
@@ -25,7 +23,7 @@ package nanosome.util {
 		/**
 		 * Pool that can be accessed to create and temporarily store instances
 		 */
-		public static const POOL: InstancePool = pools.getOrCreate( ChangedPropertyNode );
+		public static const POOL: IInstancePool = poolFor( ChangedPropertyNode );
 		
 		/**
 		 * The name of the property that changed

@@ -3,7 +3,7 @@ package nanosome.util.access {
 	import flexunit.framework.TestCase;
 
 	import nanosome.util.pool.InstancePool;
-	import nanosome.util.pool.pools;
+	import nanosome.util.pool.POOL_LIST;
 
 	
 
@@ -12,7 +12,7 @@ package nanosome.util.access {
 	 */
 	public class AccessorTest extends TestCase {
 		
-		private static const changePool: InstancePool = pools.getOrCreate( ChangedPropertyNode );
+		private static const changePool: InstancePool = POOL_LIST.getOrCreate( ChangedPropertyNode );
 
 		public function testAccess(): void {
 			var facade: Accessor = Accessor.forObject( null );

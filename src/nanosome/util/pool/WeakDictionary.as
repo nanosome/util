@@ -9,7 +9,7 @@ package nanosome.util.pool {
 	 */
 	public class WeakDictionary extends Dictionary implements IDisposable {
 		
-		public static const POOL: IInstancePool = pools.getOrCreate( WeakDictionary );
+		public static const POOL: IInstancePool = poolFor( WeakDictionary );
 		
 		public function WeakDictionary() {
 			super( true );

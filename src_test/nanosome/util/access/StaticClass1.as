@@ -1,6 +1,6 @@
 package nanosome.util.access {
 	import nanosome.util.list.List;
-	import nanosome.util.pool.pools;
+	import nanosome.util.pool.POOL_LIST;
 
 	/**
 	 * @author Martin Heidegger mh@leichtgewicht.at
@@ -10,7 +10,7 @@ package nanosome.util.access {
 		public var test: String;
 
 		public function StaticClass1() {
-			super(pools.getOrCreate(StaticClass1));
+			super(POOL_LIST.getOrCreate(StaticClass1));
 		}
 		
 		private var _te: uint;

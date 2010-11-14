@@ -41,7 +41,7 @@ package nanosome.util.pool {
 				( _list || ( _list = [] ) ).push(instance);
 				if( !_inPoolsList ) {
 					_inPoolsList = true;
-					pools.add( this );
+					POOL_LIST.add( this );
 				}
 			}
 		}
@@ -57,7 +57,7 @@ package nanosome.util.pool {
 			if( _list.length == 0 ) {
 				_list = null;
 				_inPoolsList = false;
-				pools.remove( this );
+				POOL_LIST.remove( this );
 			}
 			return i;
 		}
