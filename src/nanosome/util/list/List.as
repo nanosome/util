@@ -29,7 +29,7 @@ package nanosome.util.list {
 	 * <p>To have cast free types, it is (of course) necessary to extend <code>List</code>
 	 * with your custom list. It is also required to create your own list node.</p>
 	 * 
-	 * <listing version="3.0">
+	 * <listing version="3">
 	 *    import nanosome.bind.pool.pool;
 	 *    import nanosome.bind.list.List;
 	 *    

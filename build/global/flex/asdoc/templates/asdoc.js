@@ -101,24 +101,33 @@ function gotoLiveDocs(primaryURL, secondaryURL, locale) {
         url += ("&" + secondaryURL);
     window.open(url, "mm_livedocs", "menubar=1,toolbar=1,status=1,scrollbars=1,resizable=yes");
 }
+function getTitleBar() {
+   var frame = parent;
+   while( frame ) {
+      if( frame.titlebar ) {
+	     return frame.titlebar;
+	  }
+	  frame = frame.parent;
+   }
+}
 function findTitleTableObject(id)
 {
     if (isEclipse())
         return parent.titlebar.document.getElementById(id);
-    else if (top.titlebar)
-        return top.titlebar.document.getElementById(id);
+    else if (getTitleBar())
+        return getTitleBar().document.getElementById(id);
     else
         return document.getElementById(id);
 }
 function titleBar_setSubTitle(title)
 {
-    if (isEclipse() || top.titlebar)
+    if (isEclipse() || getTitleBar())
         findTitleTableObject("subTitle").childNodes.item(0).data = title;
 }
 function titleBar_setSubNav(showConstants,showProperties,showStyles,showSkinPart,showSkinState,showEffects,showEvents,showConstructor,showMethods,showExamples,
                 showPackageConstants,showPackageProperties,showPackageFunctions,showInterfaces,showClasses,showPackageUse)
 {
-    if (isEclipse() || top.titlebar)
+    if (isEclipse() || getTitleBar())
     {
         findTitleTableObject("propertiesLink").style.display = showProperties ? "inline" : "none";
         findTitleTableObject("propertiesBar").style.display = (showProperties && (showPackageProperties || showConstructor || showMethods || showPackageFunctions || showEvents || showStyles || showSkinPart || showSkinState || showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";

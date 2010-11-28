@@ -1,6 +1,20 @@
+// @license@
 package nanosome.util {
+	
 	import flash.utils.describeType;
+	
 	/**
+	 * Creates a instance from a anonymous class.
+	 * 
+	 * <p>Occasionally its necessary to have a instance of a class for analyzation.
+	 * this might be especially necessary since <code>describeType</code> shows
+	 * different results on instances than on classes.</p>
+	 * 
+	 * <p>Note: As for now, it will use always just the not-optional parameters,
+	 * no matter how many you pass in.</p>
+	 * 
+	 * @param clazz anonymous class to create a instance from
+	 * @param args constructor arguments
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 */
 	public function createInstance( clazz: Class, args: Array = null ): * {

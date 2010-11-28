@@ -1,19 +1,15 @@
 <overviews>
 	<packages>
-		<package name="" >
-			<shortDescription><![CDATA[
-				Hello World1
-			]]></shortDescription>
-			<description><![CDATA[
-				Long, Long, Long, Loooong! Description1
-			]]></description>
-		</package>
 		<package name="nanosome.util" >
 			<shortDescription><![CDATA[
-				Hello World
+				Contains all the utils used by various nanosome projects.
 			]]></shortDescription>
 			<description><![CDATA[
-				Long, Long, Long, Loooong! Description
+				The nanosome-util project contains core ActionScript 3 util to
+				improve the quality or performance of applications or frameworks.
+				We limit it to the utils necessary to develop our nanosome projects.
+				This covers fast dispatching, disposing, anonymous object access
+				and alike.
 			]]></description>
 		</package>
 	</packages>

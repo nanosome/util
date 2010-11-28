@@ -122,7 +122,6 @@
 			</compiler.external-library-path>
 			<metadata title="${project.name}">
 				<creator>Nanosome</creator>
-				<date></date>
 			</metadata>
 		</compc>
 		<echo>Adding asdoc to the swc</echo>
@@ -199,17 +198,22 @@
 	<target name="build-to-svn" description="Builds a version and pushes it to the SVN"
 			depends="build-to-zip">
 		
-		<property name="svn.build.path" value="${svn.path}/build/${project.file}.${DSTAMP}.${project.version}/"/>
+		<property name="svn.build.path" value="${svn.path}/build/${project.file}.${DSTAMP}.${build.version}/"/>
 		
-		<svn javahl="${javahl}" svnkit="${svnkit}">
-			<mkdir path="${svn.build.path}" message="Build preparation" />
+		<echo>Building ${svn.build.path} in ${build.path}</echo>
+		
+		<input addproperty="svn.user">SVN Username</input>
+		<input addproperty="svn.pwd">SVN Password</input> 
+		
+		<svn javahl="${javahl}" svnkit="${svnkit}" username="${svn.user}" password="${svn.pwd}">
+			<mkdir url="${svn.build.path}" message="Build preparation" />
 			<checkout url="${svn.build.path}" destpath="${build.path}/" />
 			<add recurse="true">
 				<fileset dir="${build.path}" >
 					<include name="**/*.*"/>
 				</fileset>
 			</add>
-			<commit message="Tagged version: ${project.version}" dir="${build.path}/" />
+			<commit message="Tagged version: ${project.version}" dir="${build.path}/"/>
 		</svn>
 		
 	</target>

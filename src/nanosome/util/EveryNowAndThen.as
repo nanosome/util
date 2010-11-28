@@ -7,6 +7,12 @@ package nanosome.util {
 	import flash.utils.Timer;
 	
 	/**
+	 * <code>EveryNowAndThen</code> is a trigger that is executed about every half a second.
+	 * 
+	 * <p>In order to not use too much of the active CPU time used for rendering
+	 * <code>EveryNowAndThen</code> allows to have a cycle running that is not
+	 * exact and just about often enough to do some basic tasks occasionally.</p>
+	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 */
 	public class EveryNowAndThen {
@@ -73,6 +79,9 @@ package nanosome.util {
 			return false;
 		}
 		
+		/**
+		 * Removes the timer eventlistener when not used.
+		 */
 		private static function removeListeners(): void {
 			_listening = false;
 			_timer.removeEventListener( TimerEvent.TIMER, _list.execute );
