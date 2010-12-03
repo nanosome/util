@@ -108,6 +108,7 @@ function getTitleBar() {
 	     return frame.titlebar;
 	  }
 	  frame = frame.parent;
+	  if( frame == frame.parent ) return null;
    }
 }
 function findTitleTableObject(id)
