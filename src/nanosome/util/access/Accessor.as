@@ -311,6 +311,8 @@ package nanosome.util.access {
 				if( type ) {
 					// If the type can't be verified i.E. when the type was internal
 					// then a try/catch is necessary.
+					
+					// Primitive type checking.
 					if( type == String || type == int || type == uint || type == Boolean ) {
 						var temp: *  = type( value );
 						if( temp != value ) {
@@ -319,7 +321,7 @@ package nanosome.util.access {
 							} catch( e: Error ) {}
 							return false;
 						}
-					} else if( !( value is type ) ) {
+					} else if( !( value is type ) && value != null ) {
 						return false;
 					}
 					try {
@@ -577,7 +579,7 @@ package nanosome.util.access {
 						i = _normalReadable.length;
 						
 						while( --i-(-1) ) {
-							name = _sendingEventReadable[ i ];
+							name = _normalReadable[ i ];
 							result[ name ] = instance[ name ];
 						}
 					}

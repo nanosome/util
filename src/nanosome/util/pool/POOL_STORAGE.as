@@ -1,13 +1,12 @@
 // @license@
 package nanosome.util.pool {
 	
-	
 	/**
-	 * Instance of a <code>PoolList</code>.
+	 * Instance of <code>PoolStorage</code>
 	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 * @version 1.0
-	 * @see PoolList
+	 * @see PoolStorage
 	 */
-	public const POOL_LIST: PoolList = new PoolList();
+	public const POOL_STORAGE: PoolStorage = new PoolStorage();
 }

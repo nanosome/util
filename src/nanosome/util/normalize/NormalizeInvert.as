@@ -1,24 +1,28 @@
+// @license@
 package nanosome.util.normalize {
 
-	import nanosome.util.IDoubleNormalize;
+	import nanosome.util.INormalize;
+	
 	/**
- * @author Martin Heidegger mh@leichtgewicht.at
- */
-	public final class NormalizeInvert implements IDoubleNormalize {
+	 * Transforms a normalized number (0-1) to a inverted number (1-0).
+	 * 
+	 * @author Martin Heidegger mh@leichtgewicht.at
+	 * @version 1.0
+	 */
+	public final class NormalizeInvert implements INormalize {
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function from( number: Number ) : Number {
-			number = 1.0 - number;
-			if( number < .0 ) {
-				return .0;
-			} else if( number > 1.0 ) {
-				return 1.0;
-			} else {
-				return number;
-			}
+			return 1.0 - number;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function to( normalized: Number ) : Number {
-			return 1.0 - normalized ;
+			return 1.0 - normalized;
 		}
 	}
 }

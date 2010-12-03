@@ -135,7 +135,7 @@ package nanosome.util.list {
 	 * <p>For weak references, every list node contains the strong typed value
 	 * as well as a weak reference dictionary. With this it is easy to tackle both.</p>
 	 * 
-	 * <listing>
+	 * <listing version="3">
 	 *   class MyList extends List {
 	 *     ...
 	 *     public function iterate(): void {

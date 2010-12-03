@@ -1,9 +1,10 @@
 package nanosome.util.access {
+	import org.flexunit.asserts.assertStrictlyEquals;
 	import nanosome.util.ChangedPropertyNode;
 	import flexunit.framework.TestCase;
 
 	import nanosome.util.pool.InstancePool;
-	import nanosome.util.pool.POOL_LIST;
+	import nanosome.util.pool.POOL_STORAGE;
 
 	
 
@@ -12,7 +13,7 @@ package nanosome.util.access {
 	 */
 	public class AccessorTest extends TestCase {
 		
-		private static const changePool: InstancePool = POOL_LIST.getOrCreate( ChangedPropertyNode );
+		private static const changePool: InstancePool = POOL_STORAGE.getOrCreate( ChangedPropertyNode );
 
 		public function testAccess(): void {
 			var facade: Accessor = Accessor.forObject( null );
@@ -29,7 +30,8 @@ package nanosome.util.access {
 			assertFalse( Accessor.forObject( null ) == facade );
 			
 			assertTrue( "Allowed to set content to proper type", facade.write( intern, "content", 1 ) );
-			assertFalse( "Not allowed to set the content to wrong type", facade.write( intern, "content", [] ) );
+			assertFalse( "Not allowed to set the content to wrong type", facade.write( intern, "content", {} ) );
+			assertTrue( "Allowed to set primitive types even without proper type", facade.write( intern, "content", "1.0" ) );
 			assertFalse( "Not allowed to set just any variable", facade.write( intern, "test", "a" ) );
 		}
 		
@@ -62,7 +64,8 @@ package nanosome.util.access {
 			assertTrue( facade.hasWritableProperty( "test" ) );
 			assertFalse( facade.isSendingChangeEvent( "test" ) );
 			
-			assertStrictlyEquals( obj, facade.readAll( obj, null, false ) );
+			assertObjectEquals( obj, facade.readAll( obj, null, true ) );
+			assertFalse( obj === facade.readAll( obj, null, true ) );
 		}
 		
 		public function testProxyBehaviour(): void {
@@ -149,13 +152,19 @@ package nanosome.util.access {
 					observable: arr,
 					anyproperty: 1,
 					uid: int.MAX_VALUE
-				}, accessor.readAll( dynamicInstance, null, false )
+				}, accessor.readAll( dynamicInstance, null, true )
 			);
 			
 			assertObjectEquals( {
 					bindable: arr,
-					observable: arr
-				}, accessor.readAll( dynamicInstance, null, true )
+					internalClass: null,
+					locked: false,
+					normal: arr,
+					observable: arr,
+					uid: int.MAX_VALUE,
+					wasLocked: false,
+					wasUnlocked: false
+				}, accessor.readAll( dynamicInstance, null, false )
 			);
 		}
 		
@@ -215,7 +224,7 @@ package nanosome.util.access {
 			}
 			
 			assertTrue( dynamicInstance.locked );
-			assertNull( dynamicInstance.normal );
+			assertNull( "Using list? " + useList, dynamicInstance.normal );
 		}
 		
 		private function createNodes( properties: Object ): ChangedPropertyNode {

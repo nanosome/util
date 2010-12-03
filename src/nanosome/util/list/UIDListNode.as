@@ -2,9 +2,8 @@
 package nanosome.util.list {
 	import nanosome.util.IDisposable;
 	import nanosome.util.IUID;
-
-	import flash.utils.Dictionary;
-
+	import nanosome.util.pool.WeakDictionary;
+	
 	/**
 	 * <code>UIDListNode</code> is to <code>UIDList</code> the same as <code>ListNode</code>
 	 * to <code>List</code>.
@@ -16,38 +15,71 @@ package nanosome.util.list {
 	 */
 	public class UIDListNode implements IDisposable {
 		
-		private var _next: UIDListNode;
-		private var _weak: Dictionary;
-		private var _isWeak: Boolean;
-		private var _strong: IUID;
+		/**
+		 * @copy nanosome.util.list.ListNode#prev()
+		 */
+		public var prev: UIDListNode;
 		
+		/**
+		 * <code>ID</code> of the content node
+		 * 
+		 * @see nanosome.util.IUID
+		 */
 		public var contentUID: uint;
 		
+		// Next node to be stored in the common format
+		private var _next: UIDListNode;
+		
+		// Container for if the content was added weak
+		private var _weak: WeakDictionary;
+		
+		// Content if added non-weak
+		private var _strong: IUID;
+		
+		// Boolean to tell whether the content was added weak or not
+		private var _isWeak: Boolean;
+		
+		/**
+		 * Construcst a new <code>UIDListNode</code> instance.
+		 */
 		public function UIDListNode() {
 			super();
+		}
+		
+		/**
+		 * @copy nanosme.util.list.ListNode#next()
+		 */
+		public function get next(): UIDListNode {
+			return _next;
 		}
 		
 		public function set next( node: UIDListNode ): void {
 			_next = node;
 		}
 		
-		public function get next(): UIDListNode {
-			return _next;
-		}
 		
+		/**
+		 * @copy nanosme.util.list.ListNode#content()
+		 */
 		public function set content( content: IUID ): void {
 			strong = content;
 			_isWeak = false;
+		}
+		
+		/**
+		 * @copy nanosme.util.list.ListNode#strong()
+		 */
+		public function get strong(): IUID {
+			return _strong;
 		}
 		
 		public function set strong( content: IUID ): void {
 			_strong = content;
 		}
 		
-		public function get strong(): IUID {
-			return _strong;
-		}
-		
+		/**
+		 * @copy nanosme.util.list.ListNode#isWeak()
+		 */
 		public function get isWeak(): Boolean {
 			return _isWeak;
 		}
@@ -65,11 +97,9 @@ package nanosome.util.list {
 			}
 		}
 		
-		public function set weak( content: * ): void {
-			_weak = new Dictionary();
-			_weak[ content ] = true;
-		}
-		
+		/**
+		 * @copy nanosme.util.list.ListNode#weak()
+		 */
 		public function get weak(): * {
 			for( var content: * in _weak ) {
 				return content;
@@ -78,11 +108,18 @@ package nanosome.util.list {
 			return null;
 		}
 		
-		private function clearWeak(): void {
-			_weak = null;
-			_isWeak = false;
+		public function set weak( content: * ): void {
+			if( _weak ) {
+				_weak.dispose();
+			} else {
+				_weak = WeakDictionary.POOL.getOrCreate();
+			}
+			_weak[ content ] = true;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function dispose(): void {
 			_weak = null;
 			_isWeak = false;
@@ -92,6 +129,9 @@ package nanosome.util.list {
 			prev = null;
 		}
 		
-		public var prev: UIDListNode;
+		private function clearWeak(): void {
+			_weak = null;
+			_isWeak = false;
+		}
 	}
 }

@@ -1,0 +1,65 @@
+<project name="nanosome-global" basedir=".">
+
+	<property environment="env"></property>
+	<property name="FLEX_HOME" value="${env.FLEX_HOME}" />
+	
+	<taskdef resource="flexTasks.tasks" >
+		<classpath>
+			<fileset file="${env.FLEX_HOME}/ant/lib/flexTasks.jar"/>
+		</classpath>
+	</taskdef>
+	
+
+	<target name="create-swc">
+		<compc output="${build.file}.swc" failonerror="true"
+				compiler.optimize="true"
+				compiler.strict="true"
+				debug="false">
+			<load-config>compiler.conf.xml</load-config>
+			<include-sources dir="${temp.path}src">
+				<include name="**/*.*" />
+			</include-sources>
+			<compiler.keep-as3-metadata>Observable</compiler.keep-as3-metadata>
+			<compiler.external-library-path dir="${env.FLEX_HOME}" append="true">
+				<include name="libs/player/10.1/playerglobal.swc" />
+			</compiler.external-library-path>
+			<metadata title="${project.name}">
+				<creator>Nanosome</creator>
+			</metadata>
+		</compc>
+	</target>
+	
+	<target name="create-swc-dependencies">
+		<compc output="${build.file}.withDependencies.swc" failonerror="true"
+				compiler.optimize="true"
+				compiler.strict="true"
+				debug="false">
+			<load-config>compiler.conf.xml</load-config>
+			<load-config>compiler.dependencies.xml</load-config>
+			<include-sources dir="${temp.path}src">
+				<include name="**/*.*" />
+			</include-sources>
+			<compiler.keep-as3-metadata>Observable</compiler.keep-as3-metadata>
+			<compiler.external-library-path dir="${FLEX_HOME}" append="true">
+				<include name="libs/player/10.1/playerglobal.swc" />
+			</compiler.external-library-path>
+			<metadata title="${project.name}">
+				<creator>Nanosome</creator>
+			</metadata>
+		</compc>
+	</target>
+	
+	<target name="create-asdoc">
+		<asdoc output="${temp.path}asdoc" failonerror="true" lenient="true" fork="true" keep-xml="true">
+			<compiler.external-library-path dir="${env.FLEX_HOME}">
+				<include name="libs/player/10.1/playerglobal.swc" />
+			</compiler.external-library-path>
+			<metadata title="${project.name}">
+				<creator>Nanosome</creator>
+			</metadata>
+			<doc-sources path-element="${temp.path}src"/>
+			<load-config>../asdoc.conf.xml</load-config>
+		</asdoc>
+	</target>
+	
+</project>

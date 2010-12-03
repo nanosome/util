@@ -89,7 +89,7 @@
 		<echo>Creating API docs from ${temp.path}src</echo>
 		<delete dir="${temp.path}/asdoc-xml" />
 		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
-			taskname="asdoc-fix" >
+			taskname="flexhome-fix" >
 			<classpath>
 				<pathelement location="${ant.home}/lib/ant-launcher.jar"/>
 			</classpath>
@@ -97,7 +97,7 @@
 			<arg value="-Dtemp.path=${basedir}/${temp.path}"/>
 			<arg value="-Dproject.name=${project.name}"/>
 			<arg value="-buildfile"/>
-			<arg value="global/asdoc.ant"/>
+			<arg value="global/flexhome-fix.ant"/>
 			<arg value="create-asdoc"/>
 		</java>
 		<move file="${temp.path}/asdoc/tempdita" tofile="${temp.path}/asdoc-xml"></move>
@@ -108,22 +108,19 @@
 	
 	<target name="create-swc" depends="prepare-temp,prepare-sources,create-withDependencies-swc">
 		<echo>Creating ${build.file}.swc from ${temp.path}src</echo>
-		<compc output="${build.file}.swc" failonerror="true"
-				compiler.optimize="true"
-				compiler.strict="true"
-				debug="false">
-			<load-config>compiler.conf.xml</load-config>
-			<include-sources dir="${temp.path}src">
-				<include name="**/*.*" />
-			</include-sources>
-			<compiler.keep-as3-metadata>Observable</compiler.keep-as3-metadata>
-			<compiler.external-library-path dir="${FLEX_HOME}" append="true">
-				<include name="libs/player/10.1/playerglobal.swc" />
-			</compiler.external-library-path>
-			<metadata title="${project.name}">
-				<creator>Nanosome</creator>
-			</metadata>
-		</compc>
+		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
+			taskname="flexhome-fix" >
+			<classpath>
+				<pathelement location="${ant.home}/lib/ant-launcher.jar"/>
+			</classpath>
+			<env key="FLEX_HOME" value="${basedir}/${FLEX_HOME}"/>
+			<arg value="-Dtemp.path=${basedir}/${temp.path}"/>
+			<arg value="-Dproject.name=${project.name}"/>
+			<arg value="-Dbuild.file=${build.file}"/>
+			<arg value="-buildfile"/>
+			<arg value="global/flexhome-fix.ant"/>
+			<arg value="create-swc"/>
+		</java>
 		<echo>Adding asdoc to the swc</echo>
 		<zip destfile="${build.file}.swc" update="true">
 			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs">
@@ -142,23 +139,19 @@
 	
 	<target name="create-withDependencies-swc" if="project.compiler-withDependencies-options" depends="create-api-docs">
 		<echo>Creating ${build.file}.withDependencies.swc from ${temp.path}src</echo>
-		<compc output="${build.file}.withDependencies.swc" failonerror="true"
-				compiler.optimize="true"
-				compiler.strict="true"
-				debug="false">
-			<load-config>compiler.conf.xml</load-config>
-			<load-config>compiler.dependencies.xml</load-config>
-			<include-sources dir="${temp.path}src">
-				<include name="**/*.*" />
-			</include-sources>
-			<compiler.keep-as3-metadata>Observable</compiler.keep-as3-metadata>
-			<compiler.external-library-path dir="${FLEX_HOME}" append="true">
-				<include name="libs/player/10.1/playerglobal.swc" />
-			</compiler.external-library-path>
-			<metadata title="${project.name}">
-				<creator>Nanosome</creator>
-			</metadata>
-		</compc>
+		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
+			taskname="flexhome-fix" >
+			<classpath>
+				<pathelement location="${ant.home}/lib/ant-launcher.jar"/>
+			</classpath>
+			<env key="FLEX_HOME" value="${basedir}/${FLEX_HOME}"/>
+			<arg value="-Dtemp.path=${basedir}/${temp.path}"/>
+			<arg value="-Dproject.name=${project.name}"/>
+			<arg value="-Dbuild.file=${build.file}"/>
+			<arg value="-buildfile"/>
+			<arg value="global/flexhome-fix.ant"/>
+			<arg value="create-swc-dependencies"/>
+		</java>
 		<echo>Adding asdoc to the swc</echo>
 		<zip destfile="${build.file}.withDependencies.swc" update="true">
 			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs">

@@ -1,6 +1,6 @@
 package nanosome.util.list {
 	import nanosome.util.IUID;
-	import nanosome.util.pool.POOL_LIST;
+	import nanosome.util.pool.POOL_STORAGE;
 	
 	
 
@@ -13,7 +13,7 @@ package nanosome.util.list {
 		private var _next: ExampleUIDListNode;
 		
 		public function ExampleUIDList() {
-			super( POOL_LIST.getOrCreate( ExampleUIDListNode ) );
+			super( POOL_STORAGE.getOrCreate( ExampleUIDListNode ) );
 		}
 		
 		public function iterate(): IUID {

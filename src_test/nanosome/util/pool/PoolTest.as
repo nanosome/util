@@ -14,12 +14,12 @@ package nanosome.util.pool {
 		private var _async: Function;
 		
 		override public function setUp(): void {
-			_p = POOL_LIST.getOrCreate( PoolTestClass );
+			_p = POOL_STORAGE.getOrCreate( PoolTestClass );
 			_p.clean( int.MAX_VALUE );
 		}
 		
 		public function testGetOrCreate(): void {
-			assertEquals( _p, POOL_LIST.getOrCreate( PoolTestClass ) );
+			assertEquals( _p, POOL_STORAGE.getOrCreate( PoolTestClass ) );
 		}
 		
 		public function testPool(): void {

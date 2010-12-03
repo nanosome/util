@@ -1,7 +1,7 @@
 package nanosome.util.list {
 	
 	
-	import nanosome.util.pool.POOL_LIST;
+	import nanosome.util.pool.POOL_STORAGE;
 
 	/**
 	 * @author Martin Heidegger mh@leichtgewicht.at
@@ -12,7 +12,7 @@ package nanosome.util.list {
 		private var _next: ExampleListNode;
 		
 		public function ExampleList() {
-			super( POOL_LIST.getOrCreate( ExampleListNode ) );
+			super( POOL_STORAGE.getOrCreate( ExampleListNode ) );
 		}
 
 		public function iterate(): * {

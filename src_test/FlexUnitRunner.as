@@ -1,4 +1,5 @@
 package {
+	import nanosome.util.normalize.NormalizeCosinusTest;
 	import nanosome.util.CreateInstanceTest;
 	import nanosome.util.DisposableSpriteTest;
 	import nanosome.util.EnterFrameTest;
@@ -41,6 +42,7 @@ package {
 				PoolTest,
 				AccessorTest,
 				CreateInstanceTest,
+				NormalizeCosinusTest
 			] );
 		}
 	}
