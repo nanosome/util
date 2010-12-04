@@ -43,7 +43,7 @@
 			<status path="../src" revisionProperty="revision"/>
 		</svn>
 		<property name="build.version" value="${project.version}r${revision}" />
-		<property name="build.file" value="${temp.path}${project.file}.${DSTAMP}.${build.version}" />
+		<property name="build.file" value="${project.file}.${DSTAMP}.${build.version}" />
 		<property name="swc.file" value="${swc.path}${project.file}.swc" />
 		<property name="swc.withDependencies.file" value="${swc.path}${project.file}.withDependencies.swc" />
 		<property name="lib.path" value="${build.path}/lib/"/>
@@ -114,7 +114,8 @@
 				<pathelement location="${ant.home}/lib/ant-launcher.jar"/>
 			</classpath>
 			<env key="FLEX_HOME" value="${basedir}/${FLEX_HOME}"/>
-			<arg value="-Dtemp.path=${basedir}/${temp.path}"/>
+			<arg value="-Dbasedir=${basedir}/"/>
+			<arg value="-Dtemp.path=${basedir}/${temp.path}/"/>
 			<arg value="-Dproject.name=${project.name}"/>
 			<arg value="-Dbuild.file=${build.file}"/>
 			<arg value="-buildfile"/>
@@ -145,6 +146,7 @@
 				<pathelement location="${ant.home}/lib/ant-launcher.jar"/>
 			</classpath>
 			<env key="FLEX_HOME" value="${basedir}/${FLEX_HOME}"/>
+			<arg value="-Dbasedir=${basedir}/"/>
 			<arg value="-Dtemp.path=${basedir}/${temp.path}"/>
 			<arg value="-Dproject.name=${project.name}"/>
 			<arg value="-Dbuild.file=${build.file}"/>

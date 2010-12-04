@@ -11,7 +11,7 @@
 	
 
 	<target name="create-swc">
-		<compc output="${build.file}.swc" failonerror="true"
+		<compc output="${basedir}/${build.file}.swc" failonerror="true"
 				compiler.optimize="true"
 				compiler.strict="true"
 				debug="false">
@@ -30,7 +30,7 @@
 	</target>
 	
 	<target name="create-swc-dependencies">
-		<compc output="${build.file}.withDependencies.swc" failonerror="true"
+		<compc output="${basedir}/${build.file}.withDependencies.swc" failonerror="true"
 				compiler.optimize="true"
 				compiler.strict="true"
 				debug="false">
