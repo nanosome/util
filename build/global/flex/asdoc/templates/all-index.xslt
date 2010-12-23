@@ -129,8 +129,11 @@
 		<xsl:if test="$config/options[@livedocs='true']">
 			<xsl:comment>#config errmsg=""</xsl:comment>
 		</xsl:if>
-		<xsl:element name="html">
+		<html>
 			<head>
+				<xsl:call-template name="getStyleLink">
+					<xsl:with-param name="link" select="asdoc/link"/>
+				</xsl:call-template>
 				<title>
 					<xsl:if test="$splitIndex and $letter">
 						<xsl:value-of select="$localizedLetter"/>
@@ -142,26 +145,13 @@
 					<xsl:value-of select="localizedIndex"/>
 					<xsl:call-template name="getPageTitlePostFix"/>
 				</title>
-				<xsl:call-template name="getStyleLink">
-					<xsl:with-param name="link" select="asdoc/link"/>
-				</xsl:call-template>
 			</head>
-			<xsl:element name="body">
+			<body><div id="body" class="content">
 				<xsl:if test="$isEclipse">
 					<xsl:attribute name="class">
 						<xsl:text>eclipseBody</xsl:text>
 					</xsl:attribute>
 				</xsl:if>
-				<xsl:call-template name="getTitleScript">
-					<xsl:with-param name="title">
-						<xsl:if test="$splitIndex">
-							<xsl:value-of select="concat($letter,' ',$localizedIndex,' - ',$title-base)"/>
-						</xsl:if>
-						<xsl:if test="not($splitIndex)">
-							<xsl:value-of select="concat('All Index - ',$title-base)"/>
-						</xsl:if>
-					</xsl:with-param>
-				</xsl:call-template>
 				<xsl:call-template name="getLinks2">
 					<xsl:with-param name="subTitle">
 						<xsl:if test="$splitIndex">
@@ -212,7 +202,7 @@
 												<xsl:choose>
 													<xsl:when test="$prog_language_name='javascript'"/>
 													<xsl:otherwise>
-														<a href="#{.}" onclick="javascript:loadClassListFrame('index-list.html');">
+														<a href="#{.}">
 															<xsl:call-template name="getLocalizedString">
 																<xsl:with-param name="key" select="."/>
 															</xsl:call-template>
@@ -224,7 +214,7 @@
 												<xsl:choose>
 													<xsl:when test="$prog_language_name='javascript'"/>
 													<xsl:otherwise>
-														<a href="all-index-{.}.html" onclick="javascript:loadClassListFrame('index-list.html');">
+														<a href="all-index-{.}.html">
 															<xsl:call-template name="getLocalizedString">
 																<xsl:with-param name="key" select="."/>
 															</xsl:call-template>
@@ -330,7 +320,7 @@
 														<xsl:choose>
 															<xsl:when test="self::class">
 																<xsl:text>, </xsl:text>
-																<a href="package-detail.html" onclick="javascript:loadClassListFrame('class-list.html');">
+																<a href="package-detail.html">
 																	<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/>
 																</a>
 															</xsl:when>
@@ -339,7 +329,7 @@
 																	<xsl:text>, </xsl:text>
 																	<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ClassIn']]/entry[2]/p"/>
 																	<xsl:text> </xsl:text>
-																	<a href="{@class}.html" onclick="javascript:loadClassListFrame('class-list.html');">
+																	<a href="{@class}.html">
 																		<xsl:value-of select="@class"/>
 																	</a>
 																</xsl:if>
@@ -348,7 +338,7 @@
 													</xsl:if>
 												</xsl:when>
 												<xsl:when test="self::fscommand">
-													<a href="{concat('fscommand/',@name,'.html')}" onclick="javascript:loadClassListFrame('fscommand-list.html');">
+													<a href="{concat('fscommand/',@name,'.html')}">
 														<xsl:value-of select="@name"/>
 													</a>
 													<xsl:value-of select="$emdash"/>
@@ -383,12 +373,12 @@
 															</a>
 														</xsl:when>
 														<xsl:when test="ancestor::apiClassifier">
-															<a href="{$classPath}/{../apiName}.html#{apiName}()" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+															<a href="{$classPath}/{../apiName}.html#{apiName}()">
 																<xsl:value-of select="apiName"/>
 															</a>
 														</xsl:when>
 														<xsl:otherwise>
-															<a href="{$classPath}/package.html#{apiName}()" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+															<a href="{$classPath}/package.html#{apiName}()">
 																<xsl:value-of select="apiName"/>
 															</a>
 														</xsl:otherwise>
@@ -443,12 +433,12 @@
 															</a>
 														</xsl:when>
 														<xsl:when test="ancestor::apiClassifier">
-															<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#{apiName}" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+															<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#{apiName}" >
 																<xsl:value-of select="apiName"/>
 															</a>
 														</xsl:when>
 														<xsl:otherwise>
-															<a href="{$classPath}/package.html#{apiName}" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+															<a href="{$classPath}/package.html#{apiName}">
 																<xsl:value-of select="apiName"/>
 															</a>
 														</xsl:otherwise>
@@ -474,7 +464,7 @@
 														</xsl:if>
 													</xsl:variable>
 													<xsl:if test="self::style">
-														<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#style:{@name}" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+														<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#style:{@name}">
 															<xsl:value-of select="@name"/>
 														</a>
 														<xsl:value-of select="$emdash"/>
@@ -516,7 +506,7 @@
 													<xsl:if test="self::SkinPart">
 														<xsl:variable name="pkg" select="translate($classPath,'/','.')"/>
 														<xsl:variable name="class" select="ancestor::apiClassifier/apiName"/>
-														<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#skinpart:{@name}" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+														<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#skinpart:{@name}">
 															<xsl:value-of select="@name"/>
 														</a>
 														<xsl:value-of select="$emdash"/>
@@ -538,7 +528,7 @@
 													<xsl:if test="self::SkinState">
 														<xsl:variable name="pkg" select="translate($classPath,'/','.')"/>
 														<xsl:variable name="class" select="ancestor::apiClassifier/apiName"/>
-														<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#skinstate:{@name}" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+														<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#skinstate:{@name}">
 															<xsl:value-of select="@name"/>Skin
 														</a>
 														<xsl:value-of select="$emdash"/>
@@ -558,7 +548,7 @@
 													</xsl:if>
 																										
 													<xsl:if test="self::effect">
-														<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#effect:{@name}" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+														<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html#effect:{@name}">
 															<xsl:value-of select="@name"/>
 														</a>
 														<xsl:value-of select="$emdash"/>
@@ -585,7 +575,7 @@
 															<xsl:value-of select="translate(./apiName,'.','/')"/>
 														</xsl:if>
 													</xsl:variable>
-													<a href="{$packagePath}/package-detail.html" onclick="javascript:loadClassListFrame('{$packagePath}/class-list.html');">
+													<a href="{$packagePath}/package-detail.html">
 														<xsl:if test="$isTopLevel='true'">
 															<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/>
 														</xsl:if>
@@ -616,7 +606,7 @@
 															<xsl:value-of select="translate($packageName,'.','/')"/>
 														</xsl:if>
 													</xsl:variable>
-													<a href="{$classPath}/{$name}.html" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+													<a href="{$classPath}/{$name}.html">
 														<xsl:if test="./apiClassifierDetail/apiClassifierDef[apiInterface]">
 															<i>
 																<xsl:value-of select="$name"/>
@@ -659,12 +649,12 @@
 															</a>
 														</xsl:when>
 														<xsl:when test="ancestor::apiClassifier">
-															<a href="{$classPath}/{../apiName}.html#event:{./apiName}" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+															<a href="{$classPath}/{../apiName}.html#event:{./apiName}">
 																<xsl:value-of select="./apiName"/>
 															</a>
 														</xsl:when>
 														<xsl:otherwise>
-															<a href="{$classPath}/package-detail.html#event:{./apiName}" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+															<a href="{$classPath}/package-detail.html#event:{./apiName}">
 																<xsl:value-of select="./apiName"/>
 															</a>
 														</xsl:otherwise>
@@ -728,11 +718,11 @@
 													<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SpecialType']]/entry[2]/p"/>
 												</xsl:when>
 												<xsl:when test="self::entry">
-													<a href="{@href}" onclick="loadClassListFrame('mxml-tags.html');">
+													<a href="{@href}">
 														<xsl:value-of select="@name"/>
 													</a>
 													<xsl:value-of select="$emdash"/>
-													<a href="mxml-tag-detail.html" onclick="loadClassListFrame('mxml-tags.html');">
+													<a href="mxml-tag-detail.html">
 														<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'MXMLOnly']]/entry[2]/p"/>
 													</a>
 													<xsl:choose>
@@ -940,7 +930,7 @@
 													<xsl:choose>
 														<xsl:when test="$prog_language_name='javascript'"/>
 														<xsl:otherwise>
-															<a href="#{.}" onclick="javascript:loadClassListFrame('index-list.html');">
+															<a href="#{.}">
 																<xsl:call-template name="getLocalizedString">
 																	<xsl:with-param name="key" select="."/>
 																</xsl:call-template>
@@ -952,7 +942,7 @@
 													<xsl:choose>
 														<xsl:when test="$prog_language_name='javascript'"/>
 														<xsl:otherwise>
-															<a href="all-index-{.}.html" onclick="javascript:loadClassListFrame('index-list.html');">
+															<a href="all-index-{.}.html">
 																<xsl:call-template name="getLocalizedString">
 																	<xsl:with-param name="key" select="."/>
 																</xsl:call-template>
@@ -999,8 +989,8 @@
 					<xsl:comment>#include virtual="/livedocs/googleAnalytics.ssi"</xsl:comment>
 					<xsl:comment>#include virtual="/ubi/analytics/analytics_ssi.html"</xsl:comment>
 				</xsl:if>
-			</xsl:element>
-		</xsl:element>
+			</div></body>
+		</html>
 		<xsl:copy-of select="$copyrightComment"/>
 	</xsl:template>
 	<xsl:template name="getClassRef">
@@ -1014,12 +1004,12 @@
 						<xsl:text>.</xsl:text>
 					</xsl:otherwise>
 				</xsl:choose>
-				<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
+				<a href="{$classPath}/{ancestor::apiClassifier/apiName}.html">
 					<xsl:value-of select="ancestor::apiClassifier/apiName"/>
 				</a>
 			</xsl:when>
 			<xsl:otherwise>
-				<a href="{ancestor::apiClassifier/apiName}.html" onclick="javascript:loadClassListFrame('class-list.html');">
+				<a href="{ancestor::apiClassifier/apiName}.html">
 					<xsl:value-of select="ancestor::apiClassifier/apiName"/>
 				</a>
 			</xsl:otherwise>
@@ -1065,12 +1055,12 @@
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:if test="$isTopLevel='false'">
-				<a href="{$classPath}/package.html" onclick="loadClassListFrame('{$classPath}/class-list.html')">
+				<a href="{$classPath}/package.html">
 					<xsl:value-of select="ancestor::apiPackage/apiName"/>
 				</a>
 			</xsl:if>
 			<xsl:if test="$isTopLevel!='false'">
-				<a href="package.html" onclick="loadClassListFrame('class-list.html')">
+				<a href="package.html">
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/>
 				</a>
 			</xsl:if>
@@ -1162,12 +1152,12 @@
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:if test="$isTopLevel='false'">
-				<a href="{$classPath}/package.html" onclick="loadClassListFrame('{$classPath}/class-list.html')">
+				<a href="{$classPath}/package.html">
 					<xsl:value-of select="ancestor::apiPackage/apiName"/>
 				</a>
 			</xsl:if>
 			<xsl:if test="$isTopLevel!='false'">
-				<a href="package.html" onclick="loadClassListFrame('class-list.html')">
+				<a href="package.html">
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/>
 				</a>
 			</xsl:if>
@@ -1270,7 +1260,7 @@
 				</xsl:if>
 			</xsl:if>
 			<xsl:text>, </xsl:text>
-			<a href="package-detail.html" onclick="javascript:loadClassListFrame('class-list.html');">
+			<a href="package-detail.html">
 				<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/>
 			</a>
 		</xsl:if>
@@ -1305,12 +1295,12 @@
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:if test="$isTopLevel='false'">
-				<a href="{translate($packageName,'.','/')}/package-detail.html" onclick="javascript:loadClassListFrame('{translate($packageName,'.','/')}/class-list.html');">
+				<a href="{translate($packageName,'.','/')}/package-detail.html">
 					<xsl:value-of select="$packageName"/>
 				</a>
 			</xsl:if>
 			<xsl:if test="$isTopLevel!='false'">
-				<a href="package.html" onclick="loadClassListFrame('class-list.html')">
+				<a href="package.html">
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/>
 				</a>
 			</xsl:if>
@@ -1374,17 +1364,7 @@
 						</xsl:call-template>
 					</xsl:variable>
 					<xsl:if test="string-length($href)">
-						<a href="{$href}.html">
-							<xsl:attribute name="onclick">
-								<xsl:text>javascript:loadClassListFrame('</xsl:text>
-								<xsl:call-template name="substring-before-last">
-									<xsl:with-param name="input" select="$href"/>
-									<xsl:with-param name="substr" select="'/'"/>
-								</xsl:call-template>
-								<xsl:text>./class-list.html');</xsl:text>
-							</xsl:attribute>
-							<xsl:value-of select="$typeName"/>
-						</a>
+						<a href="{$href}.html"><xsl:value-of select="$typeName"/></a>
 					</xsl:if>
 				</xsl:when>
 				<xsl:otherwise>

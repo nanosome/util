@@ -79,7 +79,7 @@
 							<xsl:if test="$config/options[@ion='true']">
 								<xsl:comment>#config errmsg=""</xsl:comment>
 							</xsl:if>
-							<xsl:element name="html">
+							<html>
 								<head>
 									<xsl:call-template name="getStyleLink">
 										<xsl:with-param name="link" select="/asdoc/link"/>
@@ -97,16 +97,12 @@
 										<xsl:call-template name="getPageTitlePostFix"/>
 									</title>
 								</head>
-								<xsl:element name="body">
+								<body><div id="body" class="content">
 									<xsl:if test="$isEclipse">
 										<xsl:attribute name="class">
 											<xsl:text>eclipseBody</xsl:text>
 										</xsl:attribute>
 									</xsl:if>
-									<xsl:call-template name="getTitleScript">
-										<xsl:with-param name="title" select="$title"/>
-										<xsl:with-param name="packageName" select="$name"/>
-									</xsl:call-template>
 									<xsl:call-template name="getLinks2">
 										<xsl:with-param name="subTitle">
 											<xsl:choose>
@@ -190,9 +186,6 @@
 											</div>
 											<table cellpadding="3" cellspacing="0" class="summaryTable">
 												<tr>
-													<th>
-														<xsl:value-of select="$nbsp"/>
-													</th>
 													<th width="30%">
 														<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Property']]/entry[2]/p"/>
 													</th>
@@ -204,9 +197,6 @@
 													<xsl:sort select="apiName" order="ascending" lang="en-US"/>
 													<xsl:variable name="name" select="apiName"/>
 													<tr class="prow{position() mod 2}">
-														<td class="summaryTablePaddingCol">
-															<xsl:value-of select="$nbsp"/>
-														</td>
 														<td class="summaryTableSecondCol">
 															<a href="package.html#{$name}">
 																<xsl:value-of select="$name"/>
@@ -236,9 +226,6 @@
 											</div>
 											<table cellpadding="3" cellspacing="0" class="summaryTable">
 												<tr>
-													<th>
-														<xsl:value-of select="$nbsp"/>
-													</th>
 													<th width="30%">
 														<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'FunctionFunction']]/entry[2]/p"/>
 													</th>
@@ -248,13 +235,12 @@
 												</tr>
 												<xsl:for-each select="apiOperation">
 													<xsl:sort select="apiName" order="ascending" lang="en-US"/>
+													<xsl:variable name="packageName" select="ancestor::apiPackage/apiName"/>
+													<xsl:variable name="packagePath" select="translate($packageName,'.','/')"/>
 													<xsl:variable name="name" select="apiName"/>
 													<tr class="prow{position() mod 2}">
-														<td class="summaryTablePaddingCol">
-															<xsl:value-of select="$nbsp"/>
-														</td>
 														<td class="summaryTableSecondCol">
-															<a href="package.html#{$name}()">
+															<a href="{$packagePath}/package.html#{$name}()">
 																<xsl:value-of select="$name"/>
 															</a>
 														</td>
@@ -283,9 +269,6 @@
 											</div>
 											<table cellpadding="3" cellspacing="0" class="summaryTable">
 												<tr>
-													<th>
-														<xsl:value-of select="$nbsp"/>
-													</th>
 													<th width="30%">
 														<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constant']]/entry[2]/p"/>
 													</th>
@@ -296,12 +279,11 @@
 												<xsl:for-each select="apiValue[not(apiValueDetail/apiValueDef/apiProperty)]">
 													<xsl:sort select="apiName" order="ascending" lang="en-US"/>
 													<xsl:variable name="name" select="apiName"/>
+													<xsl:variable name="packageName" select="ancestor::apiPackage/apiName"/>
+													<xsl:variable name="packagePath" select="translate($packageName,'.','/')"/>
 													<tr class="prow{position() mod 2}">
-														<td class="summaryTablePaddingCol">
-															<xsl:value-of select="$nbsp"/>
-														</td>
 														<td class="summaryTableSecondCol">
-															<a href="package.html#{$name}">
+															<a href="{$packagePath}/package.html#{$name}">
 																<xsl:value-of select="$name"/>
 															</a>
 														</td>
@@ -322,9 +304,6 @@
 											</div>
 											<table cellpadding="3" cellspacing="0" class="summaryTable">
 												<tr>
-													<th>
-														<xsl:value-of select="$nbsp"/>
-													</th>
 													<th width="30%">
 														<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Interface']]/entry[2]/p"/>
 													</th>
@@ -336,18 +315,16 @@
 													<xsl:sort select="apiName" order="ascending" lang="en-US"/>
 													<xsl:variable name="name" select="apiName"/>
 													<xsl:variable name="packageName" select="ancestor::apiPackage/apiName"/>
+													<xsl:variable name="packagePath" select="translate($packageName,'.','/')"/>
 													<xsl:variable name="baseRef">
 														<xsl:call-template name="getBaseRef">
 															<xsl:with-param name="packageName" select="$packageName"/>
 														</xsl:call-template>
 													</xsl:variable>
 													<tr class="prow{position() mod 2}">
-														<td class="summaryTablePaddingCol">
-															<xsl:value-of select="$nbsp"/>
-														</td>
 														<td class="summaryTableSecondCol">
 															<i>
-																<a href="{$name}.html">
+																<a href="{$packagePath}/{$name}.html">
 																	<xsl:value-of select="$name"/>
 																</a>
 															</i>
@@ -357,7 +334,6 @@
 																	<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 																		<xsl:value-of select="$nbsp"/>
 																		<xsl:call-template name="insertAIRIcon">
-																			<xsl:with-param name="baseRef" select="$baseRef"/>
 																		</xsl:call-template>
 																	</xsl:if>
 																</xsl:otherwise>
@@ -385,9 +361,6 @@
 											</div>
 											<table cellpadding="3" cellspacing="0" class="summaryTable">
 												<tr>
-													<th>
-														<xsl:value-of select="$nbsp"/>
-													</th>
 													<th width="30%">
 														<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ClassClass']]/entry[2]/p"/>
 													</th>
@@ -399,17 +372,15 @@
 													<xsl:sort select="apiName" order="ascending" lang="en-US"/>
 													<xsl:variable name="name" select="apiName"/>
 													<xsl:variable name="packageName" select="ancestor::apiPackage/apiName"/>
+													<xsl:variable name="packagePath" select="translate($packageName,'.','/')"/>
 													<xsl:variable name="baseRef">
 														<xsl:call-template name="getBaseRef">
 															<xsl:with-param name="packageName" select="$packageName"/>
 														</xsl:call-template>
 													</xsl:variable>
 													<tr class="prow{position() mod 2}">
-														<td class="summaryTablePaddingCol">
-															<xsl:value-of select="$nbsp"/>
-														</td>
 														<td class="summaryTableSecondCol">
-															<a href="{$name}.html">
+															<a href="{$packagePath}/{$name}.html">
 																<xsl:value-of select="$name"/>
 															</a>
 															<xsl:choose>
@@ -418,7 +389,6 @@
 																	<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 																		<xsl:value-of select="$nbsp"/>
 																		<xsl:call-template name="insertAIRIcon">
-																			<xsl:with-param name="baseRef" select="$baseRef"/>
 																		</xsl:call-template>
 																	</xsl:if>
 																</xsl:otherwise>
@@ -451,13 +421,11 @@
 											<xsl:if test="$isTopLevel='true'">
 												<xsl:call-template name="getFeedbackLink">
 													<xsl:with-param name="topic" select="'Top Level'"/>
-													<xsl:with-param name="baseRef" select="$baseRef"/>
 												</xsl:call-template>
 											</xsl:if>
 											<xsl:if test="$isTopLevel!='true'">
 												<xsl:call-template name="getFeedbackLink">
 													<xsl:with-param name="topic" select="$name"/>
-													<xsl:with-param name="baseRef" select="$baseRef"/>
 												</xsl:call-template>
 											</xsl:if>
 											<center class="copyright">
@@ -479,14 +447,14 @@
 										<xsl:comment>#include virtual="ionComments.ssi"</xsl:comment>
 										<p id="creativecommons" class="creativecommons">
 											<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
-												<img id="creativecommons_img" src="{$baseRef}images/CC.png"/>
+												<img id="creativecommons_img" src="images/CC.png"/>
 											</a>
 										</p>
 										<xsl:comment>#include virtual="/livedocs/googleAnalytics.ssi"</xsl:comment>
 										<xsl:comment>#include virtual="/ubi/analytics/analytics_ssi.html"</xsl:comment>
-									</xsl:if>
-								</xsl:element>
-							</xsl:element>
+									</xsl:if></div>
+								</body>
+							</html>
 							<xsl:copy-of select="$copyrightComment"/>
 						</xsl:result-document>
 					</xsl:for-each>

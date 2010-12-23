@@ -96,34 +96,20 @@
 						<xsl:if test="$config/options[@livedocs='true']">
 							<xsl:comment>#config errmsg=""</xsl:comment>
 						</xsl:if>
-						<xsl:element name="html">
+						<html>
 							<head>
 								<xsl:call-template name="getStyleLink">
 									<xsl:with-param name="link" select="/asdoc/link"/>
 									<xsl:with-param name="packageName" select="$name"/>
 								</xsl:call-template>
-								<title>
-									<xsl:if test="$isTopLevel='true'">
-										<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevelConstantsFunctions']]/entry[2]/p"/>
-									</xsl:if>
-									<xsl:if test="$isTopLevel='false'">
-										<xsl:value-of select="$name"/>
-									</xsl:if>
-									<xsl:text> </xsl:text>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Details']]/entry[2]/p"/>
-									<xsl:call-template name="getPageTitlePostFix"/>
-								</title>
+								<title><xsl:value-of select="$title"/></title>
 							</head>
-							<xsl:element name="body">
+							<body><div id="body" class="content">
 								<xsl:if test="$isEclipse">
 									<xsl:attribute name="class">
 										<xsl:text>eclipseBody</xsl:text>
 									</xsl:attribute>
 								</xsl:if>
-								<xsl:call-template name="getTitleScript">
-									<xsl:with-param name="title" select="$title"/>
-									<xsl:with-param name="packageName" select="$name"/>
-								</xsl:call-template>
 								<xsl:call-template name="getLinks2">
 									<xsl:with-param name="subTitle">
 										<xsl:choose>
@@ -185,7 +171,6 @@
 										<xsl:call-template name="fieldSummary">
 											<xsl:with-param name="isGlobal" select="$isTopLevel='true'"/>
 											<xsl:with-param name="showAnchor" select="false()"/>
-											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 										<xsl:if test="boolean(number($hasFunctions)) or boolean(number($hasConstants))">
@@ -231,7 +216,6 @@
 											<xsl:with-param name="title" select="$asdoc_terms/row[entry[1][p/text() = 'Functions']]/entry[2]/p"/>
 											<xsl:with-param name="isGlobal" select="$isTopLevel='true'"/>
 											<xsl:with-param name="showAnchor" select="false()"/>
-											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 										<xsl:if test="boolean(number($hasConstants))">
@@ -276,7 +260,6 @@
 											<xsl:with-param name="isConst" select="'true'"/>
 											<xsl:with-param name="isGlobal" select="$isTopLevel='true'"/>
 											<xsl:with-param name="showAnchor" select="false()"/>
-											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 									</xsl:if>
@@ -301,7 +284,6 @@
 												<xsl:with-param name="key">FunctionDetail</xsl:with-param>
 											</xsl:call-template>
 										</xsl:with-param>
-										<xsl:with-param name="baseRef" select="$baseRef"/>
 									</xsl:call-template>
 									<!--END OF FUNCTION DETAILS -->
 									<!--PROPERTIES DETAILS -->
@@ -361,14 +343,14 @@
 									<xsl:comment>#include virtual="ionComments.ssi"</xsl:comment>
 									<p id="creativecommons" class="creativecommons">
 										<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
-											<img id="creativecommons_img" src="{$baseRef}images/CC.png"/>
+											<img id="creativecommons_img" src="images/CC.png"/>
 										</a>
 									</p>
 									<xsl:comment>#include virtual="/livedocs/googleAnalytics.ssi"</xsl:comment>
 									<xsl:comment>#include virtual="/ubi/analytics/analytics_ssi.html"</xsl:comment>
 								</xsl:if>
-							</xsl:element>
-						</xsl:element>
+							</div></body>
+						</html>
 					</xsl:result-document>
 				</xsl:if>
 			</xsl:for-each>

@@ -63,11 +63,11 @@ html>body code {
 .summaryTableSignatureCol, .summaryTableOwnerCol, .summaryTableLastCol, .summaryTableCol {
   border: 1px solid #000000;
 }
-.summaryTablePaddingCol {
+.summaryTableInheritanceCol {
   border: 1px solid #000000;
   border-right: 0px;
 }
-.summaryTableInheritanceCol, .summaryTableOperatorCol, .summaryTableStatementCol, .summaryTableSecondCol {
+.summaryTableOperatorCol, .summaryTableStatementCol, .summaryTableSecondCol {
   border: 1px solid #000000;
   border-left: 0px;
 }

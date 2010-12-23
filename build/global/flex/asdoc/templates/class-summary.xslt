@@ -29,27 +29,23 @@
 		</xsl:if>
 	</xsl:variable>
 	<xsl:template match="/">
-		<xsl:copy-of select="$noLiveDocs"/>
 		<xsl:copy-of select="$docType"/>
-		<xsl:element name="html">
+		<html>
 			<head>
+				<xsl:call-template name="getStyleLink">
+					<xsl:with-param name="link" select="asdoc/link"/>
+				</xsl:call-template>
 				<title>
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = $localTitle]]/entry[2]/p"/>
 					<xsl:call-template name="getPageTitlePostFix"/>
 				</title>
-				<xsl:call-template name="getStyleLink">
-					<xsl:with-param name="link" select="asdoc/link"/>
-				</xsl:call-template>
 			</head>
-			<xsl:element name="body">
+			<body><div id="body" class="content">
 				<xsl:if test="$isEclipse">
 					<xsl:attribute name="class">
 						<xsl:text>eclipseBody</xsl:text>
 					</xsl:attribute>
 				</xsl:if>
-				<xsl:call-template name="getTitleScript">
-					<xsl:with-param name="title" select="$title"/>
-				</xsl:call-template>
 				<xsl:call-template name="getLinks2">
 					<xsl:with-param name="subTitle">
 						<xsl:call-template name="search-and-replace">
@@ -87,9 +83,6 @@
 					<br/>
 					<table cellpadding="3" cellspacing="0" class="summaryTable">
 						<tr>
-							<th>
-								<xsl:value-of select="$nbsp"/>
-							</th>
 							<th width="20%">
 								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ClassClass']]/entry[2]/p"/>
 							</th>
@@ -115,9 +108,6 @@
 								</xsl:choose>
 							</xsl:variable>
 							<tr class="prow{position() mod 2}">
-								<td class="summaryTablePaddingCol">
-									<xsl:value-of select="$nbsp"/>
-								</td>
 								<td class="summaryTableSecondCol">
 									<xsl:choose>
 										<xsl:when test="$classPath">
@@ -166,14 +156,10 @@
 								</td>
 								<td class="summaryTableCol">
 									<xsl:if test="$classPath and string-length(normalize-space($classPath)) &gt; 0 and not($classPath='.')">
-										<a href="{$classPath}/package-detail.html" onclick="javascript:loadClassListFrame('{$classPath}/class-list.html');">
-											<xsl:value-of select="$packageName"/>
-										</a>
+										<a href="{$classPath}/package-detail.html"><xsl:value-of select="$packageName"/></a>
 									</xsl:if>
 									<xsl:if test="not($classPath) or string-length(normalize-space($classPath)) = 0 or $classPath='.'">
-										<a href="package-detail.html" onclick="javascript:loadClassListFrame('class-list.html');">
-											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/>
-										</a>
+										<a href="package-detail.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/></a>
 									</xsl:if>
 								</td>
 								<td class="summaryTableLastCol">
@@ -197,8 +183,7 @@
 						<xsl:copy-of select="$copyright"/>
 					</center>
 				</div>
-			</xsl:element>
-		</xsl:element>
-		<xsl:copy-of select="$copyrightComment"/>
+			</div></body>
+		</html>
 	</xsl:template>
 </xsl:stylesheet>

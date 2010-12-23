@@ -14,7 +14,7 @@
           class="- topic/topic "
           id="WS58b67d046ae8e03c15f1d0a110e67a7921-8000">
       <title class="- topic/title ">Localizable Terms</title>
-      <body class="- topic/body "/>
+      <body><div id="body" class="- topic/body "></div></body>
       <reference DTDVersion="V1.1.3"
                  domains="(topic hi-d) (topic pr-d) (topic sw-d) (topic adobe-d)"
                  class="- topic/topic       reference/reference "

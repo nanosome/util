@@ -22,6 +22,9 @@
 		<xsl:copy-of select="$docType"/>
 		<xsl:element name="html">
 			<head>
+				<xsl:call-template name="getStyleLink">
+					<xsl:with-param name="link" select="asdoc/link"/>
+				</xsl:call-template>
 				<title>
 					<xsl:choose>
 						<xsl:when test="$prog_language_name='javascript'" />
@@ -31,11 +34,8 @@
 					</xsl:choose>
 				</title>
 				<base target="classFrame"/>
-				<xsl:call-template name="getStyleLink">
-					<xsl:with-param name="link" select="asdoc/link"/>
-				</xsl:call-template>
 			</head>
-			<body class="classFrameContent">
+			<body><div id="body" class="classFrameContent">
 				<xsl:choose>
 					<xsl:when test="$prog_language_name='javascript'"/>
 					<xsl:otherwise>
@@ -49,13 +49,14 @@
 				<xsl:choose>
 					<xsl:when test="$prog_language_name='javascript'"/>
 					<xsl:otherwise>
-						<table cellpadding="0" cellspacing="0">
+						<div class="linkList">
 							<xsl:apply-templates select="//apiClassifier">
 								<xsl:sort select="apiName" order="ascending" lang="en-US"/>
 							</xsl:apply-templates>
-						</table>
+						</div>
 					</xsl:otherwise>
 				</xsl:choose>
+				</div>
 			</body>
 		</xsl:element>
 		<xsl:copy-of select="$copyrightComment"/>
@@ -69,8 +70,6 @@
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:variable name="classPath" select="translate($packageName,'.','/')"/>
-		<tr>
-			<td>
 				<xsl:choose>
 					<xsl:when test="$isTopLevel='false'">
 						<a href="{$classPath}/{$name}.html"  title="{$packageName}.{$name}">
@@ -111,7 +110,5 @@
 						</xsl:if>
 					</xsl:otherwise>
 				</xsl:choose>
-			</td>
-		</tr>
 	</xsl:template>
 </xsl:stylesheet>

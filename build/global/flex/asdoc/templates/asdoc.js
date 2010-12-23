@@ -6,218 +6,80 @@
 //
 //  NOTICE: Adobe permits you to use, modify, and distribute this file
 //  in accordance with the terms of the license agreement accompanying it.
+// 
+//  Heavily modified by Martin Heidegger
 //
 ////////////////////////////////////////////////////////////////////////////////
-var ECLIPSE_FRAME_NAME = "ContentViewFrame";
-var eclipseBuild = false;
-var liveDocsBaseUrl = "http://livedocs.adobe.com/flex/3";
-var liveDocsBookName = "langref";
-function findObject(objId) {
-    if (document.getElementById)
-        return document.getElementById(objId);
-    if (document.all)
-        return document.all[objId];
-}
-function isEclipse() {
-    return eclipseBuild;
-//  return (window.name == ECLIPSE_FRAME_NAME) || (parent.name == ECLIPSE_FRAME_NAME) || (parent.parent.name == ECLIPSE_FRAME_NAME);
+var anchor = document.location.hash.substr(1);
+var loc = document.location.href;
+if( anchor ) {
+	loc = loc.substr(0,loc.length-anchor.length-1);
 }
 function configPage() {
-    setRowColorsInitial(true, "Property");
-    setRowColorsInitial(true, "Method");
-    setRowColorsInitial(true, "ProtectedMethod");   
-    setRowColorsInitial(true, "Event");
-    setRowColorsInitial(true, "Style");
+	
+	var subNav =  $('#subNav');
+	
+	if( window != window.top ) {
+		$("body").addClass("framed");
+	}
+	
+	$( "a:gt(0)", subNav ).before("<span>&nbsp;|&nbsp;</span>");
+	$( "a:[href]" ).each( function() {
+		
+		var a = $(this);
+		var href = a.attr("href");
+		if( href.charAt(0) == "#" ) {
+			a.attr("href", loc+href);
+		}
+	});
+	
+	$( ".framesLink" ).click( function() {
+		if( document.location.hash ) {
+			document.location.href = this.href + "**" + document.location.hash.substr(1)
+		} else {
+			document.location.href = this.href;
+		}
+		return false;
+	});
+	
+	// ZEBRA Effect for tables
+	$( ["Property","Method","ProtectedMethod","Event","Style","SkinPart","SkinState","Constant","ProtectedConstant"] ).each( function( no, selectorText) {
+		var even = false;
+		$( "#summaryTable" + selectorText + ">tbody>tr" ).each( function( no, elem ) {
+			$(elem).addClass( even ? "row0" : "row1" );
+			even = !even;
+		} );
+	} );
+	
+	$( ["Constant","ProtectedConstant","Property","ProtectedProperty","Method","ProtectedMethod","Event","Style","SkinPart","SkinState","Effect"] ).each( function( no, selectorText ) {
+		setInheritedVisible( $.cookie("showInherited"+selectorText) == "true", selectorText );
+	});
+	
+	SyntaxHighlighter.all();
+}
+function setMXMLOnly() {
+    if( $.cookie("showMXML") == "false" ) toggleMXMLOnly();
+}
+function toggleMXMLOnly() {
+    var mxmlDiv = $("#mxmlSyntax")[0];
+    var mxmlShowLink = $("#showMxmlLink")[0];
+    var mxmlHideLink = $("#hideMxmlLink")[0];
     
-    setRowColorsInitial(true, "SkinPart");
-    setRowColorsInitial(true, "SkinState");
-    
-    setRowColorsInitial(true, "Constant");
-    if (isEclipse()) {
-        if (window.name != "classFrame")
-        {
-            var localRef = window.location.href.indexOf('?') != -1 ? window.location.href.substring(0, window.location.href.indexOf('?')) : window.location.href;
-            localRef = localRef.substring(localRef.indexOf("langref/") + 8);
-            if (window.location.search != "")
-                localRef += ("#" + window.location.search.substring(1));
-            window.location.replace(baseRef + "index.html?" + localRef);
-            return;
-        }
-        else
-        {
-            setStyle(".eclipseBody", "display", "block");
-//          var isIE  = (navigator.appVersion.indexOf("MSIE") != -1) ? true : false;
-//          if (isIE == false && window.location.hash != "")
-            if (window.location.hash != "")
-                window.location.hash=window.location.hash.substring(1);
-        }
-    }
-    else if (window == top) { // no frames
-        findObject("titleTable").style.display = "";
-    }
-    else { // frames
-        findObject("titleTable").style.display = "none";
-    }
-    showTitle(asdocTitle);
-}
-function loadFrames(classFrameURL, classListFrameURL) {
-    var classListFrame = findObject("classListFrame");
-    if(classListFrame != null && classListFrameContent!='')
-        classListFrame.document.location.href=classListFrameContent;
-    if (isEclipse()) {
-        var contentViewFrame = findObject(ECLIPSE_FRAME_NAME);
-        if (contentViewFrame != null && classFrameURL != '')
-            contentViewFrame.document.location.href=classFrameURL;
-    }
-    else {
-        var classFrame = findObject("classFrame");
-        if(classFrame != null && classFrameContent!='')
-            classFrame.document.location.href=classFrameContent;
-    }
-}
-function showTitle(title) {
-    if (!isEclipse())
-        top.document.title = title;
-}
-function loadClassListFrame(classListFrameURL) {
-    if (parent.frames["classListFrame"] != null) {
-        parent.frames["classListFrame"].location = classListFrameURL;
-    }
-    else if (parent.frames["packageFrame"] != null) {
-        if (parent.frames["packageFrame"].frames["classListFrame"] != null) {
-            parent.frames["packageFrame"].frames["classListFrame"].location = classListFrameURL;
-        }
-    }
-}
-function gotoLiveDocs(primaryURL, secondaryURL, locale) {
-        if (locale == "en-us") {
-             locale = "";
-        } 
-        else {
-              locale = "_" + locale.substring(3);
-        }
-    var url = liveDocsBaseUrl + locale + "/" + liveDocsBookName + "/index.html?" + primaryURL;
-    if (secondaryURL != null && secondaryURL != "")
-        url += ("&" + secondaryURL);
-    window.open(url, "mm_livedocs", "menubar=1,toolbar=1,status=1,scrollbars=1,resizable=yes");
-}
-function getTitleBar() {
-   var frame = parent;
-   while( frame ) {
-      if( frame.titlebar ) {
-	     return frame.titlebar;
-	  }
-	  frame = frame.parent;
-	  if( frame == frame.parent ) return null;
-   }
-}
-function findTitleTableObject(id)
-{
-    if (isEclipse())
-        return parent.titlebar.document.getElementById(id);
-    else if (getTitleBar())
-        return getTitleBar().document.getElementById(id);
-    else
-        return document.getElementById(id);
-}
-function titleBar_setSubTitle(title)
-{
-    if (isEclipse() || getTitleBar())
-        findTitleTableObject("subTitle").childNodes.item(0).data = title;
-}
-function titleBar_setSubNav(showConstants,showProperties,showStyles,showSkinPart,showSkinState,showEffects,showEvents,showConstructor,showMethods,showExamples,
-                showPackageConstants,showPackageProperties,showPackageFunctions,showInterfaces,showClasses,showPackageUse)
-{
-    if (isEclipse() || getTitleBar())
-    {
-        findTitleTableObject("propertiesLink").style.display = showProperties ? "inline" : "none";
-        findTitleTableObject("propertiesBar").style.display = (showProperties && (showPackageProperties || showConstructor || showMethods || showPackageFunctions || showEvents || showStyles || showSkinPart || showSkinState || showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("packagePropertiesLink").style.display = showPackageProperties ? "inline" : "none";
-        findTitleTableObject("packagePropertiesBar").style.display = (showPackageProperties && (showConstructor || showMethods || showPackageFunctions || showEvents || showStyles || showSkinPart || showSkinState || showConstants || showEffects || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("constructorLink").style.display = showConstructor ? "inline" : "none";
-        findTitleTableObject("constructorBar").style.display = (showConstructor && (showMethods || showPackageFunctions || showEvents || showStyles || showSkinPart || showSkinState || showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("methodsLink").style.display = showMethods ? "inline" : "none";
-        findTitleTableObject("methodsBar").style.display = (showMethods && (showPackageFunctions || showEvents || showStyles || showSkinPart || showSkinState || showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("packageFunctionsLink").style.display = showPackageFunctions ? "inline" : "none";
-        findTitleTableObject("packageFunctionsBar").style.display = (showPackageFunctions && (showEvents || showStyles || showSkinPart || showSkinState || showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("eventsLink").style.display = showEvents ? "inline" : "none";
-        findTitleTableObject("eventsBar").style.display = (showEvents && (showStyles || showSkinPart || showSkinState || showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("stylesLink").style.display = showStyles ? "inline" : "none";
-        findTitleTableObject("stylesBar").style.display = (showStyles && (showSkinPart || showSkinState || showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        
-        findTitleTableObject("SkinPartLink").style.display = showSkinPart ? "inline" : "none";
-        findTitleTableObject("SkinPartBar").style.display = (showSkinPart && (showSkinState || showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        
-        findTitleTableObject("SkinStateLink").style.display = showSkinState ? "inline" : "none";
-	findTitleTableObject("SkinStateBar").style.display = (showSkinState && (showEffects || showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-                
-        findTitleTableObject("effectsLink").style.display = showEffects ? "inline" : "none";
-        findTitleTableObject("effectsBar").style.display = (showEffects && (showConstants || showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("constantsLink").style.display = showConstants ? "inline" : "none";
-        findTitleTableObject("constantsBar").style.display = (showConstants && (showPackageConstants || showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("packageConstantsLink").style.display = showPackageConstants ? "inline" : "none";
-        findTitleTableObject("packageConstantsBar").style.display = (showPackageConstants && (showInterfaces || showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("interfacesLink").style.display = showInterfaces ? "inline" : "none";
-        findTitleTableObject("interfacesBar").style.display = (showInterfaces && (showClasses || showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("classesLink").style.display = showClasses ? "inline" : "none";
-        findTitleTableObject("classesBar").style.display = (showClasses && (showPackageUse || showExamples)) ? "inline" : "none";
-        findTitleTableObject("packageUseLink").style.display = showPackageUse ? "inline" : "none";
-        findTitleTableObject("packageUseBar").style.display = (showPackageUse && showExamples) ? "inline" : "none";
-        findTitleTableObject("examplesLink").style.display = showExamples ? "inline" : "none";
-    }
-}
-function titleBar_gotoClassFrameAnchor(anchor)
-{
-    if (isEclipse())
-        parent.classFrame.location = parent.classFrame.location.toString().split('#')[0] + "#" + anchor;
-    else
-        top.classFrame.location = top.classFrame.location.toString().split('#')[0] + "#" + anchor;
-}
-function setMXMLOnly() 
-{
-    if (getCookie("showMXML") == "false")
-    {
-        toggleMXMLOnly();
-    }
-}
-function toggleMXMLOnly() 
-{
-    var mxmlDiv = findObject("mxmlSyntax");
-    var mxmlShowLink = findObject("showMxmlLink");
-    var mxmlHideLink = findObject("hideMxmlLink");
-    if (mxmlDiv && mxmlShowLink && mxmlHideLink)
-    {
+    if( mxmlDiv && mxmlShowLink && mxmlHideLink ) {
         if (mxmlDiv.style.display == "none")
         {
             mxmlDiv.style.display = "block";
             mxmlShowLink.style.display = "none";
             mxmlHideLink.style.display = "inline";
-            setCookie("showMXML","true", new Date(3000,1,1,1,1), "/", document.location.domain);
         }
         else
         {
             mxmlDiv.style.display = "none";
             mxmlShowLink.style.display = "inline";
             mxmlHideLink.style.display = "none";
-            setCookie("showMXML","false", new Date(3000,1,1,1,1), "/", document.location.domain);
         }
+        $.cookie( "showMXML", mxmlDiv.style.display == "none" ? "true" : "false", { expires: 3000, path: "/", domain: document.location.domain } );
     }
-}
-function showHideInherited()
-{   
-    setInheritedVisible(getCookie("showInheritedConstant") == "true", "Constant");
-    setInheritedVisible(getCookie("showInheritedProtectedConstant") == "true", "ProtectedConstant");
-    setInheritedVisible(getCookie("showInheritedProperty") == "true", "Property");
-    setInheritedVisible(getCookie("showInheritedProtectedProperty") == "true", "ProtectedProperty");
-    setInheritedVisible(getCookie("showInheritedMethod") == "true", "Method");
-    setInheritedVisible(getCookie("showInheritedProtectedMethod") == "true", "ProtectedMethod");
-    setInheritedVisible(getCookie("showInheritedEvent") == "true", "Event");
-    setInheritedVisible(getCookie("showInheritedStyle") == "true", "Style");
-    
-    setInheritedVisible(getCookie("showInheritedSkinPart") == "true", "SkinPart");
-    setInheritedVisible(getCookie("showInheritedSkinState") == "true", "SkinState");
-    
-    setInheritedVisible(getCookie("showInheritedEffect") == "true", "Effect");
 }
 function setInheritedVisible(show, selectorText)
 {
@@ -238,59 +100,16 @@ function setInheritedVisible(show, selectorText)
         document.styleSheets[0].addRule(".hideInherited" + selectorText, show ? "display:inline" : "display:none");
         document.styleSheets[0].addRule(".showInherited" + selectorText, show ? "display:none" : "display:inline");
     }
-    setCookie("showInherited" + selectorText, show ? "true" : "false", new Date(3000,1,1,1,1), "/", document.location.domain);
-    setRowColors(show, selectorText);
+    $.cookie("showInherited" + selectorText, show ? "true" : "false", { expires: 3000, path: "/", domain: document.location.domain } );
+	
+	var even = false;
+    var table = $("#summaryTable" + selectorText + ">tbody>tr").each( function( no, e ) {
+		var elem = $(e);
+		if( elem.hasClass("hideInherited") || show ) {
+			elem.addClass( even ? "row0" : "row1" );
+			even = !even;
+		}
+	});
 }
-function setRowColors(show, selectorText)
-{
-    var rowColor = "#F2F2F2";
-    var table = findObject("summaryTable" + selectorText);
-    if (table != null)
-    {
-        var rowNum = 0;
-        for (var i = 1; i < table.rows.length; i++)
-        {
-            if (table.rows[i].className.indexOf("hideInherited") == -1 || show)
-            {
-                rowNum++;
-                table.rows[i].bgColor = (rowNum % 2 == 0) ? rowColor : "#FFFFFF";
-            }           
-        }
-    }
-}
-function setRowColorsInitial(show, selectorText)
-{
-    var rowColor = "#F2F2F2";
-    var table = findObject("summaryTable" + selectorText);
-    if (table != null)
-    {
-        var rowNum = 0;
-        for (var i = 1; i < table.rows.length; i++)
-        {
-            if (table.rows[i].className.indexOf("hideInherited") == -1 && show)
-            {
-                rowNum++;
-                table.rows[i].bgColor = (rowNum % 2 == 0) ? rowColor : "#FFFFFF";
-            }           
-        }
-    }
-}
-function setStyle(selectorText, styleName, newValue)
-{
-    if (document.styleSheets[0].cssRules != undefined)
-    {
-        var rules = document.styleSheets[0].cssRules;
-        for (var i = 0; i < rules.length; i++)
-        {
-            if (rules[i].selectorText == selectorText)
-            {
-                rules[i].style[styleName] = newValue;
-                break;
-            }
-        }
-    }
-    else
-    {
-        document.styleSheets[0].addRule(selectorText, styleName + ":" + newValue);
-    }
-}
+
+$(document).ready(configPage);

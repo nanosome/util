@@ -214,6 +214,16 @@
 	<xsl:template name="getStyleLink">
 		<xsl:param name="link"/>
 		<xsl:param name="packageName"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+		<xsl:variable name="baseRef">
+			<xsl:call-template name="getBaseRef">
+				<xsl:with-param name="packageName" select="$packageName"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<script language="javascript" type="text/javascript">
+			var href = /(.*)(#.*)?/.exec(document.location.href)[1].split("/");
+			href.pop();
+		document.write( '\u003cbase href="'+href.join("/")+'/<xsl:value-of select="$baseRef"/>" /\u003e' );</script>
 		<xsl:choose>
 			<!-- TODO support this? -->
 			<xsl:when test="false()">
@@ -222,109 +232,41 @@
 				</xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:variable name="baseRef">
-					<xsl:call-template name="getBaseRef">
-						<xsl:with-param name="packageName" select="$packageName"/>
-					</xsl:call-template>
-				</xsl:variable>
-				<xsl:element name="link">
-					<xsl:attribute name="rel">stylesheet</xsl:attribute>
-					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>style.css</xsl:attribute>
-					<xsl:attribute name="type">text/css</xsl:attribute>
-					<xsl:attribute name="media">screen</xsl:attribute>
-				</xsl:element>
-				<xsl:element name="link">
-					<xsl:attribute name="rel">stylesheet</xsl:attribute>
-					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>print.css</xsl:attribute>
-					<xsl:attribute name="type">text/css</xsl:attribute>
-					<xsl:attribute name="media">print</xsl:attribute>
-				</xsl:element>
-				<xsl:element name="link">
-					<xsl:attribute name="rel">stylesheet</xsl:attribute>
-					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>override.css</xsl:attribute>
-					<xsl:attribute name="type">text/css</xsl:attribute>
-				</xsl:element>
-				<xsl:element name="link">
-					<xsl:attribute name="rel">stylesheet</xsl:attribute>
-					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>SyntaxHighlighter.css</xsl:attribute>
-					<xsl:attribute name="type">text/css</xsl:attribute>
-				</xsl:element>
-				<xsl:element name="script">
-					<xsl:attribute name="language">javascript</xsl:attribute>
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>shCore.js</xsl:attribute>
-					<xsl:attribute name="type">text/javascript</xsl:attribute>
-				</xsl:element>
-				<xsl:element name="script">
-					<xsl:attribute name="language">javascript</xsl:attribute>
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>shBrushAS3.js</xsl:attribute>
-					<xsl:attribute name="type">text/javascript</xsl:attribute>
-				</xsl:element>
+				<link type="text/css" rel="stylesheet" media="screen">
+					<xsl:attribute name="href">style.css</xsl:attribute>
+				</link>
+				<link type="text/css" rel="stylesheet" media="print">
+					<xsl:attribute name="href">print.css</xsl:attribute>
+				</link>
+				<link type="text/css" rel="stylesheet">
+					<xsl:attribute name="href">override.css</xsl:attribute>
+				</link>
+				<link type="text/css" rel="stylesheet">
+					<xsl:attribute name="href">shCore.css</xsl:attribute>
+				</link>
+				<link type="text/css" rel="stylesheet">
+					<xsl:attribute name="href">shCoreDefault.css</xsl:attribute>
+				</link>
+				<script language="javascript" type="text/javascript">
+					<xsl:attribute name="src">jquery-1.4.4.min.js</xsl:attribute>
+				</script>
+				<script language="javascript" type="text/javascript">
+					<xsl:attribute name="src">jquery.cookie.js</xsl:attribute>
+				</script>
+				<script language="javascript" type="text/javascript">
+					<xsl:attribute name="src">shCore.js</xsl:attribute>
+				</script>
+				<script language="javascript" type="text/javascript">
+					<xsl:attribute name="src">shBrushAS3.js</xsl:attribute>
+				</script>
+				<script language="javascript" type="text/javascript">
+					<xsl:attribute name="src">jquery.cookie.js</xsl:attribute>
+				</script>
+				<script language="javascript" type="text/javascript">
+					<xsl:attribute name="src">asdoc.js</xsl:attribute>
+				</script>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
-	<xsl:template name="getTitleScript">
-		<xsl:param name="packageName"/>
-		<xsl:param name="title" select="$title-base"/>
-		<xsl:variable name="baseRef">
-			<xsl:call-template name="getBaseRef">
-				<xsl:with-param name="packageName" select="$packageName"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<script language="javascript" type="text/javascript">
-			<xsl:attribute name="src">
-				<xsl:value-of select="$baseRef"/>
-				<xsl:text>asdoc.js</xsl:text>
-			</xsl:attribute>
-		</script>
-		<xsl:if test="$isEclipse">
-			<script language="javascript" type="text/javascript">
-				<xsl:comment> eclipseBuild = true;</xsl:comment>
-			</script>
-		</xsl:if>
-		<script language="javascript" type="text/javascript">
-			<xsl:attribute name="src">
-				<xsl:value-of select="$baseRef"/>
-				<xsl:text>help.js</xsl:text>
-			</xsl:attribute>
-		</script>
-		<script language="javascript" type="text/javascript">
-			<xsl:attribute name="src">
-				<xsl:value-of select="$baseRef"/>
-				<xsl:text>cookies.js</xsl:text>
-			</xsl:attribute>
-		</script>
-		<script language="javascript" type="text/javascript">
-			<xsl:comment>
-				asdocTitle = '<xsl:value-of select="$title"/>';
-				var baseRef = '<xsl:value-of select="$baseRef"/>';
-				window.onload = configPage;
-			</xsl:comment>
-		</script>
-		<xsl:text>&#xa;</xsl:text>
-		<xsl:if test="$config/options[@standalonesearch='true']">
-			<xsl:call-template name="search.function.submit">
-				<xsl:with-param name="baseRef" select="$baseRef"/>
-			</xsl:call-template>
-		</xsl:if>
-		<script type="text/javascript">
-			scrollToNameAnchor();
-		</script>
-	</xsl:template>
-	<xsl:template name="search.function.submit">
-		<xsl:param name="baseRef"/>
-		<script language="javascript" type="text/javascript">
-			<xsl:comment>
-				<xsl:text>&#xa;</xsl:text>
-				<xsl:text>function submitValue(){</xsl:text>
-				<xsl:text>&#xa;</xsl:text>
-				<xsl:text>var searchStr=document.getElementById('search-livedocs').value;</xsl:text>
-				<xsl:text>&#xa;</xsl:text>
-				<xsl:text>window.location="</xsl:text><xsl:value-of select="$baseRef"/><xsl:text>search.html"+"###"+searchStr;</xsl:text>
-				<xsl:text>&#xa;</xsl:text>
-				<xsl:text>}</xsl:text>
-				<xsl:text>&#xa;</xsl:text>
-			</xsl:comment>
-		</script>
 	</xsl:template>
 	<xsl:template name="getLinks">
 		<xsl:param name="packageName" select="''"/>
@@ -375,10 +317,10 @@
 		</xsl:variable>
 		<xsl:if test="$copyNum='1'">
 			<div class="pageTop"/>
-			<table width="100%" cellpadding="0" cellspacing="0" id="titleTable" style="display:none">
+			<table width="100%" cellpadding="0" cellspacing="0" id="titleTable">
 				<tr>
 					<td valign="left" width="64" style="padding-left:5px">
-						<img src="{$baseRef}images/mm-icon.jpg" border="0">
+						<img src="images/mm-icon.jpg" border="0">
 							<xsl:attribute name="alt">
 								<xsl:call-template name="getLocalizedString">
 									<xsl:with-param name="key">AdobeLogo</xsl:with-param>
@@ -413,7 +355,6 @@
 		<xsl:if test="not($copyNum='1')">
 			<xsl:call-template name="getNavLinks">
 				<xsl:with-param name="copyNum" select="$copyNum"/>
-				<xsl:with-param name="baseRef" select="$baseRef"/>
 				<xsl:with-param name="showPackages" select="$showPackages"/>
 				<xsl:with-param name="showAllClasses" select="$showAllClasses"/>
 				<xsl:with-param name="showLanguageElements" select="$showLanguageElements"/>
@@ -570,7 +511,6 @@
 		<xsl:if test="not($copyNum='2')">
 			<xsl:call-template name="getNavLinks">
 				<xsl:with-param name="copyNum" select="$copyNum"/>
-				<xsl:with-param name="baseRef" select="$baseRef"/>
 				<xsl:with-param name="showPackages" select="$showPackages"/>
 				<xsl:with-param name="showAllClasses" select="$showAllClasses"/>
 				<xsl:with-param name="showLanguageElements" select="$showLanguageElements"/>
@@ -634,52 +574,18 @@
 		</xsl:variable>
 		<xsl:if test="$copyNum='1'">
 			<xsl:if test="not($config/options[@eclipse='true'])">
-				<table class="titleTable" cellpadding="0" cellspacing="0" id="titleTable" style="display:none">
+				<table class="titleTable" cellpadding="0" cellspacing="0" id="titleTable">
 					<tr class="titleHeader">
 						<td class="logo"><a href="http://nanosome.in" target="_blank">Nanosome</a></td>
-						<xsl:if test="$config/options[@ion='true']">
-							<td class="titleTableSearch" align="center">
-								<xsl:comment>#include virtual="/livedocs/flex/3/langref/ionsearchform.ssi"</xsl:comment>
-							</td>
-						</xsl:if>
-						<xsl:if test="$config/options[@livedocs='true']">
-							<td class="titleTableSearch" align="center">
-								<form class="searchForm" target="adbe_window" method="get" action="{$liveDocsSearchServlet}"
-									onsubmit="this.term.value = this.termPrefix.value + &quot;\&quot;&quot; + this.search_text.value + &quot;\&quot;&quot;;">
-									<input class="hidden" name="loc" value="{$liveDocsSearchLocale}" type="hidden"/>
-									<input class="hidden" name="termPrefix" value="{$liveDocsSearchSite}" type="hidden"/>
-									<input class="hidden" name="term" value="" type="hidden"/>
-									<input class="hidden" name="area" value="" type="hidden"/>
-									<input id="search-livedocs" name="search_text" value="" title="{$liveDocsSearchString}" type="text"/>
-									<xsl:text> </xsl:text>
-									<input type="submit" name="action" value="{$liveDocsSearch}"/>
-								</form>
-							</td>
-						</xsl:if>
 						<xsl:variable name="ref.path">
-							<xsl:value-of select="$baseRef"/>
 							<xsl:text>search.html</xsl:text>
 						</xsl:variable>
-						<xsl:if test="$config/options[@standalonesearch='true']">
-							<td class="titleTableSearch" align="center">
-								<form class="searchForm" method="get" action="{$ref.path}" onsubmit="submitValue();">
-									<input class="hidden" name="loc" value="{$liveDocsSearchLocale}" type="hidden"/>
-									<input class="hidden" name="termPrefix" value="" type="hidden"/>
-									<input class="hidden" name="term" value="" type="hidden"/>
-									<input class="hidden" name="area" value="" type="hidden"/>
-									<input id="search-livedocs" name="search_text" value="" title="{$liveDocsSearchString}" type="text"/>
-									<xsl:text> </xsl:text>
-									<input type="button" name="action" value="{$liveDocsSearch}" onclick="submitValue()"/>
-								</form>
-							</td>
-						</xsl:if>
 						<td class="titleTableTopNav" align="right">
 							<xsl:choose>
 								<xsl:when test="$prog_language_name='javascript'"/>
 								<xsl:otherwise>
 									<xsl:call-template name="getNavLinks2">
 										<xsl:with-param name="copyNum" select="$copyNum"/>
-										<xsl:with-param name="baseRef" select="$baseRef"/>
 										<xsl:with-param name="showPackages" select="$showPackages"/>
 										<xsl:with-param name="showAllClasses" select="$showAllClasses"/>
 										<xsl:with-param name="showLanguageElements" select="$showLanguageElements"/>
@@ -720,6 +626,8 @@
 									<xsl:text>2</xsl:text>
 								</xsl:attribute>
 							</xsl:if>
+							<xsl:variable name="packageName" select="ancestor-or-self::apiPackage/apiName"/>
+							<xsl:variable name="packagePath" select="translate($packageName, '.', '/')"/>
 							<xsl:choose>
 								<xsl:when test="$prog_language_name='javascript'"/>
 								<xsl:otherwise>
@@ -727,114 +635,60 @@
 										<a href="#propertySummary">
 											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Properties']]/entry[2]/p"/>
 										</a>
-										<xsl:if
-											test="$showPackageProperties=true()  or $showConstructors=true()  or $showMethods=true()  or $showPackageFunctions=true()  or $showEvents=true()  or $showStyles=true()  or $showEffects=true()  or $showConstants=true()  or $showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showPackageProperties">
-										<a href="package.html#propertySummary">
+										<a href="{$packagePath}/package.html#propertySummary">
 											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Properties']]/entry[2]/p"/>
 										</a>
-										<xsl:if
-											test="$showConstructors=true()  or $showMethods=true()  or $showPackageFunctions=true()  or $showEvents=true()  or $showStyles=true()  or $showEffects=true()  or $showConstants=true()  or $showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showConstructors=true()">
 										<a href="#constructorSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constructor']]/entry[2]/p"/></a>
-										<xsl:if
-											test="$showMethods=true()  or $showPackageFunctions=true()  or $showEvents=true()  or $showStyles=true()  or $showEffects=true()  or $showConstants=true()  or $showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
-									<xsl:if test="not($showMethods=false())">
+									<xsl:if test="$showMethods=true()">
 										<a href="#methodSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Methods']]/entry[2]/p"/></a>
-										<xsl:if
-											test="$showPackageFunctions=true()  or $showEvents=true()  or $showStyles=true()  or $showEffects=true()  or $showConstants=true()  or $showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showPackageFunctions">
-										<a href="package.html#methodSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Functions']]/entry[2]/p"/></a>
-										<xsl:if
-											test="$showEvents=true()  or $showStyles=true()  or $showEffects=true()  or $showConstants=true()  or $showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
+										<a href="{$packagePath}/package.html#methodSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Functions']]/entry[2]/p"/></a>
 									</xsl:if>
 									<xsl:if test="$showEvents=true()">
 										<a href="#eventSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Events']]/entry[2]/p"/></a>
-										<xsl:if
-											test="$showStyles=true()  or $showSkinState=true() or $showEffects=true()  or $showConstants=true()  or $showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showStyles=true()">
 										<a href="#styleSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Styles']]/entry[2]/p"/></a>
-										<xsl:if test="$showSkinState=true() or $showEffects=true() or $showConstants=true() or $showPackageConstants or $showInterfaces or $showClasses or $showPackageUse or $showIncludeExamples=true() or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
-
 									<xsl:if test="$showSkinPart=true()">
 										<a href="#SkinPartSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SkinParts']]/entry[2]/p"/></a>
-										<xsl:if test="$showSkinState=true() or $showConstants=true() or $showPackageConstants or $showInterfaces or $showClasses or $showPackageUse or $showIncludeExamples=true() or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showSkinState=true()">
 										<a href="#SkinStateSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SkinStates']]/entry[2]/p"/></a>
-										<xsl:if test="$showEffects=true()  or $showConstants=true()  or $showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showEffects=true()">
 										<a href="#effectSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Effects']]/entry[2]/p"/></a>
-										<xsl:if test="$showConstants=true()  or $showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showConstants=true()">
 										<a href="#constantSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constants']]/entry[2]/p"/></a>
-										<xsl:if test="$showPackageConstants=true()  or $showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showPackageConstants">
-										<a href="package.html#constantSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constants']]/entry[2]/p"/></a>
-										<xsl:if test="$showInterfaces=true()  or $showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
+										<a href="{$packagePath}/package.html#constantSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constants']]/entry[2]/p"/></a>
 									</xsl:if>
 									<xsl:if test="$showInterfaces">
-										<a href="package-detail.html#interfaceSummary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Interfaces</xsl:with-param></xsl:call-template></a>
-										<xsl:if test="$showClasses=true()  or $showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
+										<a href="{$packagePath}/package-detail.html#interfaceSummary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Interfaces</xsl:with-param></xsl:call-template></a>
 									</xsl:if>
 									<xsl:if test="$showClasses">
 										<xsl:variable name="href">
 											<xsl:if test="$fileName != 'deprecated'">
-												<xsl:text>package-detail.html</xsl:text>
+												<xsl:copy-of select="$packagePath"/>
+												<xsl:text>/package-detail.html</xsl:text>
 											</xsl:if>
 											<xsl:text>#classSummary</xsl:text>
 										</xsl:variable>
 										<a href="{$href}"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Classes']]/entry[2]/p"/></a>
-										<xsl:if test="$showPackageUse=true()  or $showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$showPackageUse">
-										<a href="package-use.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Use']]/entry[2]/p"/></a>
-										<xsl:if test="$showIncludeExamples=true()  or $additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
+										<a href="{$packagePath}/package-use.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Use']]/entry[2]/p"/></a>
 									</xsl:if>
 									<xsl:if test="$showIncludeExamples=true()">
 										<a href="#includeExamplesSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Examples']]/entry[2]/p"/></a>
-										<xsl:if test="$additionalLinks">
-											<xsl:text>&#xA0;| </xsl:text>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$additionalLinks">
 										<xsl:copy-of select="$additionalLinks"/>
@@ -845,12 +699,6 @@
 					</tr>
 				</table>
 			</xsl:if>
-			<script language="javascript" type="text/javascript" xml:space="preserve">
-				<xsl:comment>
-				<xsl:text/>
-					<xsl:text>if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {</xsl:text><xsl:text>titleBar_setSubTitle("</xsl:text><xsl:value-of select="$subTitle"/><xsl:text>"); </xsl:text><xsl:text>titleBar_setSubNav(</xsl:text><xsl:value-of select="$showConstants"/><xsl:text>,</xsl:text><xsl:value-of select="$showProperties"/><xsl:text>,</xsl:text><xsl:value-of select="$showStyles"/><xsl:text>,</xsl:text><xsl:value-of select="$showSkinPart"/><xsl:text>,</xsl:text><xsl:value-of select="$showSkinState"/><xsl:text>,</xsl:text><xsl:value-of select="$showEffects"/><xsl:text>,</xsl:text><xsl:value-of select="$showEvents"/><xsl:text>,</xsl:text><xsl:value-of select="$showConstructors"/><xsl:text>,</xsl:text><xsl:value-of select="$showMethods"/><xsl:text>,</xsl:text><xsl:value-of select="$showIncludeExamples"/><xsl:text>,</xsl:text><xsl:value-of select="$showPackageConstants"/>	<xsl:text>,</xsl:text><xsl:value-of select="$showPackageProperties"/><xsl:text>,</xsl:text><xsl:value-of select="$showPackageFunctions"/><xsl:text>,</xsl:text><xsl:value-of select="$showInterfaces"/><xsl:text>,</xsl:text><xsl:value-of select="$showClasses"/><xsl:text>,</xsl:text><xsl:value-of select="$showPackageUse"/><xsl:text>);</xsl:text><xsl:text>}</xsl:text>	<xsl:text/>
-				</xsl:comment>
-			</script>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template name="getNavLinks2">
@@ -867,14 +715,14 @@
 		<xsl:param name="fileName"/>
 		<xsl:param name="fileName2"/>
 		<xsl:if test="$showPackages">
-			<a href="{$baseRef}package-summary.html" onclick="loadClassListFrame('{$baseRef}all-classes.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allPackages']]/entry[2]/p"/></a>
+			<a href="package-summary.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allPackages']]/entry[2]/p"/></a>
 			<xsl:text>&#xA0;|&#xA0;</xsl:text>
 		</xsl:if>
 		<xsl:if test="$showAllClasses">
 			<xsl:choose>
 				<xsl:when test="$prog_language_name='javascript'"/>
 				<xsl:otherwise>
-					<a href="{$baseRef}class-summary.html" onclick="loadClassListFrame('{$baseRef}all-classes.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allClasses']]/entry[2]/p"/></a>
+					<a href="class-summary.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allClasses']]/entry[2]/p"/></a>
 					<xsl:text>&#xA0;|&#xA0;</xsl:text>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -883,35 +731,35 @@
 			<xsl:choose>
 				<xsl:when test="$prog_language_name='javascript'"/>
 				<xsl:otherwise>
-					<a href="{$baseRef}language-elements.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'LanguageElements']]/entry[2]/p"/></a>
+					<a href="language-elements.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'LanguageElements']]/entry[2]/p"/></a>
 					<xsl:text>&#xA0;| </xsl:text>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
 		<xsl:if test="$showIndex">
 			<xsl:if test="$splitIndex='false'">
-				<a href="{$baseRef}all-index.html" onclick="loadClassListFrame('{$baseRef}index-list.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
+				<a href="all-index.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
 			</xsl:if>
 			<xsl:if test="$splitIndex!='false' and $config/languageElements/@show='true' and $config/languageElements/@operators='true'">
-				<a href="{$baseRef}all-index-Symbols.html" onclick="loadClassListFrame('{$baseRef}index-list.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
+				<a href="all-index-Symbols.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
 			</xsl:if>
 			<xsl:if test="$isLiveDocs">
 				<xsl:text disable-output-escaping="yes">&lt;br/&gt;</xsl:text>
 			</xsl:if>
 			<xsl:if test="$splitIndex!='false' and ($config/languageElements/@show!='true' or $config/languageElements/@operators!='true')">
-				<a href="{$baseRef}all-index-A.html" onclick="loadClassListFrame('{$baseRef}index-list.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
+				<a href="all-index-A.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
 			</xsl:if>
 			<xsl:text>&#xA0;|&#xA0;</xsl:text>
 		</xsl:if>
 		<xsl:if test="$showAppendixes and $config/appendixes/@show='true'">
-			<a href="{$baseRef}appendixes.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Appendix']]/entry[2]/p"/></a>
+			<a href="appendixes.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Appendix']]/entry[2]/p"/></a>
 			<xsl:text>&#xA0;|&#xA0;</xsl:text>
 		</xsl:if>
 		<xsl:if test="$showConventions">
 			<xsl:choose>
 				<xsl:when test="$prog_language_name='javascript'"/>
 				<xsl:otherwise>
-					<a href="{$baseRef}conventions.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Conventions']]/entry[2]/p"/></a>
+					<a href="conventions.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Conventions']]/entry[2]/p"/></a>
 					<xsl:text>&#xA0;|&#xA0;</xsl:text>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -919,14 +767,13 @@
 		<xsl:choose>
 			<xsl:when test="$prog_language_name='javascript'"/>
 			<xsl:otherwise>
-				<a id="framesLink{$copyNum}" href="{$baseRef}index.html?{$href}{$fileName}.html&amp;{$fileName2}"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Frames']]/entry[2]/p"/></a>
+				<script language="javascript" type="text/javascript">
+					var sideFrame = '<xsl:value-of select="$fileName2"/>';
+				</script>
+				<a id="framesLink{$copyNum}" class="framesLink" href="index.html#{$href}{$fileName}.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Frames']]/entry[2]/p"/></a>
 			</xsl:otherwise>
 		</xsl:choose>
-		<a id="noFramesLink{$copyNum}" style="display:none" href="" onclick="parent.location=document.location">
-			<xsl:call-template name="getLocalizedString">
-				<xsl:with-param name="key">NoFrames</xsl:with-param>
-			</xsl:call-template>
-		</a>
+		<a id="noFramesLink{$copyNum}" class="noFramesLink" href="" onclick="window.open(document.location, '_top');"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">NoFrames</xsl:with-param></xsl:call-template></a>
 	</xsl:template>
 	<xsl:template name="getNavLinks">
 		<xsl:param name="copyNum"/>
@@ -945,53 +792,50 @@
 		<div width="100%" class="topLinks" align="right" style="padding-bottom:5px">
 			<span id="navigationCell{$copyNum}" style="display:none;font-size:14px;font-weight:bold">
 				<xsl:if test="$showPackages">
-					<a href="{$baseRef}package-summary.html" onclick="loadClassListFrame('{$baseRef}all-classes.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allPackages']]/entry[2]/p"/></a>
+					<a href="package-summary.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allPackages']]/entry[2]/p"/></a>
 					<xsl:text>&#xA0;| </xsl:text>
 				</xsl:if>
 				<xsl:if test="$showAllClasses">
-					<a href="{$baseRef}class-summary.html" onclick="loadClassListFrame('{$baseRef}all-classes.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allClasses']]/entry[2]/p"/></a>
+					<a href="class-summary.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allClasses']]/entry[2]/p"/></a>
 					<xsl:text>&#xA0;| </xsl:text>
 				</xsl:if>
 				<xsl:if test="$showLanguageElements">
-					<a href="{$baseRef}language-elements.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'LanguageElements']]/entry[2]/p"/></a>
+					<a href="language-elements.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'LanguageElements']]/entry[2]/p"/></a>
 					<xsl:text>&#xA0;| </xsl:text>
 				</xsl:if>
 				<xsl:if test="$showMXMLOnly">
-					<a href="{$baseRef}mxml-tag-detail.html" onclick="loadClassListFrame('{$baseRef}mxml-tags.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'MXMLOnly']]/entry[2]/p"/></a>
+					<a href="mxml-tag-detail.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'MXMLOnly']]/entry[2]/p"/></a>
 					<xsl:text>&#xA0;| </xsl:text>
 				</xsl:if>
 				<xsl:if test="$showIndex">
 					<xsl:if test="$splitIndex='false'">
-						<a href="{$baseRef}all-index.html" onclick="loadClassListFrame('{$baseRef}index-list.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
+						<a href="all-index.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
 					</xsl:if>
 					<xsl:if test="$splitIndex!='false' and $config/languageElements/@show='true' and $config/languageElements/@operators='true'">
-						<a href="{$baseRef}all-index-Symbols.html" onclick="loadClassListFrame('{$baseRef}index-list.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
+						<a href="all-index-Symbols.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
 					</xsl:if>
 					<xsl:if test="$splitIndex!='false' and ($config/languageElements/@show!='true' or $config/languageElements/@operators!='true')">
-						<a href="{$baseRef}all-index-A.html" onclick="loadClassListFrame('{$baseRef}index-list.html')"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
+						<a href="all-index-A.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Index']]/entry[2]/p"/></a>
 					</xsl:if>
 					<xsl:text>&#xA0;| </xsl:text>
 				</xsl:if>
 				<xsl:if test="$showAppendixes and $config/appendixes/@show='true'">
-					<a href="{$baseRef}appendixes.html">
+					<a href="appendixes.html">
 						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Appendix']]/entry[2]/p"/>
 					</a>
 					<xsl:text>&#xA0;| </xsl:text>
 				</xsl:if>
 				<xsl:if test="$showConventions">
-					<a href="{$baseRef}conventions.html">
-						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Conventions']]/entry[2]/p"/>
-					</a>
+					<script language="javascript" type="text/javascript">
+						var sideFrame = '<xsl:value-of select="$fileName2"/>';
+					</script>
+					<a href="conventions.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Conventions']]/entry[2]/p"/></a>
 					<xsl:text>&#xA0;| </xsl:text>
 				</xsl:if>
-				<a id="framesLink{$copyNum}" href="{$baseRef}index.html?{$href}{$fileName}.html&amp;{$fileName2}">
+				<a id="framesLink{$copyNum}" class="framesLink" href="index.html#{$href}{$fileName}.html">
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Frames']]/entry[2]/p"/>
 				</a>
-				<a id="noFramesLink{$copyNum}" style="display:none" href="" onclick="parent.location=document.location">
-					<xsl:call-template name="getLocalizedString">
-						<xsl:with-param name="key">NoFrames</xsl:with-param>
-					</xsl:call-template>
-				</a>
+				<a id="noFramesLink{$copyNum}" class="noFramesLink" href="" onclick="window.open(document.location, '_top');"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">NoFrames</xsl:with-param></xsl:call-template></a>
 			</span>
 		</div>
 	</xsl:template>
@@ -1012,11 +856,6 @@
 										<xsl:value-of select="$config/feedback/feedbackEmail/label/."/>
 									</a>
 								</xsl:if>
-								<xsl:if test="$config/feedback[@type='livedocs']">
-									<a href="javascript:gotoLiveDocs('{$filename}','{$filename2}','{$locale}');">
-										<xsl:value-of select="$config/feedback/feedbackLiveDocs/label/."/>
-									</a>
-								</xsl:if>
 							</center>
 						</div>
 					</xsl:otherwise>
@@ -1025,19 +864,8 @@
 		</xsl:if>
 		<xsl:if test="$config/options[@ion='true']">
 			<xsl:if test="$config/feedback[@show='true']">
-				<script src="{$baseRef}currentpage.js" type="text/javascript" language="Javascript" charset="UTF-8"/>
+				<script src="currentpage.js" type="text/javascript" language="Javascript" charset="UTF-8"/>
 			</xsl:if>
-		</xsl:if>
-		<xsl:if test="$config/options[@livedocs='true']">
-			<div class="feedbackLink">
-				<center>
-					<xsl:if test="$config/feedback[@type='livedocs']">
-						<a href="javascript:gotoLiveDocs('{$filename}','{$filename2}','{$locale}');">
-							<xsl:value-of select="$config/feedback/feedbackLiveDocs/label/."/>
-						</a>
-					</xsl:if>
-				</center>
-			</div>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template name="showHelpLink">
@@ -1473,15 +1301,10 @@
 		<xsl:param name="type" select="''"/>
 		<xsl:param name="currentPackage" select="''"/>
 		<xsl:if test="$type">
-			<xsl:variable name="relativePath">
-				<xsl:call-template name="getRelativePath">
-					<xsl:with-param name="currentPath" select="$currentPackage"/>
-				</xsl:call-template>
-			</xsl:variable>
 			<xsl:variable name="hyperLink">
 				<xsl:choose>
 					<xsl:when test="not(contains($type,'.'))">
-						<xsl:value-of select="concat($relativePath,$type,'.html')"/>
+						<xsl:value-of select="concat($type,'.html')"/>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:variable name="package">
@@ -1496,7 +1319,7 @@
 								<xsl:with-param name="substr" select="'.'"/>
 							</xsl:call-template>
 						</xsl:variable>
-						<xsl:value-of select="concat($relativePath,translate($package,'.','/'),'/',$class,'.html')"/>
+						<xsl:value-of select="concat(translate($package,'.','/'),'/',$class,'.html')"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
@@ -1958,12 +1781,12 @@
 				</xsl:variable>
 				<xsl:if test="string-length($packageName) &gt; 0">
 					<xsl:if test="string-length($className) &gt; 0">
-						<xsl:value-of select="concat($relativePath,translate($packageName,'.','/'),'/',$className,'.html')"/>
+						<xsl:value-of select="concat(translate($packageName,'.','/'),'/',$className,'.html')"/>
 					</xsl:if>
 				</xsl:if>
 				<xsl:if test="string-length($packageName) = 0">
 					<xsl:if test="string-length($className) &gt; 0">
-						<xsl:value-of select="concat($relativePath,$className,'.html')"/>
+						<xsl:value-of select="concat($className,'.html')"/>
 					</xsl:if>
 				</xsl:if>
 			</xsl:if>
@@ -1989,12 +1812,12 @@
 			</xsl:variable>
 			<xsl:if test="string-length($packageName) &gt; 0">
 				<xsl:if test="string-length($className) &gt; 0">
-					<xsl:value-of select="concat($baseRef,translate($packageName,'.','/'),'/',$className,'.html')"/>
+					<xsl:value-of select="concat(translate($packageName,'.','/'),'/',$className,'.html')"/>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="string-length($packageName) = 0">
 				<xsl:if test="string-length($className) &gt; 0">
-					<xsl:value-of select="concat($baseRef,$className,'.html')"/>
+					<xsl:value-of select="concat($className,'.html')"/>
 				</xsl:if>
 			</xsl:if>
 		</xsl:if>
@@ -2019,17 +1842,11 @@
 			<xsl:variable name="classHeader_map" select="document('ClassHeader.xml')//apiPackage"/>
 			<xsl:if test="contains($destination,'.')">
 				<xsl:if test="count($classHeader_map//apiClassifier[@id=concat($packageName,':',$className)] ) &gt; 0">
-
-					<xsl:variable name="relativePath">
-						<xsl:call-template name="getRelativePath">
-							<xsl:with-param name="currentPath" select="$currentPackage"/>
-						</xsl:call-template>
-					</xsl:variable>
 					<xsl:if test="string-length($packageName) &gt; 0">
 						<xsl:if test="string-length($className) &gt; 0">
 							<xsl:choose>
 								<xsl:when test="$prog_language_name!='javascript'">
-									<xsl:value-of select="concat($relativePath,translate($packageName,'.','/'),'/',$className,'.html')"/>
+									<xsl:value-of select="concat(translate($packageName,'.','/'),'/',$className,'.html')"/>
 								</xsl:when>
 								<xsl:otherwise/>
 							</xsl:choose>
@@ -2037,7 +1854,7 @@
 					</xsl:if>
 					<xsl:if test="string-length($packageName) = 0">
 						<xsl:if test="string-length($className) &gt; 0">
-							<xsl:value-of select="concat($relativePath,$className,'.html')"/>
+							<xsl:value-of select="concat($className,'.html')"/>
 						</xsl:if>
 					</xsl:if>
 				</xsl:if>
@@ -2045,16 +1862,11 @@
 			<xsl:if test="not(contains($destination,'.'))">
 				<xsl:if test="count($classHeader_map//apiClassifier[@id=concat('globalClassifier:',$className)] ) &gt; 0">
 
-					<xsl:variable name="relativePath">
-						<xsl:call-template name="getRelativePath">
-							<xsl:with-param name="currentPath" select="$currentPackage"/>
-						</xsl:call-template>
-					</xsl:variable>
 					<xsl:if test="string-length($packageName) &gt; 0">
 						<xsl:if test="string-length($className) &gt; 0">
 							<xsl:choose>
 								<xsl:when test="$prog_language_name!='javascript'">
-									<xsl:value-of select="concat($relativePath,translate($packageName,'.','/'),'/',$className,'.html')"/>
+									<xsl:value-of select="concat(translate($packageName,'.','/'),'/',$className,'.html')"/>
 								</xsl:when>
 								<xsl:otherwise/>
 							</xsl:choose>
@@ -2062,7 +1874,7 @@
 					</xsl:if>
 					<xsl:if test="string-length($packageName) = 0">
 						<xsl:if test="string-length($className) &gt; 0">
-							<xsl:value-of select="concat($relativePath,$className,'.html')"/>
+							<xsl:value-of select="concat($className,'.html')"/>
 						</xsl:if>
 					</xsl:if>
 				</xsl:if>
@@ -2074,11 +1886,6 @@
 		<xsl:param name="destination"/>
 		<xsl:param name="currentPackage"/>
 		<xsl:if test="string-length($destination) &gt; 0">
-			<xsl:variable name="relativePath">
-				<xsl:call-template name="getRelativePath">
-					<xsl:with-param name="currentPath" select="$currentPackage"/>
-				</xsl:call-template>
-			</xsl:variable>
 			<xsl:variable name="lastToken">
 				<xsl:call-template name="lastIndexOf">
 					<xsl:with-param name="string" select="$destination"/>
@@ -2088,12 +1895,12 @@
 			<xsl:variable name="firstPassToken" select="substring-before($destination,concat('.',$lastToken))"/>
 			<xsl:variable name="eventTypeLink">
 				<xsl:if test="document(concat($ditaFileDir,'packages.dita'))/apiMap//apiItemRef[substring-before(@href,'xml')=$firstPassToken]">
-					<xsl:value-of select="concat($relativePath,translate($firstPassToken,'.','/'),'.html')"/>
+					<xsl:value-of select="concat(translate($firstPassToken,'.','/'),'.html')"/>
 				</xsl:if>
 				<xsl:if test="not(document(concat($ditaFileDir,'packages.dita'))/apiMap//apiItemRef[substring-before(@href,'.xml')=$firstPassToken])">
 					<xsl:choose>
 						<xsl:when test="$prog_language_name!='javascript'">
-							<xsl:value-of select="concat($relativePath,translate($firstPassToken,'.','/'),'.html#',$lastToken)"/>
+							<xsl:value-of select="concat(translate($firstPassToken,'.','/'),'.html#',$lastToken)"/>
 						</xsl:when>
 						<xsl:otherwise/>
 					</xsl:choose>
@@ -2587,7 +2394,8 @@
 									<xsl:value-of select="@href"/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:if test="string-length($packName) &gt; 0 and not($packName=ancestor-or-self::apiPackage/apiName) and  not(contains(@href,'.htm'))">
+									
+									<xsl:if test="string-length($packName) &gt; 0 and  not(contains(@href,'.htm'))">
 										<xsl:variable name="relPathParam">
 											<xsl:if test="ancestor-or-self::apiPackage/apiName">
 												<xsl:value-of select="ancestor-or-self::apiPackage/apiName"/>
@@ -2596,29 +2404,24 @@
 												<xsl:value-of select="$currentPackage"/>
 											</xsl:if>												
 										</xsl:variable>
-										<xsl:variable name="relPath">
-											<xsl:call-template name="getRelativePath">
-												<xsl:with-param name="currentPath" select="$relPathParam"/>
-											</xsl:call-template>
-										</xsl:variable>
 										<xsl:if test="string-length($classNameText) &gt; 0">
 											<xsl:if test="string-length($methodNameText) &gt; 0 ">
-												<xsl:value-of select="concat($relPath,translate($packName,'.','/'),'/',$classNameText,'.html#',$methodNameText)"/>
+												<xsl:value-of select="concat(translate($packName,'.','/'),'/',$classNameText,'.html#',$methodNameText)"/>
 											</xsl:if>
 											<xsl:if test="string-length($methodNameText) = 0">
-												<xsl:value-of select="concat($relPath,translate($packName,'.','/'),'/',$classNameText,'.html')"/>
+												<xsl:value-of select="concat(translate($packName,'.','/'),'/',$classNameText,'.html')"/>
 											</xsl:if>
 										</xsl:if>
 										<xsl:if test="string-length($classNameText) = 0">
 											<xsl:if test="string-length($methodNameText) &gt; 0 ">
-												<xsl:value-of select="concat($relPath,translate($packName,'.','/'),'/','package.html#',$methodNameText)"/>
+												<xsl:value-of select="concat(translate($packName,'.','/'),'/','package.html#',$methodNameText)"/>
 											</xsl:if>
 											<xsl:if test="string-length($methodNameText) = 0">
-												<xsl:value-of select="concat($relPath,translate($packName,'.','/'),'/','package-detail.html')"/>
+												<xsl:value-of select="concat(translate($packName,'.','/'),'/','package-detail.html')"/>
 											</xsl:if>
 										</xsl:if>
 									</xsl:if>
-									<xsl:if test="(string-length($packName) = 0 or  ($packName=ancestor-or-self::apiPackage/apiName)) and not(contains(@href,'.htm'))">
+									<xsl:if test="(string-length($packName) = 0 ) and not(contains(@href,'.htm'))">
 										<xsl:if test="string-length($classNameText) &gt; 0 and not($classNameText='global') and string-length($packName) != 0 ">
 											<xsl:if test="string-length($methodNameText) &gt; 0">
 												<xsl:value-of select="concat($classNameText,'.html#',$methodNameText)"/>
@@ -2627,50 +2430,19 @@
 												<xsl:value-of select="concat($classNameText,'.html')"/>
 											</xsl:if>
 										</xsl:if>
-										<!-- To handle the <#Array/sort() kind of stuff in a package>-->
+										<!-- To handle the <#Array/sort() kind of stuff in a package> -->
 										<xsl:if
 											test="string-length($classNameText) &gt; 0 and not($classNameText='global') and (string-length(ancestor-or-self::apiPackage/apiName) &gt; 0 or string-length($currentPackage) &gt; 0)and string-length($packName) = 0 ">
-											<xsl:variable name="relPathParam">
-												<xsl:if test="ancestor-or-self::apiPackage/apiName">
-													<xsl:value-of select="ancestor-or-self::apiPackage/apiName"/>
-												</xsl:if>
-												<xsl:if test="not(ancestor-or-self::apiPackage/apiName)">
-													<xsl:value-of select="$currentPackage"/>
-												</xsl:if>												
-											</xsl:variable>
-											<xsl:variable name="relPath">
-												<xsl:if test="contains($relPathParam,'.')">
-													<xsl:call-template name="getRelativePath">
-														<xsl:with-param name="currentPath" select="$relPathParam"/>
-													</xsl:call-template>
-												</xsl:if>
-											</xsl:variable>
-											
 											<xsl:if test="string-length($methodNameText) &gt; 0">
-												<xsl:value-of select="concat($relPath,$classNameText,'.html#',$methodNameText)"/>
+												<xsl:value-of select="concat($classNameText,'.html#',$methodNameText)"/>
 											</xsl:if>
 											<xsl:if test="string-length($methodNameText) = 0">
-												<xsl:value-of select="concat($relPath,$classNameText,'.html')"/>
+												<xsl:value-of select="concat($classNameText,'.html')"/>
 											</xsl:if>
 										</xsl:if>
 										<xsl:if test="string-length($classNameText) &gt; 0 and $classNameText='global'">
-											<xsl:variable name="relPathParam">
-												<xsl:if test="ancestor-or-self::apiPackage/apiName">
-													<xsl:value-of select="ancestor-or-self::apiPackage/apiName"/>
-												</xsl:if>
-												<xsl:if test="not(ancestor-or-self::apiPackage/apiName)">
-													<xsl:value-of select="$currentPackage"/>
-												</xsl:if>												
-											</xsl:variable>
-											<xsl:variable name="relPath">
-												<xsl:if test="contains($relPathParam,'.')">
-													<xsl:call-template name="getRelativePath">
-														<xsl:with-param name="currentPath" select="$relPathParam"/>
-													</xsl:call-template>
-												</xsl:if>
-											</xsl:variable>
 											<xsl:if test="string-length($methodNameText) &gt; 0">
-												<xsl:value-of select="concat($relPath,'package.html#',$methodNameText)"/>
+												<xsl:value-of select="concat('package.html#',$methodNameText)"/>
 											</xsl:if>
 										</xsl:if>
 										<xsl:if test="string-length($classNameText) = 0">
@@ -2724,10 +2496,10 @@
 						<xsl:attribute name="href">
 							<xsl:choose>
 								<xsl:when test="not(bookfolder) or bookfolder=''">
-									<xsl:value-of select="concat($baseRef,$config/xrefs/@baseRef,href/.)"/>
+									<xsl:value-of select="href/."/>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:value-of select="concat($baseRef,$config/xrefs/@baseRef,bookfolder/text(),'/',href/.)"/>
+									<xsl:value-of select="concat(bookfolder/text(),'/',href/.)"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:attribute>
@@ -3132,17 +2904,17 @@
 						<xsl:if test="not(contains($fullClassName,'*'))">
 							<xsl:variable name="bef.vec" select="substring-before($fullClassName,'$')"/>
 							<xsl:variable name="aft.vec" select="substring-after($fullClassName,'$')"/>
-							<xsl:variable name="bef.vec.file" select="concat($baseRef,$bef.vec,'.html')"/>
+							<xsl:variable name="bef.vec.file" select="concat($bef.vec,'.html')"/>
 							<xsl:variable name="aft.vec.aft" select="substring-after($aft.vec,':')"/>
 							<xsl:variable name="aft.vec.bef" select="substring-before($aft.vec,':')"/>
 							<xsl:variable name="aft.vec.file">
 								<xsl:if test="contains($aft.vec,':')">
 									<xsl:variable name="aft.vec.bef" select="substring-before($aft.vec,':')"/>
 									<xsl:variable name="aft.vec.aft" select="substring-after($aft.vec,':')"/>
-									<xsl:value-of select="concat($baseRef,translate($aft.vec.bef,'.','/'),'/',$aft.vec.aft,'.html')"/>
+									<xsl:value-of select="concat(translate($aft.vec.bef,'.','/'),'/',$aft.vec.aft,'.html')"/>
 								</xsl:if>
 								<xsl:if test="not(contains($aft.vec,':'))">
-									<xsl:variable name="aft.vec.file" select="concat($baseRef,$aft.vec,'.html')"/>
+									<xsl:variable name="aft.vec.file" select="concat($aft.vec,'.html')"/>
 									<xsl:value-of select="$aft.vec.file"/>
 								</xsl:if>
 							</xsl:variable>
@@ -3178,7 +2950,6 @@
 										<xsl:if test="contains($aft.vec,'$')">
 											<xsl:call-template name="getSimpleClassName">
 												<xsl:with-param name="fullClassName" select="$aft.vec"/>
-												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 										</xsl:if>
 										<xsl:if test="not(contains($aft.vec,'$'))">
@@ -3193,8 +2964,8 @@
 						<xsl:if test="contains($fullClassName,'Vector$*')">
 							<xsl:variable name="bef.vec" select="substring-before($fullClassName,'$')"/>
 							<xsl:variable name="aft.vec" select="substring-after($fullClassName,'$')"/>
-							<xsl:variable name="bef.vec.file" select="concat($baseRef,$bef.vec,'.html')"/>
-							<xsl:variable name="aft.vec.file" select="concat($baseRef,$aft.vec,'.html')"/>
+							<xsl:variable name="bef.vec.file" select="concat($bef.vec,'.html')"/>
+							<xsl:variable name="aft.vec.file" select="concat($aft.vec,'.html')"/>
 							<a href="{$bef.vec.file}">
 								<xsl:value-of select="$bef.vec"/>
 							</a>
@@ -3202,7 +2973,6 @@
 							<xsl:text>&amp;lt;</xsl:text>
 							<xsl:call-template name="getSpecialTypeLink">
 								<xsl:with-param name="type" select="'*'"/>
-								<xsl:with-param name="baseRef" select="$baseRef"/>
 							</xsl:call-template>
 							<xsl:text>&amp;gt;</xsl:text>
 						</xsl:if>
@@ -3230,7 +3000,7 @@
 		</xsl:param>
 		<xsl:choose>
 			<xsl:when test="$config/languageElements[@show='true' and @specialTypes='true']">
-				<a href="{$baseRef}specialTypes.html#{$type}">
+				<a href="specialTypes.html#{$type}">
 					<xsl:value-of select="$type"/>
 				</a>
 			</xsl:when>
@@ -3833,27 +3603,20 @@
 			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="string-length($packName) &gt; 0 and ( not($packName=ancestor-or-self::apiPackage/apiName) or $createLinkFromRootContext = true() )and  not(contains(@href,'.htm'))">
-					<xsl:variable name="relPath">
-						<xsl:if test="$createLinkFromRootContext = false() and contains(ancestor-or-self::apiPackage/apiName,'.')">
-							<xsl:call-template name="getRelativePath">
-								<xsl:with-param name="currentPath" select="ancestor-or-self::apiPackage/apiName"/>
-							</xsl:call-template>
-						</xsl:if>
-					</xsl:variable>
 					<xsl:if test="string-length($classNameText) &gt; 0">
 						<xsl:if test="string-length($methodNameText) &gt; 0 ">
-							<xsl:value-of select="concat($relPath,translate($packName,'.','/'),'/',$classNameText,'.html#',$methodNameText)"/>
+							<xsl:value-of select="concat(translate($packName,'.','/'),'/',$classNameText,'.html#',$methodNameText)"/>
 						</xsl:if>
 						<xsl:if test="string-length($methodNameText) = 0">
-							<xsl:value-of select="concat($relPath,translate($packName,'.','/'),'/',$classNameText,'.html')"/>
+							<xsl:value-of select="concat(translate($packName,'.','/'),'/',$classNameText,'.html')"/>
 						</xsl:if>
 					</xsl:if>
 					<xsl:if test="string-length($classNameText) = 0">
 						<xsl:if test="string-length($methodNameText) &gt; 0 ">
-							<xsl:value-of select="concat($relPath,translate($packName,'.','/'),'/','package.html#',$methodNameText)"/>
+							<xsl:value-of select="concat(translate($packName,'.','/'),'/','package.html#',$methodNameText)"/>
 						</xsl:if>
 						<xsl:if test="string-length($methodNameText) = 0">
-							<xsl:value-of select="concat($relPath,translate($packName,'.','/'),'/','package-detail.html')"/>
+							<xsl:value-of select="concat(translate($packName,'.','/'),'/','package-detail.html')"/>
 						</xsl:if>
 					</xsl:if>
 				</xsl:when>
@@ -3869,30 +3632,16 @@
 						</xsl:if>
 						<!-- To handle the <#Array/sort() kind of stuff in a package>-->
 						<xsl:if test="string-length($classNameText) &gt; 0 and not($classNameText='global') and string-length(ancestor-or-self::apiPackage/apiName) &gt; 0 and string-length($packName) = 0 ">
-							<xsl:variable name="relPath">
-								<xsl:if test="$prog_language_name = 'ActionScript' and contains(ancestor-or-self::apiPackage/apiName,'.')">
-									<xsl:call-template name="getRelativePath">
-										<xsl:with-param name="currentPath" select="ancestor-or-self::apiPackage/apiName"/>
-									</xsl:call-template>
-								</xsl:if>
-							</xsl:variable>
 							<xsl:if test="string-length($methodNameText) &gt; 0">
-								<xsl:value-of select="concat($relPath,$classNameText,'.html#',$methodNameText)"/>
+								<xsl:value-of select="concat($classNameText,'.html#',$methodNameText)"/>
 							</xsl:if>
 							<xsl:if test="string-length($methodNameText) = 0">
-								<xsl:value-of select="concat($relPath,$classNameText,'.html')"/>
+								<xsl:value-of select="concat($classNameText,'.html')"/>
 							</xsl:if>
 						</xsl:if>
 						<xsl:if test="string-length($classNameText) &gt; 0 and $classNameText='global'">
-							<xsl:variable name="relPath">
-								<xsl:if test="contains(ancestor-or-self::apiPackage/apiName,'.')">
-									<xsl:call-template name="getRelativePath">
-										<xsl:with-param name="currentPath" select="ancestor-or-self::apiPackage/apiName"/>
-									</xsl:call-template>
-								</xsl:if>
-							</xsl:variable>
 							<xsl:if test="string-length($methodNameText) &gt; 0">
-								<xsl:value-of select="concat($relPath,'package.html#',$methodNameText)"/>
+								<xsl:value-of select="concat('package.html#',$methodNameText)"/>
 							</xsl:if>
 						</xsl:if>
 						<xsl:if test="string-length($classNameText) = 0">
@@ -4071,6 +3820,6 @@
 	</xsl:template>
 	<xsl:template name="insertAIRIcon">
 		<xsl:param name="baseRef"/>
-		<img src="{$baseRef}images/AirIcon12x12.gif" width="12" height="12" hspace="0" vspace="0" alt="AIR-only" title="Only available in the AIR runtime"/>
+		<img src="images/AirIcon12x12.gif" width="12" height="12" hspace="0" vspace="0" alt="AIR-only" title="Only available in the AIR runtime"/>
 	</xsl:template>
 </xsl:stylesheet>

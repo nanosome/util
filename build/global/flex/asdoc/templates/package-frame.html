@@ -1,19 +1,195 @@
 <html>
-<head>
-    <title>ActionScript 3.0 Language and Components Reference</title>
-	<link rel="shortcut icon" href="images/favicon.ico"/>
-</head>
-<frameset rows="40%,60%" border="2" framespacing="1" bordercolor="#AAAAAA">
-    <frame src="package-list.html" name="packageListFrame" scrolling="yes" />
-    <frame src="all-classes.html" name="classListFrame" scrolling="yes" />
-    <noframes>
-        <body>
-            <h2>Frame Alert</h2>
-            <p>This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client.
-                <br />
-                Link to<a href="package-summary.html">Non-frame version.</a>
-            </p>
-        </body>
-    </noframes>
-</frameset>
+	<head>
+		<link type="text/css" rel="stylesheet" media="screen" href="style.css">
+		<link type="text/css" rel="stylesheet" media="print" href="print.css">
+		<link type="text/css" rel="stylesheet" href="override.css">
+		<link type="text/css" rel="stylesheet" href="shCore.css">
+		<link type="text/css" rel="stylesheet" href="shCoreDefault.css">
+		<script language="javascript" type="text/javascript" src="jquery-1.4.4.min.js"></script>
+		<script language="javascript" type="text/javascript" src="jquery.cookie.js"></script>
+		<script language="javascript" type="text/javascript" src="shCore.js"></script>
+		<script language="javascript" type="text/javascript" src="shBrushAS3.js"></script>
+		<script language="javascript" type="text/javascript" src="jquery.cookie.js"></script>
+		<script language="javascript" type="text/javascript" src="asdoc.js"></script>
+		<script>
+			var anchor = document.location.hash.substr(1);
+			var loc = document.location.href;
+			if( anchor ) {
+				loc = loc.substr(0,loc.length-anchor.length-1);
+			}
+			var lI = loc.lastIndexOf("/");
+			var pkg = loc;
+			if( lI ) {
+				pkg = pkg.substr( 0,  lI+1 );
+			}
+			
+			var contentHref;
+			
+			function scrollToAnchor( reset ) {
+				if( anchor ) {
+					var offset = $( 'a#' + anchor + ',a[name="'+anchor+'"]').offset();
+					if( offset ) {
+						$(window).scrollTop( offset.top );
+					}
+				} else if( reset ) {
+					$(window).scrollTop( 0 );
+				}
+			}
+			
+			function getUrlFromHash( hash ) {
+				var parts = /#([a-zA-Z0-9.\/-]*)(#(.*))?/.exec(hash);
+				var url;
+				if( parts ) {
+					url = parts[1];
+					if( parts[3] ) {
+						url += "#" + parts[3];
+					}
+				} else {
+					url = "package-summary.html";
+				}
+				return url;
+			}
+			
+			
+			var formerHash = document.location.hash;
+			function checkHash() {
+				var hash = document.location.hash;
+				if( hash != formerHash ) {
+					formerHash = hash;
+					loadUrl( getUrlFromHash( hash ) );
+				}
+			}
+			
+			function updateHash() {
+				var hash = contentHref;
+				if( anchor ) {
+					hash += '#' + anchor;
+				}
+				document.location.href = loc+"#"+hash;
+				formerHash = "#" + hash;
+			}
+			
+			var request;
+			var useSWFRequest = $.browser.webkit && loc.indexOf("file://") == 0;
+			
+			function loadUrl( href ) {
+				var i = href.indexOf("#");
+				var newAnchor = null;
+				if( i != -1 ) {
+					newAnchor = href.substr(i+1);
+					href = href.substr(0,i);
+				}
+				if( href.indexOf( loc ) == 0 ) {
+					href = href.substr( loc.length );
+				}
+				if( href.indexOf( pkg ) == 0 ) {
+					href = href.substr( pkg.length );
+				}
+				if( href != "" && !(/\w*:\/\//).test(href) ) {
+					anchor = newAnchor;
+					contentHref = href;
+					if( container ) {
+						$("a").unbind("click");
+						updateHash();
+						if( request ) {
+							try {
+								request.abort();
+							} catch(e){}
+						}
+						if( container ) {
+							if( useSWFRequest ) {
+								request = new SWFHttpRequest();
+								request.open( 'GET', href );
+								request.onreadystatechange = function(){
+									if (this.readyState!=4) return;
+									if (this == request ) {
+										if (this.status==200) {
+											wrap(this.responseText);
+										} else {
+											wrap("...not found");
+										}
+									}
+								};
+								request.send( '' );
+							} else {
+								container.load( href +" #body", markPage );
+							}
+						}
+					}
+				} else if( href == "" ) {
+					if( anchor != newAnchor ) {
+						anchor = newAnchor;
+						updateHash();
+						scrollToAnchor();
+					}
+				} else {
+					return true;
+				} 
+				return false;
+			}
+			
+			var container;
+			var currentContent;
+			
+			function initialLoad() {
+				container = $("#loadContainer");
+				loadUrl( getUrlFromHash( document.location.hash ) );
+				setInterval( checkHash, 250 );
+			}
+			
+			function wrap( content ) {
+				
+				if( currentContent ) {
+					currentContent.remove();
+				}
+				
+				var rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+				
+				if( content ) {
+					currentContent = $("<div/>").append( content.replace(rscript, "") ).find( "#body" ).appendTo( container );
+					
+				}
+				markPage();
+			}
+			
+			function markPage() {
+				configPage();
+				$("a").click( function() {
+					if( this.className == "noFramesLink" ) {
+						parent.location.href = contentHref;
+						return false;
+					}
+					return loadUrl( this.href );
+				} );
+				scrollToAnchor( true );
+			}
+		</script>
+	</head>
+	<body class="framed">
+		<script language="javascript">
+			if( useSWFRequest ) {
+				document.write( 
+					'<object'
+					+'	id="swfhttprequest" class="hidden"'
+					+'	classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"'
+					+'	codebase="http://fpdownload.adobe.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0">'
+					+'	<param name="movie" value="images/swfhttprequest.swf" />'
+					+'	<param name="allowScriptAccess" value="always" />'
+					+'	<param name="flashVars" value="onload=initialLoad" />'
+					+'	<embed'
+					+'		class="hidden"'
+					+'		src="images/swfhttprequest.swf"'
+					+'		flashVars="onload=initialLoad"'
+					+'		allowScriptAccess="always"'
+					+'		type="application/x-shockwave-flash"'
+					+'		pluginspage="http://www.adobe.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">'
+					+'	</embed>'
+					+'</object>'
+				);
+			} else {
+				$(document).ready( initialLoad );
+			}
+		</script>
+		<div id="loadContainer" />
+	</body>
 </html>
