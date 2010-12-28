@@ -931,9 +931,7 @@
 														<xsl:when test="$prog_language_name='javascript'"/>
 														<xsl:otherwise>
 															<a href="#{.}">
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key" select="."/>
-																</xsl:call-template>
+																<xsl:call-template name="getLocalizedString"><xsl:with-param name="key" select="."/></xsl:call-template>
 															</a>
 														</xsl:otherwise>
 													</xsl:choose>
@@ -943,9 +941,7 @@
 														<xsl:when test="$prog_language_name='javascript'"/>
 														<xsl:otherwise>
 															<a href="all-index-{.}.html">
-																<xsl:call-template name="getLocalizedString">
-																	<xsl:with-param name="key" select="."/>
-																</xsl:call-template>
+																<xsl:call-template name="getLocalizedString"><xsl:with-param name="key" select="."/></xsl:call-template>
 															</a>
 														</xsl:otherwise>
 													</xsl:choose>
@@ -1022,13 +1018,11 @@
 			<!-- TODO handle more variations (override,final?) -->
 			<xsl:if test="apiOperationDetail/apiOperationDef/apiStatic">
 				<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'StaticMethodIn']]/entry[2]/p"/>
-				<xsl:text>, </xsl:text>
 			</xsl:if>
 			<xsl:if test="not(apiOperationDetail/apiOperationDef/apiStatic)">
 				<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Method']]/entry[2]/p"/>
-				<xsl:text>, </xsl:text>
 			</xsl:if>
-			<xsl:text> </xsl:text>
+			<xsl:text>,  </xsl:text>
 			<xsl:if test="../apiClassifierDetail/apiClassifierDef/apiInterface">
 				<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'InterfaceIn']]/entry[2]/p"/>
 			</xsl:if>
@@ -1043,12 +1037,11 @@
 		<xsl:if test="parent::apiPackage">
 			<xsl:if test="apiOperationDetail/apiOperationDef/apiStatic">
 				<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PackageStaticFunctionIn']]/entry[2]/p"/>
-				<xsl:text>, </xsl:text>
 			</xsl:if>
 			<xsl:if test="not(apiOperationDetail/apiOperationDef/apiStatic)">
 				<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PackageFunctionIn']]/entry[2]/p"/>
-				<xsl:text>, </xsl:text>
 			</xsl:if>
+			<xsl:text>, </xsl:text>
 			<xsl:variable name="isTopLevel">
 				<xsl:call-template name="isTopLevel">
 					<xsl:with-param name="packageName" select="ancestor::apiPackage/apiName"/>
@@ -1093,23 +1086,20 @@
 				<xsl:if test="apiValueDetail/apiValueDef/apiStatic">
 					<xsl:if test="not(apiValueDetail/apiValueDef/apiProperty)">
 						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ConstantStaticPropertyIn']]/entry[2]/p"/>
-						<xsl:text>,</xsl:text>
 					</xsl:if>
 					<xsl:if test="apiValueDetail/apiValueDef/apiProperty">
 						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'StaticPropertyIn']]/entry[2]/p"/>
-						<xsl:text>,</xsl:text>
 					</xsl:if>
 				</xsl:if>
 				<xsl:if test="not(apiValueDetail/apiValueDef/apiStatic)">
 					<xsl:if test="not(apiValueDetail/apiValueDef/apiProperty)">
 						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ConstantPropertyIn']]/entry[2]/p"/>
-						<xsl:text>,</xsl:text>
 					</xsl:if>
 					<xsl:if test="apiValueDetail/apiValueDef/apiProperty">
 						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PropertyIn']]/entry[2]/p"/>
-						<xsl:text>,</xsl:text>
 					</xsl:if>
 				</xsl:if>
+				<xsl:text>,</xsl:text>
 			</xsl:if>
 			<xsl:text> </xsl:text>
 			<xsl:if test="../apiClassifierDetail/apiClassifierDef/apiInterface">
@@ -1127,39 +1117,32 @@
 			<xsl:if test="apiValueDetail/apiValueDef/apiStatic">
 				<xsl:if test="not(apiValueDetail/apiValueDef/apiProperty)">
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PackageConstantStaticPropertyIn']]/entry[2]/p"/>
-					<xsl:text>, </xsl:text>
 				</xsl:if>
 				<xsl:if test="apiValueDetail/apiValueDef/apiProperty">
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PackageStaticPropertyIn']]/entry[2]/p"/>
-					<xsl:text>, </xsl:text>
 				</xsl:if>
 			</xsl:if>
 			<xsl:if test="not(apiValueDetail/apiValueDef/apiStatic)">
 				<xsl:if test="not(apiValueDetail/apiValueDef/apiProperty)">
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PackageConstantPropertyIn']]/entry[2]/p"/>
-					<xsl:text>, </xsl:text>
 				</xsl:if>
 				<xsl:if test="apiValueDetail/apiValueDef/apiProperty">
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Package']]/entry[2]/p"/>
 					<xsl:text> </xsl:text>
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Property']]/entry[2]/p"/>
-					<xsl:text>, </xsl:text>
 				</xsl:if>
 			</xsl:if>
+			<xsl:text>, </xsl:text>
 			<xsl:variable name="isTopLevel">
 				<xsl:call-template name="isTopLevel">
 					<xsl:with-param name="packageName" select="ancestor::apiPackage/apiName"/>
 				</xsl:call-template>
 			</xsl:variable>
 			<xsl:if test="$isTopLevel='false'">
-				<a href="{$classPath}/package.html">
-					<xsl:value-of select="ancestor::apiPackage/apiName"/>
-				</a>
+				<a href="{$classPath}/package.html"><xsl:value-of select="ancestor::apiPackage/apiName"/></a>
 			</xsl:if>
 			<xsl:if test="$isTopLevel!='false'">
-				<a href="package.html">
-					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/>
-				</a>
+				<a href="package.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/></a>
 			</xsl:if>
 		</xsl:if>
 		<!-- AS2 lang elements -->

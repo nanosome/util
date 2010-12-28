@@ -669,9 +669,7 @@
 						<xsl:choose>
 							<xsl:when test="$prog_language_name='javascript'"/>
 							<xsl:otherwise>
-								<xsl:variable name="packageName" select="ancestor::apiPackage/apiName"/>
-								<xsl:variable name="packagePath" select="translate($packageName,'.','/')"/>
-								<a href="{$packagePath}/package-detail.html">
+								<a href="package-detail.html" onclick="javascript:loadClassListFrame('class-list.html')">
 									<xsl:if test="string-length(../apiName) &gt; 0 and not($isTopLevel='true')">
 										<xsl:value-of select="../apiName"/>
 									</xsl:if>
@@ -730,7 +728,7 @@
 									</xsl:for-each>
 									<xsl:variable name="h2" select="substring-before($text,':')"/>
 									<xsl:variable name="h1" select="substring-after($text,':')"/>
-									<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
+									<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
 									<xsl:text> </xsl:text>
 									
 									<xsl:if test="count($classHeader_map//apiClassifier[@id=$text] ) &gt; 0">
@@ -776,7 +774,7 @@
 										<xsl:if test="$prog_language_name!='javascript'">
 											<xsl:variable name="h2" select="substring-before($val,':')"/>
 											<xsl:variable name="h1" select="substring-after($val,':')"/>
-											<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
+											<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
 											<xsl:if test="not(contains($val,':'))">
 												<xsl:variable name="global" select="$val"/>
 												<xsl:if test="contains(ancestor::apiClassifier/@id,'globalClassifier:')">
@@ -800,12 +798,12 @@
 													</xsl:if>
 												</xsl:if>
 												<xsl:if test="not(contains(ancestor::apiClassifier/@id,'globalClassifier:'))">
-													<xsl:variable name="file1" select="concat($val,'.html')"/>
+													<xsl:variable name="file1" select="concat($baseRef,$val,'.html')"/>
 													<xsl:variable name="iconRef">
 														<xsl:text>images/inherit-arrow.gif</xsl:text>
 													</xsl:variable>
 													<xsl:text> </xsl:text>
-													<img src="{$iconRef}" title="Inheritance" alt="Inheritance" class="inheritArrow"/>
+													<img src="{$baseRef}{$iconRef}" title="Inheritance" alt="Inheritance" class="inheritArrow"/>
 													<xsl:text> </xsl:text>
 													<xsl:if test="count($classHeader_map//apiClassifier[@id=$val] ) &gt; 0">
 														<a>
@@ -825,7 +823,7 @@
 													<xsl:text>images/inherit-arrow.gif</xsl:text>
 												</xsl:variable>
 												<xsl:text> </xsl:text>
-												<img src="{$iconRef}" title="Inheritance" alt="Inheritance" class="inheritArrow"/>
+												<img src="{$baseRef}{$iconRef}" title="Inheritance" alt="Inheritance" class="inheritArrow"/>
 												<xsl:text> </xsl:text>
 												<xsl:if test="count($classHeader_map//apiClassifier[@id=$val] ) &gt; 0">
 													<a>
@@ -857,9 +855,9 @@
 										<xsl:variable name="val" select="@id"/>
 										<xsl:variable name="h2" select="substring-before($val,':')"/>
 										<xsl:variable name="h1" select="substring-after($val,':')"/>
-										<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
+										<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
 										<xsl:if test="not(contains($val,':'))">
-											<xsl:variable name="file1" select="concat($val,'.html')"/>
+											<xsl:variable name="file1" select="concat($baseRef,$val,'.html')"/>
 											<xsl:text> </xsl:text>
 											<xsl:if test="count($classHeader_map//apiClassifier[@id=$val] ) &gt; 0">
 												<a>
@@ -912,9 +910,9 @@
 												<xsl:variable name="val" select="@id"/>
 												<xsl:variable name="h2" select="substring-before($val,':')"/>
 												<xsl:variable name="h1" select="substring-after($val,':')"/>
-												<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
+												<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
 												<xsl:if test="not(contains($val,':'))">
-													<xsl:variable name="file1" select="concat($val,'.html')"/>
+													<xsl:variable name="file1" select="concat($baseRef,$val,'.html')"/>
 													<xsl:text> </xsl:text>
 													<a>
 														<xsl:attribute name="href">
@@ -940,9 +938,9 @@
 												<xsl:variable name="val" select="substring-after(@id, 'globalClassifier:')"/>
 												<xsl:variable name="h2" select="substring-before($val,':')"/>
 												<xsl:variable name="h1" select="substring-after($val,':')"/>
-												<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
+												<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
 												<xsl:if test="not(contains($val,':'))">
-													<xsl:variable name="file1" select="concat($val,'.html')"/>
+													<xsl:variable name="file1" select="concat($baseRef,$val,'.html')"/>
 													<xsl:text> </xsl:text>
 													<a>
 														<xsl:attribute name="href">
@@ -982,9 +980,9 @@
 									<xsl:variable name="val" select="@id"/>
 									<xsl:variable name="h2" select="substring-before($val,':')"/>
 									<xsl:variable name="h1" select="substring-after($val,':')"/>
-									<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
+									<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
 									<xsl:if test="not(contains($val,':'))">
-										<xsl:variable name="file1" select="concat($val,'.html')"/>
+										<xsl:variable name="file1" select="concat($baseRef,$val,'.html')"/>
 										<xsl:text> </xsl:text>
 										<xsl:choose>
 											<xsl:when test="$prog_language_name='javascript'"/>
@@ -1015,9 +1013,9 @@
 									<xsl:variable name="val" select="substring-after(@id, 'globalClassifier:')"/>
 									<xsl:variable name="h2" select="substring-before($val,':')"/>
 									<xsl:variable name="h1" select="substring-after($val,':')"/>
-									<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
+									<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
 									<xsl:if test="not(contains($val,':'))">
-										<xsl:variable name="file1" select="concat($val,'.html')"/>
+										<xsl:variable name="file1" select="concat($baseRef,$val,'.html')"/>
 										<xsl:text> </xsl:text>
 										<xsl:choose>
 											<xsl:when test="$prog_language_name='javascript'"/>
@@ -1062,6 +1060,7 @@
 			      <xsl:for-each select="prolog/asMetadata/Alternative">
 				<xsl:variable name="replacement" select="@replacement"/>
 				<xsl:variable name="version" select="@since"/>
+				<xsl:variable name="baseref" select="$baseRef"/>
 				<xsl:choose>
 				  <xsl:when test="$replacement='none'">
 				    <tr>
@@ -1079,13 +1078,13 @@
 				      <xsl:variable name="class" select="substring-after(substring-after($replacement,'.'),'.')"/>
 				      <xsl:variable name="alt.pkg" select="substring-before($replacement,concat('.',$class))"/>
 				      <xsl:variable name="pkg.path" select="translate($alt.pkg,'.','/')"/>
-				      <xsl:value-of select="concat($pkg.path,'/',$class,'.html')"/>
+				      <xsl:value-of select="concat($baseref,$pkg.path,'/',$class,'.html')"/>
 				    </xsl:variable>
 				    <xsl:variable name="replace.version" select="replace($desc.terms,'%ver%',$version)"/>
 				    <tr>
 				      <td bgcolor="#FFFFCC">
 					
-					<img src="images/P_AlternativeMetadataIndicator_30x28_N.png" />
+					<img src="{$baseRef}images/P_AlternativeMetadataIndicator_30x28_N.png" />
 				      </td>
 				      <td bgcolor="#FFFFCC">
 					<xsl:value-of select="substring-before($replace.version,'%class%')"/>
@@ -1124,14 +1123,14 @@
 				</span>
 				<span id="showMxmlLink" style="display:none">
 					<a href="#mxmlSyntaxSummary" onclick="toggleMXMLOnly();">
-						<img src="images/collapsed.gif" title="collapsed" alt="collapsed" class="collapsedImage"/>
+						<img src="{$baseRef}images/collapsed.gif" title="collapsed" alt="collapsed" class="collapsedImage"/>
 						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowMXMLSyntax']]/entry[2]/p"/>
 					</a>
 					<xsl:text disable-output-escaping="yes">&lt;br/&gt;</xsl:text>
 				</span>
 				<span id="hideMxmlLink">
 					<a href="#mxmlSyntaxSummary" onclick="toggleMXMLOnly();">
-						<img src="images/expanded.gif" title="expanded" alt="expanded" class="expandedImage"/>
+						<img src="{$baseRef}images/expanded.gif" title="expanded" alt="expanded" class="expandedImage"/>
 						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideMXMLSyntax']]/entry[2]/p"/>
 					</a>
 				</span>

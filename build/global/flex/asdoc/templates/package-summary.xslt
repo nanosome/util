@@ -65,7 +65,6 @@
 					<xsl:with-param name="showPackages" select="false()"/>
 				</xsl:call-template>
 				<div class="MainContent">
-					<br/>
 					<xsl:variable name="overviews" select="document($overviewsFile)/overviews"/>
 					<p>
 						<xsl:choose>
@@ -85,11 +84,12 @@
 							<xsl:with-param name="xrefId" select="'all-packages'"/>
 						</xsl:call-template>
 					</xsl:for-each>
-					<br/>
-					<table cellpadding="3" cellspacing="0" class="summaryTable">
+				</div>
+				<div class="summarySection">
+					<table cellpadding="3" cellspacing="0">
 						<tr>
 							<th width="30%">
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Package']]/entry[2]/p"/>
+							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Package']]/entry[2]/p"/>
 							</th>
 							<th width="70%">
 								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Description']]/entry[2]/p"/>
@@ -172,11 +172,10 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</table>
-					<p/>
-					<center class="copyright">
-						<xsl:copy-of select="$copyright"/>
-					</center>
 				</div>
+				<center class="copyright">
+					<xsl:copy-of select="$copyright"/>
+				</center>
 				<xsl:if test="$config/options[@livedocs='true']">
 					<div class="separator">&#160;</div>
 					<xsl:comment>BEGIN IONCOMMENTS</xsl:comment>

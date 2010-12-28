@@ -64,6 +64,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
+				
 				<xsl:variable name="xrefPackageName">
 					<xsl:choose>
 						<xsl:when test="$isTopLevel='true'">__Global__</xsl:when>
@@ -132,7 +133,7 @@
 									<xsl:with-param name="showPackageProperties" select="boolean(number($hasFields))"/>
 									<xsl:with-param name="showPackageFunctions" select="boolean(number($hasFunctions))"/>
 								</xsl:call-template>
-								<div class="MainContent">
+							<div class="MainContent">
 									<xsl:apply-templates mode="annotate" select="$config/annotate/item[@type='package' and @name=$name and string-length($name) and tokenize($name,',')[starts-with($pname,.)]]"/>
 									<br/>
 									<xsl:if test="$hasFields">
@@ -171,13 +172,11 @@
 										<xsl:call-template name="fieldSummary">
 											<xsl:with-param name="isGlobal" select="$isTopLevel='true'"/>
 											<xsl:with-param name="showAnchor" select="false()"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
-										<xsl:if test="boolean(number($hasFunctions)) or boolean(number($hasConstants))">
-											<br/>
-											<br/>
-										</xsl:if>
 									</xsl:if>
+									</div>
 									<xsl:if test="$hasFunctions">
 										<a name="methodSummary"/>
 										<xsl:variable name="packageComments" select="document($packageOverviewFile)/overviews/packages/package[@name=$pname]"/>
@@ -216,12 +215,9 @@
 											<xsl:with-param name="title" select="$asdoc_terms/row[entry[1][p/text() = 'Functions']]/entry[2]/p"/>
 											<xsl:with-param name="isGlobal" select="$isTopLevel='true'"/>
 											<xsl:with-param name="showAnchor" select="false()"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
-										<xsl:if test="boolean(number($hasConstants))">
-											<br/>
-											<br/>
-										</xsl:if>
 									</xsl:if>
 									<xsl:if test="$hasConstants">
 										<a name="constantSummary"/>
@@ -260,10 +256,11 @@
 											<xsl:with-param name="isConst" select="'true'"/>
 											<xsl:with-param name="isGlobal" select="$isTopLevel='true'"/>
 											<xsl:with-param name="showAnchor" select="false()"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 									</xsl:if>
-									<!--<xsl:apply-templates select="apiValue" mode="detail"/>-->
+									<div class="MainContent">
 									<!-- CONSTANT DETAILS FOR PACKAGES-->
 									<xsl:if test="boolean(number($hasConstants))">
 										<div class="detailSectionHeader">
@@ -274,6 +271,7 @@
 									</xsl:if>
 									<xsl:apply-templates select="apiValue[not(apiValueDetail/apiValueDef/apiProperty)]" mode="detail">
 										<xsl:with-param name="isConst" select="'true'"/>
+										<xsl:with-param name="baseRef" select="$baseRef"/>
 									</xsl:apply-templates>
 									<!--END OF CONSTANT DETAILS-->
 									<!--FUNCTION DETAILS -->
@@ -284,6 +282,7 @@
 												<xsl:with-param name="key">FunctionDetail</xsl:with-param>
 											</xsl:call-template>
 										</xsl:with-param>
+										<xsl:with-param name="baseRef" select="$baseRef"/>
 									</xsl:call-template>
 									<!--END OF FUNCTION DETAILS -->
 									<!--PROPERTIES DETAILS -->
@@ -343,7 +342,7 @@
 									<xsl:comment>#include virtual="ionComments.ssi"</xsl:comment>
 									<p id="creativecommons" class="creativecommons">
 										<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
-											<img id="creativecommons_img" src="images/CC.png"/>
+											<img id="creativecommons_img" src="{$baseRef}images/CC.png"/>
 										</a>
 									</p>
 									<xsl:comment>#include virtual="/livedocs/googleAnalytics.ssi"</xsl:comment>

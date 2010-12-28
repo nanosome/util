@@ -1,3 +1,4 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 <html>
 	<head>
 		<link type="text/css" rel="stylesheet" media="screen" href="style.css">
@@ -5,11 +6,14 @@
 		<link type="text/css" rel="stylesheet" href="override.css">
 		<link type="text/css" rel="stylesheet" href="shCore.css">
 		<link type="text/css" rel="stylesheet" href="shCoreDefault.css">
+		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 		<script language="javascript" type="text/javascript" src="jquery-1.4.4.min.js"></script>
 		<script language="javascript" type="text/javascript" src="jquery.cookie.js"></script>
+		<script language="javascript" type="text/javascript" src="jquery-ui.js"></script>
 		<script language="javascript" type="text/javascript" src="shCore.js"></script>
 		<script language="javascript" type="text/javascript" src="shBrushAS3.js"></script>
 		<script language="javascript" type="text/javascript" src="jquery.cookie.js"></script>
+		<script language="javascript" type="text/javascript" src="asdoc.en.js"></script>
 		<script language="javascript" type="text/javascript" src="asdoc.js"></script>
 		<script>
 			var anchor = document.location.hash.substr(1);
@@ -24,6 +28,18 @@
 			}
 			
 			var contentHref;
+			
+			var noFramesLink = document.createElement('a');
+			noFramesLink.innerHTML = terms.NoFrames;
+			noFramesLink.target = "_parent";
+			
+			function updateNoFramesLink() {
+				if( anchor ) {
+					noFramesLink.href = contentHref + "#" + anchor;
+				} else {
+					noFramesLink.href = contentHref;
+				}
+			}
 			
 			function scrollToAnchor( reset ) {
 				if( anchor ) {
@@ -67,6 +83,7 @@
 				}
 				document.location.href = loc+"#"+hash;
 				formerHash = "#" + hash;
+				updateNoFramesLink();
 			}
 			
 			var request;
@@ -130,11 +147,51 @@
 			
 			var container;
 			var currentContent;
+			var packageFrame;
+			var indexFrame;
+			var titleTable;
+			var titleTds;
+			var verticalSlice;
+			var horizontalSlice;
+			
+			function sliceVertical() {
+				if( titleTable ) {
+					var left = verticalSlice.offset().left;
+					titleTds.css( "padding-left", left+4 );
+					container.css("left", left+4 );
+					packageFrame.css("width", left );
+					horizontalSlice.css("width", left);
+					indexFrame.css("width", left );
+				}
+			}
+			
+			function sliceHorizontal() {
+				
+				var top = horizontalSlice.css("top")
+				packageFrame.css("height", top);
+				indexFrame.css("top", top);
+			}
 			
 			function initialLoad() {
 				container = $("#loadContainer");
+				packageFrame = $("#packages");
+				indexFrame = $("#index");
 				loadUrl( getUrlFromHash( document.location.hash ) );
 				setInterval( checkHash, 250 );
+				verticalSlice = $("#vertical-slice");
+				verticalSlice.draggable({
+					containment: document.body,
+					axis: "x",
+					drag: sliceVertical,
+					stop: sliceVertical
+				});
+				horizontalSlice = $("#horizontal-slice");
+				horizontalSlice.draggable({
+					//containment: document.body,
+					axis: "y",
+					drag: sliceHorizontal,
+					stop: sliceHorizontal
+				});
 			}
 			
 			function wrap( content ) {
@@ -147,21 +204,54 @@
 				
 				if( content ) {
 					currentContent = $("<div/>").append( content.replace(rscript, "") ).find( "#body" ).appendTo( container );
-					
 				}
 				markPage();
 			}
 			
+			var worker = $();
+			
+			function openPage() {
+				loadUrl( this.href );
+				return false;
+			}
+			
+			function changeHref( href ) {
+				if ( /^#/.test( href ) ) {
+					return contentHref + href;
+				} else if( ! (/^\w*:\/\//).test( href ) ) {
+					return removeBackRefs( contentHref + "/../" + href );
+				}
+			}
+			
 			function markPage() {
 				configPage();
-				$("a").click( function() {
-					if( this.className == "noFramesLink" ) {
-						parent.location.href = contentHref;
-						return false;
-					}
-					return loadUrl( this.href );
-				} );
 				scrollToAnchor( true );
+				$("a").each( function() {
+					var href = changeHref( this.getAttribute("href") );
+					if( href ) {
+						this.setAttribute( "href", href );
+					}
+					
+					var target = this.getAttribute( "target" );
+					if( !target || target == "_self" ) {
+						jQuery.event.add( this, "click", openPage );
+					}
+				} );
+				
+				$("img").each( function() {
+					var src = changeHref( this.getAttribute("src") );
+					if( src ) {
+						this.setAttribute( "src", src );
+					}
+				});
+				
+				titleTable = $("table#titleTable" );
+				titleTds = $("#subTitle, .logo", titleTable);
+				$(" td.titleTableTopNav", titleTable ).append( noFramesLink );
+				
+				updateNoFramesLink();
+				sliceVertical();
+				sliceHorizontal();
 			}
 		</script>
 	</head>
@@ -190,6 +280,12 @@
 				$(document).ready( initialLoad );
 			}
 		</script>
-		<div id="loadContainer" />
+		<div id="packages">
+			<h3><a href="package-summary.html" style="color:black">Packages</a></h3><div class="linkList"><a href="nanosome/util/package-detail.html">nanosome.util</a><a href="nanosome/util/access/package-detail.html">nanosome.util.access</a><a href="nanosome/util/list/package-detail.html">nanosome.util.list</a><a href="nanosome/util/list/fnc/package-detail.html">nanosome.util.list.fnc</a><a href="nanosome/util/normalize/package-detail.html">nanosome.util.normalize</a><a href="nanosome/util/pool/package-detail.html">nanosome.util.pool</a></div></div>
+		</div>
+		<div id="index"></div>
+		<div id="loadContainer"></div>
+		<div id="vertical-slice"></div>
+		<div id="horizontal-slice"></div>
 	</body>
 </html>

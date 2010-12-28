@@ -1,37 +1,21 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  ADOBE SYSTEMS INCORPORATED
-//  Copyright 2006-2008 Adobe Systems Incorporated
-//  All Rights Reserved.
-//
-//  NOTICE: Adobe permits you to use, modify, and distribute this file
-//  in accordance with the terms of the license agreement accompanying it.
-// 
-//  Heavily modified by Martin Heidegger
-//
-////////////////////////////////////////////////////////////////////////////////
 var anchor = document.location.hash.substr(1);
 var loc = document.location.href;
 if( anchor ) {
 	loc = loc.substr(0,loc.length-anchor.length-1);
 }
+function removeBackRefs( href ) {
+	href = href.split("/");
+	for( var i = 0; i<href.length;++i ) {
+		if( href[i] == ".." ) {
+			href.splice(i-1,2);
+			i-=2;
+		};
+	}
+	return href.join('/');
+}
 function configPage() {
 	
-	var subNav =  $('#subNav');
-	
-	if( window != window.top ) {
-		$("body").addClass("framed");
-	}
-	
-	$( "a:gt(0)", subNav ).before("<span>&nbsp;|&nbsp;</span>");
-	$( "a:[href]" ).each( function() {
-		
-		var a = $(this);
-		var href = a.attr("href");
-		if( href.charAt(0) == "#" ) {
-			a.attr("href", loc+href);
-		}
-	});
+	$( "#subNav a:gt(0)" ).before("<span>|</span>");
 	
 	$( ".framesLink" ).click( function() {
 		if( document.location.hash ) {
@@ -42,20 +26,32 @@ function configPage() {
 		return false;
 	});
 	
+	$( ".summarySection>table" ).each( function() {
+		var id = this.parentNode.id.substr( 12 );
+		var inheritedRows = $( 'tbody>tr.inherited', this );
+		var rows = $( 'tbody>tr', this );
+		if( rows.length == inheritedRows.length ) {
+			$( this ).addClass( "hideInherited" );
+		}
+		if( inheritedRows.length > 0 ) {
+			$( '<span class="hideInherited">' + terms["Hide"+id] + '</span>' ).insertBefore( this ).click( function() {
+				setInheritedVisible( false, "showInherited"+id );
+			});
+			$( '<span class="showInherited">' + terms["Show"+id] + '</span>' ).insertBefore( this ).click( function() {
+				setInheritedVisible( true, "showInherited"+id );
+			});
+		}
+	});
+	
 	// ZEBRA Effect for tables
-	$( ["Property","Method","ProtectedMethod","Event","Style","SkinPart","SkinState","Constant","ProtectedConstant"] ).each( function( no, selectorText) {
+	$( "div.summarySection>table" ).each( function( no, selectorText) {
 		var even = false;
-		$( "#summaryTable" + selectorText + ">tbody>tr" ).each( function( no, elem ) {
-			$(elem).addClass( even ? "row0" : "row1" );
-			even = !even;
+		$( "tbody>tr", this ).each( function() {
+			$(this).addClass( (even = !even) ? "row0" : "row1" );
 		} );
 	} );
 	
-	$( ["Constant","ProtectedConstant","Property","ProtectedProperty","Method","ProtectedMethod","Event","Style","SkinPart","SkinState","Effect"] ).each( function( no, selectorText ) {
-		setInheritedVisible( $.cookie("showInherited"+selectorText) == "true", selectorText );
-	});
-	
-	SyntaxHighlighter.all();
+	SyntaxHighlighter.highlight();
 }
 function setMXMLOnly() {
     if( $.cookie("showMXML") == "false" ) toggleMXMLOnly();
@@ -81,35 +77,54 @@ function toggleMXMLOnly() {
         $.cookie( "showMXML", mxmlDiv.style.display == "none" ? "true" : "false", { expires: 3000, path: "/", domain: document.location.domain } );
     }
 }
-function setInheritedVisible(show, selectorText)
-{
-    if (document.styleSheets[0].cssRules != undefined)
-    {
-        var rules = document.styleSheets[0].cssRules;
-        for (var i = 0; i < rules.length; i++)
-        {
-            if (rules[i].selectorText == ".hideInherited" + selectorText)
-                rules[i].style.display = show ? "" : "none";
-                
-            if (rules[i].selectorText == ".showInherited" + selectorText)
-                rules[i].style.display = show ? "none" : "";
-        }
-    }
-    else
-    {
-        document.styleSheets[0].addRule(".hideInherited" + selectorText, show ? "display:inline" : "display:none");
-        document.styleSheets[0].addRule(".showInherited" + selectorText, show ? "display:none" : "display:inline");
-    }
-    $.cookie("showInherited" + selectorText, show ? "true" : "false", { expires: 3000, path: "/", domain: document.location.domain } );
-	
-	var even = false;
-    var table = $("#summaryTable" + selectorText + ">tbody>tr").each( function( no, e ) {
-		var elem = $(e);
-		if( elem.hasClass("hideInherited") || show ) {
-			elem.addClass( even ? "row0" : "row1" );
-			even = !even;
-		}
-	});
+
+function setInheritedVisible(show, cls) {
+	$( document.body ).toggleClass( cls );
+	$.cookie( cls, show ? "true" : "false", { expires: 3000, path: "/", domain: document.location.domain } );
 }
 
-$(document).ready(configPage);
+var inheritedTypes = ["Constant","ProtectedConstant","Property","ProtectedProperty","Method","ProtectedMethod","Event","Style","SkinPart","SkinState","Effect"];
+
+$(document).ready( function(){
+	configPage();
+	$( "body" ).addClass( "jsEnabled" );
+	$( "table#titleTable td.titleTableTopNav" ).each(function() {
+		var link = document.createElement("a");
+		link.innerHTML = terms.Frames;
+		var l = loc.split('/');
+		l.pop();
+		l = removeBackRefs( l.join('/') + '/' + baseRef );
+		l = loc.substr( l.length );
+		link.href = baseRef + "index.html#" + l;
+		if( document.location.hash ) {
+			link.href += document.location.hash;
+		}
+		link.onclick = function() {
+			this.href = baseRef + "index.html#" + l;
+			if( document.location.hash ) {
+				this.href += document.location.hash;
+			}
+		}
+		this.appendChild( link );
+	});
+	
+	var bodycls = document.body.className;
+	$( inheritedTypes ).each( function() {
+		var cls = "showInherited"+this;
+		if( $.cookie(cls) == "true" ) {
+			bodycls += " "+cls;
+		}
+	});
+	
+	document.body.className = bodycls;
+});
+
+var s = ".hideInherited { display: none; }\n";
+$( inheritedTypes ).each( function() {
+	s += 'body.showInherited'+this+' #summaryTable'+this+' .showInherited { display: none; }\n'
+		+ 'body.showInherited'+this+' #summaryTable'+this+' span.hideInherited { display: inline; }\n'
+		+ 'body.showInherited'+this+' #summaryTable'+this+' table.hideInherited { display: ' + ($.browser.msie ? 'block' : 'table' ) + '; }\n'
+		+ 'body.showInherited'+this+' #summaryTable'+this+' tr.inherited { display: ' + ($.browser.msie ? 'block' : 'table-row' ) + '; }\n';
+});
+
+document.write( '<style type="text/css">' + s + '</style>' );

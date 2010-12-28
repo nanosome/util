@@ -60,7 +60,6 @@
 					<xsl:with-param name="showAllClasses" select="false()"/>
 				</xsl:call-template>
 				<div class="MainContent">
-					<br/>
 					<xsl:variable name="overviews" select="document($overviewsFile)/overviews"/>
 					<p>
 						<xsl:choose>
@@ -80,19 +79,23 @@
 							<xsl:with-param name="xrefId" select="'all-classes'"/>
 						</xsl:call-template>
 					</xsl:for-each>
-					<br/>
-					<table cellpadding="3" cellspacing="0" class="summaryTable">
-						<tr>
-							<th width="20%">
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ClassClass']]/entry[2]/p"/>
-							</th>
-							<th width="20%">
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PackagePackage']]/entry[2]/p"/>
-							</th>
-							<th width="60%">
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Description']]/entry[2]/p"/>
-							</th>
-						</tr>
+				</div>
+				<div class="summarySection" id="summaryClasses">
+					<table cellpadding="3" cellspacing="0">
+						<thead>
+							<tr>
+								<th class="type">
+									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ClassClass']]/entry[2]/p"/>
+								</th>
+								<th class="package">
+									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PackagePackage']]/entry[2]/p"/>
+								</th>
+								<th class="description">
+									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Description']]/entry[2]/p"/>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
 						<xsl:for-each select="allClasses/apiPackage//apiClassifier[starts-with(../apiName,$useFilter) or ($useFilter='flash.' and ../apiName='__Global__')]">
 							<xsl:sort select="./apiName" order="ascending" data-type="text" lang="en-US"/>
 							<xsl:variable name="name" select="./apiName"/>
@@ -107,8 +110,8 @@
 									</xsl:otherwise>
 								</xsl:choose>
 							</xsl:variable>
-							<tr class="prow{position() mod 2}">
-								<td class="summaryTableSecondCol">
+							<tr>
+								<td class="type">
 									<xsl:choose>
 										<xsl:when test="$classPath">
 											<a href="{$classPath}/{$name}.html">
@@ -154,7 +157,7 @@
 										</xsl:otherwise>
 									</xsl:choose>
 								</td>
-								<td class="summaryTableCol">
+								<td class="package">
 									<xsl:if test="$classPath and string-length(normalize-space($classPath)) &gt; 0 and not($classPath='.')">
 										<a href="{$classPath}/package-detail.html"><xsl:value-of select="$packageName"/></a>
 									</xsl:if>
@@ -162,7 +165,7 @@
 										<a href="package-detail.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevel']]/entry[2]/p"/></a>
 									</xsl:if>
 								</td>
-								<td class="summaryTableLastCol">
+								<td class="description">
 									<xsl:if test="deprecated">
 										<xsl:apply-templates select="deprecated"/>
 									</xsl:if>
@@ -177,12 +180,12 @@
 								</td>
 							</tr>
 						</xsl:for-each>
+						</tbody>
 					</table>
-					<p/>
-					<center class="copyright">
-						<xsl:copy-of select="$copyright"/>
-					</center>
 				</div>
+				<center class="copyright">
+					<xsl:copy-of select="$copyright"/>
+				</center>
 			</div></body>
 		</html>
 	</xsl:template>

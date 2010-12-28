@@ -128,7 +128,7 @@
 										<xsl:call-template name="getPageTitlePostFix"/>
 									</title>
 									<xsl:if test="$showIncludeExamples='true' and apiClassifierDetail/example/codeblock">
-										<script src="AC_OETags.js" type="text/javascript"/>
+										<script src="{$baseRef}AC_OETags.js" type="text/javascript"/>
 									</xsl:if>
 								</head>
 								<body><div id="body" class="content">
@@ -153,6 +153,7 @@
 										<!--  PUBLIC PROPERTY SUMMARY-->
 										<xsl:call-template name="fieldSummary">
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 											<xsl:with-param name="isConst" select="'false'"/>
 										</xsl:call-template>
@@ -160,6 +161,7 @@
 										<xsl:call-template name="fieldSummary">
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
 											<xsl:with-param name="accessLevel" select="'protected'" as="xs:string"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 											<xsl:with-param name="isConst" select="'false'"/>
 										</xsl:call-template>
@@ -175,12 +177,14 @@
 										<xsl:call-template name="methodSummary">
 											<xsl:with-param name="className" select="$name"/>
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 										<!--  PROTECTED METHOD SUMMARY-->
 										<xsl:call-template name="methodSummary">
 											<xsl:with-param name="className" select="$name"/>
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="accessLevel" select="'protected'"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
@@ -195,6 +199,7 @@
 										<!--  EVENT SUMMARY-->
 										<xsl:call-template name="eventsGeneratedSummary">
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 									</xsl:for-each>
@@ -208,6 +213,7 @@
 										<!-- STYLE SUMMARY-->
 										<xsl:call-template name="stylesSummary">
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 									</xsl:for-each>
@@ -221,6 +227,7 @@
 									    </xsl:variable>
 									    <xsl:call-template name="SkinPartSummary">
 									      <xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+									      <xsl:with-param name="baseRef" select="$baseRef"/>
 									      <xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 									    </xsl:call-template>
 									  </xsl:for-each> 
@@ -233,6 +240,7 @@
 									    </xsl:variable>
 									    <xsl:call-template name="SkinStateSummary">
 									      <xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+									      <xsl:with-param name="baseRef" select="$baseRef"/>
 									      <xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 									    </xsl:call-template>
 									  </xsl:for-each> 
@@ -248,6 +256,7 @@
 										<!-- EFFECT SUMMARY-->
 										<xsl:call-template name="effectsSummary">
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 									</xsl:for-each>
@@ -262,6 +271,7 @@
 										<xsl:call-template name="fieldSummary">
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
 											<xsl:with-param name="isConst" select="'true'" as="xs:string"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 										<!--  PROTECTED CONSTANT SUMMARY-->
@@ -269,6 +279,7 @@
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
 											<xsl:with-param name="isConst" select="'true'" as="xs:string"/>
 											<xsl:with-param name="accessLevel" select="'protected'" as="xs:string"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="interfaces" select="$interfaces" tunnel="yes"/>
 										</xsl:call-template>
 									</xsl:for-each>
@@ -277,6 +288,7 @@
 										<xsl:for-each select="$field_map//apiClassifier[@id=$ID]">
 											<xsl:call-template name="propertyDetails">
 												<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 										</xsl:for-each>
 										<!-- CONSTRUCTOR DETAIL-->
@@ -289,6 +301,7 @@
 											<xsl:apply-templates select="apiConstructor[./apiName = $className]" mode="detail">
 												<xsl:with-param name="isConstructor">true</xsl:with-param>
 												<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 												<xsl:with-param name="constructCall" select="'false'"/>
 											</xsl:apply-templates>
 										</xsl:if>
@@ -297,16 +310,19 @@
 											<xsl:call-template name="methodsDetails">
 												<xsl:with-param name="className" select="$name"/>
 												<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 												<xsl:with-param name="constructCall" select="'false'"/>
 											</xsl:call-template>
 										</xsl:for-each>
 										<!--  EVENT DETAIL-->
 										<xsl:call-template name="eventDetails">
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 										<!--  CONSTANT DETAIL -->
 										<xsl:call-template name="constantDetails">
 											<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 											<xsl:with-param name="isConst" select="'true'"/>
 										</xsl:call-template>
 										<!-- INCLUDE EXAMPLES-->
@@ -357,7 +373,7 @@
 											</xsl:call-template>
 										</xsl:if>
 										<xsl:if test="$config/options[@ion='true']">
-											<script src="currentpage.js" type="text/javascript" language="Javascript" charset="UTF-8"/>
+											<script src="{$baseRef}currentpage.js" type="text/javascript" language="Javascript" charset="UTF-8"/>
 										</xsl:if>
 										<center class="copyright">
 											<xsl:copy-of select="$copyright"/>
@@ -383,7 +399,7 @@
 										<xsl:comment>#include virtual="ionComments.ssi"</xsl:comment>
 										<p id="creativecommons" class="creativecommons">
 											<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
-												<img id="creativecommons_img" src="images/CC.png"/>
+												<img id="creativecommons_img" src="{$baseRef}images/CC.png"/>
 											</a>
 										</p>
 										<xsl:comment>#include virtual="/livedocs/googleAnalytics.ssi"</xsl:comment>
@@ -565,9 +581,20 @@
 					</xsl:if>
 				</xsl:if>
 			</xsl:if>
-			<div class="summarySection">
-				<div class="summaryTableTitle">
-					<xsl:choose>
+			<xsl:variable name="tableId">
+				<xsl:text>summaryTable</xsl:text>
+				<xsl:if test="$accessLevel='protected'">
+					<xsl:text>Protected</xsl:text>
+				</xsl:if>
+				<xsl:if test="$isConst='true'">
+					<xsl:text>Constant</xsl:text>
+				</xsl:if>
+				<xsl:if test="$isConst='false'">
+					<xsl:text>Property</xsl:text>
+				</xsl:if>
+			</xsl:variable>
+			<div class="summarySection" id="{$tableId}">
+				<h3><xsl:choose>
 						<xsl:when test="$isGlobal and $isConst='true'">
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'GlobalConstants']]/entry[2]/p"/>
 						</xsl:when>
@@ -581,7 +608,6 @@
 									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PublicConstants']]/entry[2]/p"/>
 								</xsl:otherwise>
 							</xsl:choose>
-
 						</xsl:when>
 						<xsl:when test="$accessLevel='public' and $isConst='false'">
 							<xsl:choose>
@@ -590,7 +616,6 @@
 									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PublicProperties']]/entry[2]/p"/>
 								</xsl:otherwise>
 							</xsl:choose>
-
 						</xsl:when>
 						<xsl:when test="$accessLevel='protected' and $isConst='true'">
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ProtectedConstants']]/entry[2]/p"/>
@@ -598,151 +623,33 @@
 						<xsl:when test="$accessLevel='protected' and $isConst='false'">
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ProtectedProperties']]/entry[2]/p"/>
 						</xsl:when>
-					</xsl:choose>
-				</div>
-				<xsl:if test="$hasInherited">
-					<div class="showHideLinks">
-						<xsl:if test="$isConst='true' and $accessLevel!='protected'">
-							<div id="hideInheritedConstant" class="hideInheritedConstant">
-								<a class="showHideLink" href="#constantSummary" onclick="javascript:setInheritedVisible(false,'Constant');">
-									<xsl:choose>
-										<xsl:when test="$prog_language_name='javascript'"/>
-										<xsl:otherwise>
-											<img class="showHideLinkImage" src="images/expanded.gif"/>
-											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedPublicConstants']]/entry[2]/p"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</a>
-							</div>
-							<div id="showInheritedConstant" class="showInheritedConstant">
-								<a class="showHideLink" href="#constantSummary" onclick="javascript:setInheritedVisible(true,'Constant');">
-									<xsl:choose>
-										<xsl:when test="$prog_language_name='javascript'"/>
-										<xsl:otherwise>
-											<img class="showHideLinkImage" src="images/collapsed.gif"/>
-											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedPublicConstants']]/entry[2]/p"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</a>
-							</div>
-						</xsl:if>
-						<xsl:if test="$isConst='true' and $accessLevel='protected'">
-							<div id="hideInheritedProtectedConstant" class="hideInheritedProtectedConstant">
-								<a class="showHideLink" href="#protectedConstantSummary" onclick="javascript:setInheritedVisible(false,'ProtectedConstant');">
-									<img class="showHideLinkImage" src="images/expanded.gif"/>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedProtectedConstants']]/entry[2]/p"/>
-								</a>
-							</div>
-							<div id="showInheritedProtectedConstant" class="showInheritedProtectedConstant">
-								<a class="showHideLink" href="#protectedConstantSummary" onclick="javascript:setInheritedVisible(true,'ProtectedConstant');">
-									<img class="showHideLinkImage" src="images/collapsed.gif"/>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedProtectedConstants']]/entry[2]/p"/>
-								</a>
-							</div>
-						</xsl:if>
-						<xsl:if test="$isConst='false' and $accessLevel!='protected'">
-							<div id="hideInheritedProperty" class="hideInheritedProperty">
-								<a class="showHideLink" href="#propertySummary" onclick="javascript:setInheritedVisible(false,'Property');">
-									<img class="showHideLinkImage" src="images/expanded.gif"/>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedPublicProperties']]/entry[2]/p"/>
-								</a>
-							</div>
-							<div id="showInheritedProperty" class="showInheritedProperty">
-								<a class="showHideLink" href="#propertySummary" onclick="javascript:setInheritedVisible(true,'Property');">
-									<img class="showHideLinkImage" src="images/collapsed.gif"/>
-									<xsl:choose>
-										<xsl:when test="$prog_language_name='javascript'"/>
-										<xsl:otherwise>
-											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedPublicProperties']]/entry[2]/p"/>
-										</xsl:otherwise>
-									</xsl:choose>
-								</a>
-							</div>
-						</xsl:if>
-						<xsl:if test="$isConst='false' and $accessLevel='protected'">
-							<div id="hideInheritedProtectedProperty" class="hideInheritedProtectedProperty">
-								<a class="showHideLink" href="#protectedPropertySummary" onclick="javascript:setInheritedVisible(false,'ProtectedProperty');">
-									<img class="showHideLinkImage" src="images/expanded.gif"/>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedProtectedProperties']]/entry[2]/p"/>
-								</a>
-							</div>
-							<div id="showInheritedProtectedProperty" class="showInheritedProtectedProperty">
-								<a class="showHideLink" href="#protectedPropertySummary" onclick="javascript:setInheritedVisible(true,'ProtectedProperty');">
-									<img class="showHideLinkImage" src="images/collapsed.gif"/>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedProtectedProperties']]/entry[2]/p"/>
-								</a>
-							</div>
-						</xsl:if>
-					</div>
-				</xsl:if>
-				<xsl:variable name="tableStyle">
-					<xsl:if test="$hasInherited and $hasFields='false'">
-						<xsl:text>hideInherited</xsl:text>
-						<xsl:if test="$accessLevel='protected'">
-							<xsl:text>Protected</xsl:text>
-						</xsl:if>
-						<xsl:if test="$isConst='true'">
-							<xsl:text>Constant</xsl:text>
-						</xsl:if>
-						<xsl:if test="$isConst='false'">
-							<xsl:text>Property</xsl:text>
-						</xsl:if>
-					</xsl:if>
-				</xsl:variable>
-				<xsl:variable name="tableId">
-					<xsl:text>summaryTable</xsl:text>
-					<xsl:if test="$accessLevel='protected'">
-						<xsl:text>Protected</xsl:text>
-					</xsl:if>
-					<xsl:if test="$isConst='true'">
-						<xsl:text>Constant</xsl:text>
-					</xsl:if>
-					<xsl:if test="$isConst='false'">
-						<xsl:text>Property</xsl:text>
-					</xsl:if>
-				</xsl:variable>
-				<table cellspacing="0" cellpadding="3" class="summaryTable {$tableStyle}" id="{$tableId}">
-					<tr>
-						<th colspan="2">
-							<xsl:if test="$isConst='false'">
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PropertyProperty']]/entry[2]/p"/>
-							</xsl:if>
-							<xsl:if test="$isConst='true'">
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constant']]/entry[2]/p"/>
-							</xsl:if>
-						</th>
-						<xsl:if test="not($config/options/@docversion='2')">
-							<th class="summaryTableOwnerCol">
+					</xsl:choose></h3>
+				<table cellspacing="0" cellpadding="3">
+					<thead>
+						<tr>
+							<th class="type">
+								<xsl:if test="$isConst='false'">
+									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'PropertyProperty']]/entry[2]/p"/>
+								</xsl:if>
+								<xsl:if test="$isConst='true'">
+									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constant']]/entry[2]/p"/>
+								</xsl:if>
+							</th>
+							<xsl:if test="not($config/options/@docversion='2')">
+							<th class="owner">
 								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'DefinedBy']]/entry[2]/p"/>
 							</th>
-						</xsl:if>
-					</tr>
+							</xsl:if>
+						</tr>
+					</thead>
+					<tbody>
 					<xsl:for-each
 						select="apiValue[(not(apiValueDetail/apiValueDef/apiProperty)=($isConst='true') or apiValueDetail/apiValueDef/apiProperty='false') and (apiValueDetail/apiValueDef/apiAccess/@value = $accessLevel or apiValueDetail/apiValueDef/apiAccess/@value=$config/namespaces/namespace[@summaryDisplay=$accessLevel]/.)] | $ancestorNode/ancestors/apiValue[( not(apiValueDetail/apiValueDef/apiProperty)=($isConst='true') or apiValueDetail/apiValueDef/apiProperty='false') and (apiValueDetail/apiValueDef/apiAccess/@value = $accessLevel or apiValueDetail/apiValueDef/apiAccess/@value=$config/namespaces/namespace[@summaryDisplay=$accessLevel]/.)]">
 						<xsl:sort select="translate(apiName,'_','')" order="ascending" data-type="text" lang="en-US"/>
 						<xsl:variable name="name" select="./apiName"/>
-						<xsl:variable name="rowStyle">
-							<xsl:if test="ancestor::ancestors">
-								<xsl:text>hideInherited</xsl:text>
-								<xsl:if test="$accessLevel='protected'">
-									<xsl:text>Protected</xsl:text>
-								</xsl:if>
-								<xsl:if test="$isConst='true'">
-									<xsl:text>Constant</xsl:text>
-								</xsl:if>
-								<xsl:if test="$isConst='false'">
-									<xsl:text>Property</xsl:text>
-								</xsl:if>
-							</xsl:if>
-						</xsl:variable>
-						<tr class="{$rowStyle}">
-							<td class="summaryTableInheritanceCol">
-								<xsl:choose>
-									<xsl:when test="ancestor::ancestors"><img src="images/inheritedSummary.gif" alt="Inherited" title="Inherited" class="inheritedSummaryImage"/></xsl:when>
-									<xsl:otherwise><xsl:value-of select="$nbsp"/></xsl:otherwise>
-								</xsl:choose>
-							</td>
-							<td class="summaryTableSignatureCol">
+						<tr>
+							<xsl:if test="ancestor::ancestors"><xsl:attribute name="class">inherited</xsl:attribute></xsl:if>
+							<td class="signature">
 								<xsl:choose>
 									<xsl:when test="ancestor::ancestors">
 										<xsl:variable name="hLink">
@@ -798,8 +705,8 @@
 											<xsl:variable name="destination" select="concat($packageName,':',$className)"/>
 											<xsl:variable name="h1" select="substring-before($destination,':')"/>
 											<xsl:variable name="h2" select="substring-after($destination,':')"/>
-											<xsl:variable name="file" select="concat(translate($h1,'.','/'),'/',$h2,'.html')"/>
-											<xsl:variable name="gfile" select="concat($h2,'.html')"/>
+											<xsl:variable name="file" select="concat($baseRef,translate($h1,'.','/'),'/',$h2,'.html')"/>
+											<xsl:variable name="gfile" select="concat($baseRef,$h2,'.html')"/>
 											<xsl:variable name="completeHLink">
 												<xsl:if test="string-length($methodName) &gt; 0">
 													<xsl:choose>
@@ -836,6 +743,7 @@
 											<xsl:otherwise>
 												<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 													<xsl:call-template name="insertAIRIcon">
+														<xsl:with-param name="baseRef" select="$baseRef"/>
 													</xsl:call-template>
 													<xsl:value-of select="$nbsp"/>
 												</xsl:if>
@@ -856,6 +764,7 @@
 											<xsl:otherwise>
 												<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 													<xsl:call-template name="insertAIRIcon">
+														<xsl:with-param name="baseRef" select="$baseRef"/>
 													</xsl:call-template>
 													<xsl:value-of select="$nbsp"/>
 												</xsl:if>
@@ -873,8 +782,8 @@
 											<xsl:variable name="destination" select="./apiValueDetail/apiValueDef/apiValueClassifier"/>
 											<xsl:variable name="h1" select="substring-after($destination,':')"/>
 											<xsl:variable name="h2" select="substring-before($destination,':')"/>
-											<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-											<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+											<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+											<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 											<xsl:variable name="hyperLink">
 												<xsl:if test="contains($destination,':')">
 													<xsl:if test="$prog_language_name!='javascript'">
@@ -906,16 +815,19 @@
 										<xsl:when test="./apiValueDetail/apiValueDef/apiValueClassifier='' or apiValueDetail/apiValueDef/apiValueClassifier='*'">
 											<xsl:call-template name="getSpecialTypeLink">
 												<xsl:with-param name="type" select="'*'"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 										</xsl:when>
 										<xsl:when test="./apiValueDetail/apiValueDef/apiType/@value='' or apiValueDetail/apiValueDef/apiType/@value='*' or apiValueDetail/apiValueDef/apiType/@value='any'">
 											<xsl:call-template name="getSpecialTypeLink">
 												<xsl:with-param name="type" select="'*'"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 										</xsl:when>
 										<xsl:when test="./apiValueDetail/apiValueDef/apiType">
 											<xsl:call-template name="getSimpleClassName">
 												<xsl:with-param name="fullClassName" select="./apiValueDetail/apiValueDef/apiType/@value"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 										</xsl:when>
 										<xsl:otherwise>
@@ -982,7 +894,7 @@
 								</div>
 							</td>
 							<xsl:if test="not($config/options/@docversion='2')">
-								<td class="summaryTableOwnerCol">
+								<td class="owner">
 									<xsl:choose>
 										<xsl:when test="ancestor::ancestors">
 											<xsl:variable name="classLink">
@@ -1022,8 +934,8 @@
 												<xsl:variable name="destination" select="concat($packageName,':',$className)"/>
 												<xsl:variable name="h1" select="substring-before($destination,':')"/>
 												<xsl:variable name="h2" select="substring-after($destination,':')"/>
-												<xsl:variable name="file" select="concat(translate($h1,'.','/'),'/',$h2,'.html')"/>
-												<xsl:variable name="gfile" select="concat($h2,'.html')"/>
+												<xsl:variable name="file" select="concat($baseRef,translate($h1,'.','/'),'/',$h2,'.html')"/>
+												<xsl:variable name="gfile" select="concat($baseRef,$h2,'.html')"/>
 												<xsl:if test="contains($id,'.') or string-length($packageNameText) &gt; 0">
 													<xsl:choose>
 														<xsl:when test="$prog_language_name='javascript'"/>
@@ -1073,6 +985,7 @@
 							</xsl:if>
 						</tr>
 					</xsl:for-each>
+					</tbody>
 				</table>
 				<!-- AS2 INHERITED PROPERTIES -->
 				<xsl:if test="$config/options/@docversion='2'">
@@ -1121,6 +1034,7 @@
 								<xsl:otherwise>
 									<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 										<xsl:call-template name="insertAIRIcon">
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 										<xsl:value-of select="$nbsp"/>
 									</xsl:if>
@@ -1151,6 +1065,7 @@
 						<xsl:if test="not(string-length(apiValueDetail/apiValueDef/apiValueAccess/@value))">
 							<xsl:call-template name="getNamespaceLink">
 								<xsl:with-param name="accessLevel" select="apiValueDetail/apiValueDef/apiAccess/@value"/>
+								<xsl:with-param name="baseRef" select="$baseRef"/>
 							</xsl:call-template>
 							<xsl:text> </xsl:text>
 							<xsl:if test="apiValueDetail/apiValueDef/apiStatic">
@@ -1175,8 +1090,8 @@
 									<xsl:variable name="destination" select="./apiValueDetail/apiValueDef/apiValueClassifier"/>
 									<xsl:variable name="h1" select="substring-after($destination,':')"/>
 									<xsl:variable name="h2" select="substring-before($destination,':')"/>
-									<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-									<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+									<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+									<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 									<xsl:variable name="hyperLink">
 										<xsl:if test="contains($destination,':')">
 											<xsl:if test="$prog_language_name!='javascript'">
@@ -1209,11 +1124,13 @@
 									test="apiValueDetail/apiValueDef/apiValueClassifier='' or apiValueDetail/apiValueDef/apiValueClassifier='*' or apiValueDetail/apiValueDef/apiType/@value='' or apiValueDetail/apiValueDef/apiType/@value='*' or apiValueDetail/apiValueDef/apiType/@value='any'">
 									<xsl:call-template name="getSpecialTypeLink">
 										<xsl:with-param name="type" select="'*'"/>
+										<xsl:with-param name="baseRef" select="$baseRef"/>
 									</xsl:call-template>
 								</xsl:when>
 								<xsl:when test="apiValueDetail/apiValueDef/apiType">
 									<xsl:call-template name="getSimpleClassName">
 										<xsl:with-param name="fullClassName" select="apiValueDetail/apiValueDef/apiType/@value"/>
+										<xsl:with-param name="baseRef" select="$baseRef"/>
 									</xsl:call-template>
 								</xsl:when>
 								<xsl:otherwise>
@@ -1307,6 +1224,7 @@
 										<xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;]]></xsl:text>
 										<xsl:call-template name="getNamespaceLink">
 											<xsl:with-param name="accessLevel" select="apiValueDetail/apiValueDef/apiAccess/@value"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 										<xsl:text> </xsl:text>
 										<xsl:if test="apiValueDetail/apiValueDef/apiStatic">
@@ -1320,8 +1238,8 @@
 												<xsl:variable name="destination" select="./apiValueDetail/apiValueDef/apiValueClassifier"/>
 												<xsl:variable name="h1" select="substring-after($destination,':')"/>
 												<xsl:variable name="h2" select="substring-before($destination,':')"/>
-												<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-												<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+												<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+												<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 												<xsl:variable name="hyperLink">
 													<xsl:if test="contains($destination,'.')">
 														<xsl:value-of select="$file"/>
@@ -1347,11 +1265,13 @@
 												test="apiValueDetail/apiValueDef/apiValueClassifier='' or apiValueDetail/apiValueDef/apiValueClassifier='*' or apiValueDetail/apiValueDef/apiType/@value='any' or apiValueDetail/apiValueDef/apiType/@value='' or apiValueDetail/apiValueDef/apiType/@value='*'">
 												<xsl:call-template name="getSpecialTypeLink">
 													<xsl:with-param name="type" select="'*'"/>
+													<xsl:with-param name="baseRef" select="$baseRef"/>
 												</xsl:call-template>
 											</xsl:when>
 											<xsl:when test="apiValueDetail/apiValueDef/apiType">
 												<xsl:call-template name="getSimpleClassName">
 													<xsl:with-param name="fullClassName" select="apiValueDetail/apiValueDef/apiType/@value"/>
+													<xsl:with-param name="baseRef" select="$baseRef"/>
 												</xsl:call-template>
 											</xsl:when>
 											<xsl:otherwise>
@@ -1368,6 +1288,7 @@
 										<xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;]]></xsl:text>
 										<xsl:call-template name="getNamespaceLink">
 											<xsl:with-param name="accessLevel" select="apiValueDetail/apiValueDef/apiAccess/@value"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 										<xsl:text> </xsl:text>
 										<xsl:if test="apiValueDetail/apiValueDef/apiStatic">
@@ -1381,8 +1302,8 @@
 												<xsl:variable name="destination" select="./apiValueDetail/apiValueDef/apiValueClassifier"/>
 												<xsl:variable name="h1" select="substring-after($destination,':')"/>
 												<xsl:variable name="h2" select="substring-before($destination,':')"/>
-												<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-												<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+												<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+												<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 												<xsl:variable name="hyperLink">
 													<xsl:if test="contains($destination,'.')">
 														<xsl:value-of select="$file"/>
@@ -1407,11 +1328,13 @@
 											<xsl:when test="apiValueDetail/apiValueDef/apiValueClassifier='' or apiValueDetail/apiValueDef/apiValueClassifier='*'">
 												<xsl:call-template name="getSpecialTypeLink">
 													<xsl:with-param name="type" select="'*'"/>
+													<xsl:with-param name="baseRef" select="$baseRef"/>
 												</xsl:call-template>
 											</xsl:when>
 											<xsl:when test="apiValueDetail/apiValueDef/apiType">
 												<xsl:call-template name="getSimpleClassName">
 													<xsl:with-param name="fullClassName" select="apiValueDetail/apiValueDef/apiType/@value"/>
+													<xsl:with-param name="baseRef" select="$baseRef"/>
 												</xsl:call-template>
 											</xsl:when>
 											<xsl:otherwise>
@@ -1423,6 +1346,7 @@
 										<xsl:text>):</xsl:text>
 										<xsl:call-template name="getSpecialTypeLink">
 											<xsl:with-param name="type" select="'void'"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 									</code>
 									<xsl:text disable-output-escaping="yes">&lt;br/&gt;</xsl:text>
@@ -1514,42 +1438,19 @@
 		<xsl:variable name="hasInherited" select="count($ancestorNodes/ancestors/style) &gt; 0"/>
 		<xsl:if test="$hasStyles or $hasInherited">
 			<a name="styleSummary"/>
-			<div class="summarySection">
-				<div class="summaryTableTitle">
-					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Styles']]/entry[2]/p"/>
-				</div>
-				<xsl:if test="$hasInherited">
-					<div class="showHideLinks">
-						<div id="hideInheritedStyle" class="hideInheritedStyle">
-							<a class="showHideLink" href="#styleSummary" onclick="javascript:setInheritedVisible(false,'Style');">
-								<img class="showHideLinkImage" src="images/expanded.gif"/>
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedStyles']]/entry[2]/p"/>
-							</a>
-						</div>
-						<div id="showInheritedStyle" class="showInheritedStyle">
-							<a class="showHideLink" href="#styleSummary" onclick="javascript:setInheritedVisible(true,'Style');">
-								<img class="showHideLinkImage" src="images/collapsed.gif"/>
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedStyles']]/entry[2]/p"/>
-							</a>
-						</div>
-					</div>
-				</xsl:if>
-				<xsl:variable name="tableStyle">
-					<xsl:if test="$hasInherited and not($hasStyles)">
-						<xsl:text>hideInheritedStyle</xsl:text>
-					</xsl:if>
-				</xsl:variable>
-				<table cellspacing="0" cellpadding="3" class="summaryTable {$tableStyle}" id="summaryTableStyle">
+			<div class="summarySection" id="summaryTableStyle">
+				<h3><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Styles']]/entry[2]/p"/></h3>
+				<table cellspacing="0" cellpadding="3">
 					<tr>
-						<th colspan="2">
+						<th class="name">
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Style']]/entry[2]/p"/>
 						</th>
-						<th>
+						<th class="description">
 							<xsl:call-template name="getLocalizedString">
 								<xsl:with-param name="key">Description</xsl:with-param>
 							</xsl:call-template>
 						</th>
-						<th class="summaryTableOwnerCol">
+						<th class="owner">
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'DefinedBy']]/entry[2]/p"/>
 						</th>
 					</tr>
@@ -1558,32 +1459,20 @@
 						<xsl:variable name="sequence" select="ancestor::apiClassifierDetail/apiClassifierDef"/>
 						<xsl:variable name="apihtml" select="concat(ancestor::apiClassifier/apiName,'.html')"/>
 						<xsl:variable name="destination" select="./@owner"/>
-						<xsl:variable name="rowStyle">
-							<xsl:if test="ancestor::ancestors">
-								<xsl:text>hideInheritedStyle</xsl:text>
-							</xsl:if>
-						</xsl:variable>
-						<tr class="{$rowStyle}">
-							<td class="summaryTableInheritanceCol">
+						<tr>
+							<xsl:if test="ancestor::ancestors"><xsl:attribute name="class"><xsl:text>inherited</xsl:text></xsl:attribute></xsl:if>
+							<td class="signature">
 								<xsl:if test="not(ancestor::ancestors)">
 									<a name="style:{@name}"/>
 								</xsl:if>
-								<xsl:if test="ancestor::ancestors">
-									<img src="images/inheritedSummary.gif" alt="Inherited" title="Inherited" class="inheritedSummaryImage"/>
-								</xsl:if>
-								<xsl:if test="not(ancestor::ancestors)">
-									<xsl:value-of select="$nbsp"/>
-								</xsl:if>
-							</td>
-							<td class="summaryTableSignatureCol">
 								<div class="summarySignature">
 									<xsl:choose>
 										<xsl:when test="ancestor::ancestors">
 											<xsl:variable name="destination" select="./@owner"/>
 											<xsl:variable name="h1" select="substring-after($destination,':')"/>
 											<xsl:variable name="h2" select="substring-before($destination,':')"/>
-											<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-											<xsl:variable name="gfile" select="concat(translate($destination,':','/'),'.html')"/>
+											<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+											<xsl:variable name="gfile" select="concat($baseRef,translate($destination,':','/'),'.html')"/>
 											<xsl:variable name="hyperLink">
 												<xsl:if test="contains($destination,'.')">
 													<xsl:value-of select="$file"/>
@@ -1609,7 +1498,7 @@
 									</xsl:choose>
 								</div>
 							</td>
-							<td class="summaryTableDescription">
+							<td class="description">
 								<xsl:if test="string-length(normalize-space(@type)) &gt; 0">
 									<span class="label">
 										<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Type']]/entry[2]/p"/>: </span>
@@ -1638,7 +1527,7 @@
 														<xsl:with-param name="packageName" select="$currentPackage"/>
 													</xsl:call-template>
 												</xsl:variable>
-												<xsl:variable name="gfile" select="concat(@type,'.html')"/>
+												<xsl:variable name="gfile" select="concat($baseRef,@type,'.html')"/>
 												<xsl:if test="not(contains(@type,'.'))">
 													<xsl:if test="count($classHeader_map//apiClassifier[@id=@type] ) &gt; 0">
 														<a href="{$gfile}">
@@ -1672,7 +1561,7 @@
 														<xsl:with-param name="packageName" select="ancestor-or-self::apiPackage/apiName"/>
 													</xsl:call-template>
 												</xsl:variable>
-												<xsl:variable name="gfile" select="concat(@type,'.html')"/>
+												<xsl:variable name="gfile" select="concat($baseRef,@type,'.html')"/>
 												<xsl:if test="not(contains(@type,'.'))">
 													<xsl:if test="count($classHeader_map//apiClassifier[@id=@type] ) &gt; 0">
 														<a href="{$gfile}">
@@ -1690,6 +1579,7 @@
 										<xsl:if test="@type='' or @type='*'">
 											<xsl:call-template name="getSpecialTypeLink">
 												<xsl:with-param name="type" select="'*'"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 										</xsl:if>
 										<xsl:if test="@type!='' and @type!='*'">
@@ -1750,8 +1640,8 @@
 												<xsl:variable name="destination" select="$destination"/>
 												<xsl:variable name="h1" select="substring-after($destination,':')"/>
 												<xsl:variable name="h2" select="substring-before($destination,':')"/>
-												<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-												<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+												<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+												<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 												<xsl:if test="contains($destination,'.')">
 													<xsl:value-of select="$file"/>
 												</xsl:if>
@@ -1773,7 +1663,11 @@
 													<xsl:variable name="ReplacementLink">
 														<xsl:variable name="replacement" select="$tospec"/>
 														<xsl:variable name="linkFromRootContext" select="false()"/>
-														
+														<xsl:variable name="relativePath">
+															<xsl:call-template name="getRelativePath">
+																<xsl:with-param name="currentPath" select="$currentPackage"/>
+															</xsl:call-template>
+														</xsl:variable>
 														<xsl:variable name="anchorPrefix" select="''"/>
 														<xsl:choose>
 															<xsl:when test="$sequence">
@@ -1784,10 +1678,19 @@
 																	</xsl:call-template>
 																</xsl:variable>
 																<xsl:variable name="firstPassToken" select="substring-before($replacement,concat('.',$lastToken))"/>
-																<xsl:if test="string-length($firstPassToken) &lt;= 0 and $linkFromRootContext = true()">
-																	<xsl:value-of select="translate($currentPackage,'.','/')"/>
-																	<xsl:text>/</xsl:text>
-																</xsl:if>
+																<xsl:choose>
+																	<xsl:when test="string-length($firstPassToken) &gt; 0">
+																		<xsl:if test="$linkFromRootContext = false()">
+																			<xsl:value-of select="$relativePath"/>
+																		</xsl:if>
+																	</xsl:when>
+																	<xsl:otherwise>
+																		<xsl:if test="$linkFromRootContext = true()">
+																			<xsl:value-of select="translate($currentPackage,'.','/')"/>
+																			<xsl:text>/</xsl:text>
+																		</xsl:if>
+																	</xsl:otherwise>
+																</xsl:choose>
 																<xsl:value-of select="concat(translate($replacement,'.','/'),'.html')"/>
 															</xsl:when>
 															<xsl:otherwise>
@@ -1805,10 +1708,19 @@
 																	</xsl:call-template>
 																</xsl:variable>
 																<xsl:variable name="packageName" select="substring-before($firstPassToken,concat('.',$className))"/>
-																<xsl:if test="string-length($packageName) &lt;= 0 and $linkFromRootContext = true()">
-																	<xsl:value-of select="translate($currentPackage,'.','/')"/>
-																	<xsl:text>/</xsl:text>
-																</xsl:if>
+																<xsl:choose>
+																	<xsl:when test="string-length($packageName) &gt; 0">
+																		<xsl:if test="$linkFromRootContext = false()">
+																			<xsl:value-of select="$relativePath"/>
+																		</xsl:if>
+																	</xsl:when>
+																	<xsl:otherwise>
+																		<xsl:if test="$linkFromRootContext = true()">
+																			<xsl:value-of select="translate($currentPackage,'.','/')"/>
+																			<xsl:text>/</xsl:text>
+																		</xsl:if>
+																	</xsl:otherwise>
+																</xsl:choose>
 																<xsl:choose>
 																	<xsl:when test="string-length($firstPassToken) &gt; 0">
 																		<xsl:value-of select="concat(translate($firstPassToken,'.','/'),'.html')"/>
@@ -2003,14 +1915,14 @@
 									<xsl:with-param name="currentPackage" select="$currentPackage"/>
 								</xsl:call-template>	
 							</td>
-							<td class="summaryTableOwnerCol">
+							<td class="owner">
 								<xsl:choose>
 									<xsl:when test="ancestor::ancestors">
 										<xsl:variable name="destination" select="./@owner"/>
 										<xsl:variable name="h1" select="substring-after($destination,':')"/>
 										<xsl:variable name="h2" select="substring-before($destination,':')"/>
-										<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-										<xsl:variable name="gfile" select="concat(translate($destination,':','/'),'.html')"/>
+										<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+										<xsl:variable name="gfile" select="concat($baseRef,translate($destination,':','/'),'.html')"/>
 										<xsl:variable name="classLink">
 											<xsl:if test="contains($destination,'.')">
 												<xsl:value-of select="$file"/>
@@ -2086,30 +1998,9 @@
 	  </div>
 	</xsl:if>
 	<!-- End: Bug#2259590 Shinde Date: 13.03.09 Adding a link to the doc -->
-	<xsl:if test="$hasInherited">
-	  <div class="showHideLinks">
-	    <div id="hideInheritedSkinState" class="hideInheritedSkinState">
-	      <a class="showHideLink" href="#SkinStateSummary" onclick="javascript:setInheritedVisible(false,'SkinState');">
-		<img class="showHideLinkImage" src="images/expanded.gif"/>
-		<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedSkinStates']]/entry[2]/p"/>
-	      </a>
-	    </div>
-	    <div id="showInheritedSkinState" class="showInheritedSkinState">
-	      <a class="showHideLink" href="#SkinStateSummary" onclick="javascript:setInheritedVisible(true,'SkinState');">
-		<img class="showHideLinkImage" src="images/collapsed.gif"/>
-		<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedSkinStates']]/entry[2]/p"/>
-	      </a>
-	    </div>
-	  </div>
-	</xsl:if>
-	<xsl:variable name="tableSkinState">
-	  <xsl:if test="$hasInherited and not($hasSkinState)">
-	    <xsl:text>hideInheritedSkinState</xsl:text>
-	  </xsl:if>
-	</xsl:variable>
-	<table cellspacing="0" cellpadding="3" class="summaryTable {$tableSkinState}" id="summaryTableSkinState">
+	<table cellspacing="0" cellpadding="3" class="summaryTable" id="summaryTableSkinState">
 	  <tr>
-	    <th colspan="2">
+	    <th>
 	      <xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SkinState']]/entry[2]/p"/>
 	    </th>
 	    <th>
@@ -2122,36 +2013,22 @@
 	    </th>
 	  </tr>
 	  <xsl:for-each select="./prolog/asMetadata/skinStates/SkinState | $ancestorNodes/ancestors/SkinState">
-	    <xsl:sort select="@name" order="ascending" data-type="text" lang="en-US"/>
-	    <xsl:variable name="sequence" select="ancestor::apiClassifierDetail/apiClassifierDef"/>
-	    <xsl:variable name="apihtml" select="concat(ancestor::apiClassifier/apiName,'.html')"/>
-	    <xsl:variable name="destination" select="./@owner"/>
-	    <xsl:variable name="rowStyle">
-	      <xsl:if test="ancestor::ancestors">
-		<xsl:text>hideInheritedskinState</xsl:text>
-	      </xsl:if>
-	    </xsl:variable>
-	    <tr class="{$rowStyle}">
-	      <td class="summaryTableInheritanceCol">
-			<xsl:if test="not(ancestor::ancestors)">
-				<a name="skinstate:{@name}"/>
-			</xsl:if>
-		<xsl:if test="ancestor::ancestors">
-			<img src="images/inheritedSummary.gif" alt="Inherited" title="Inherited" class="inheritedSummaryImage"/>
-		</xsl:if>
-		<xsl:if test="not(ancestor::ancestors)">
-		  <xsl:value-of select="$nbsp"/>
-		</xsl:if>
-	      </td>
-	      <td class="summaryTableSignatureCol">
-		<div class="summarySignature">
+		<xsl:sort select="@name" order="ascending" data-type="text" lang="en-US"/>
+		<xsl:variable name="sequence" select="ancestor::apiClassifierDetail/apiClassifierDef"/>
+		<xsl:variable name="apihtml" select="concat(ancestor::apiClassifier/apiName,'.html')"/>
+		<xsl:variable name="destination" select="./@owner"/>
+		<tr>
+			<xsl:if test="ancestor::ancestors"><xsl:attribute name="class"><xsl:text>inherited</xsl:text></xsl:attribute></xsl:if>
+			<td class="signature">
+				<xsl:if test="not(ancestor::ancestors)"><a name="skinstate:{@name}"/></xsl:if>
+				<div class="summarySignature">
 		  <xsl:choose>
 		    <xsl:when test="ancestor::ancestors">
 		      <xsl:variable name="destination" select="./@owner"/>
 		      <xsl:variable name="h1" select="substring-after($destination,':')"/>
 		      <xsl:variable name="h2" select="substring-before($destination,':')"/>
-		      <xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-		      <xsl:variable name="gfile" select="concat(replace($destination, ':', '/'),'.html')"/>
+		      <xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+		      <xsl:variable name="gfile" select="concat($baseRef,replace($destination, ':', '/'),'.html')"/>
 		      <xsl:variable name="hyperLink">
 			<xsl:if test="contains($destination,'.')">
 			  <xsl:value-of select="$file"/>
@@ -2192,14 +2069,14 @@
 			<xsl:with-param name="currentPackage" select="$currentPackage"/>
 		</xsl:call-template>
 	      </td>
-	      <td class="summaryTableOwnerCol">
+	      <td class="owner">
 		<xsl:choose>
 		  <xsl:when test="ancestor::ancestors">
 		    <xsl:variable name="destination" select="./@owner"/>
 		    <xsl:variable name="h1" select="substring-after($destination,':')"/>
 		    <xsl:variable name="h2" select="substring-before($destination,':')"/>
-		    <xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-		    <xsl:variable name="gfile" select="concat(replace($destination, ':', '/'),'.html')"/>
+		    <xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+		    <xsl:variable name="gfile" select="concat($baseRef,replace($destination, ':', '/'),'.html')"/>
 		    <xsl:variable name="classLink">
 		      <xsl:if test="contains($destination,'.')">
 			<xsl:value-of select="$file"/>
@@ -2275,30 +2152,9 @@
 	  </div>
 	</xsl:if>
 	<!-- End: Bug#2259590 Shinde Date: 13.03.09 Adding a link to the doc -->
-	<xsl:if test="$hasInherited">
-	  <div class="showHideLinks">
-	    <div id="hideInheritedSkinPart" class="hideInheritedSkinPart">
-	      <a class="showHideLink" href="#SkinPartSummary" onclick="javascript:setInheritedVisible(false,'SkinPart');">
-		<img class="showHideLinkImage" src="images/expanded.gif"/>
-		<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedSkinParts']]/entry[2]/p"/>
-	      </a>
-	    </div>
-	    <div id="showInheritedSkinPart" class="showInheritedSkinPart">
-	      <a class="showHideLink" href="#SkinPartSummary" onclick="javascript:setInheritedVisible(true,'SkinPart');">
-		<img class="showHideLinkImage" src="images/collapsed.gif"/>
-		<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedSkinParts']]/entry[2]/p"/>
-	      </a>
-	    </div>
-	  </div>
-	</xsl:if>
-	<xsl:variable name="tableStyle">
-	  <xsl:if test="$hasInherited and not($hasSkinPart)">
-	    <xsl:text>hideInheritedSkinPart</xsl:text>
-	  </xsl:if>
-	</xsl:variable>
-	<table cellspacing="0" cellpadding="3" class="summaryTable {$tableStyle}" id="summaryTableSkinPart">
+	<table cellspacing="0" cellpadding="3" class="summaryTable" id="summaryTableSkinPart">
 	  <tr>
-	    <th colspan="2">
+	    <th>
 	      <xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SkinPart']]/entry[2]/p"/>
 	    </th>
 	    <th>
@@ -2315,33 +2171,20 @@
 	    <xsl:variable name="sequence" select="ancestor::apiClassifierDetail/apiClassifierDef"/>
 	    <xsl:variable name="apihtml" select="concat(ancestor::apiClassifier/apiName,'.html')"/>
 	    <xsl:variable name="destination" select="./@owner"/>
-	    <xsl:variable name="rowStyle">
-	      <xsl:if test="ancestor::ancestors">
-		<xsl:text>hideInheritedSkinPart</xsl:text>
-	      </xsl:if>
-	    </xsl:variable>
-	    <tr class="{$rowStyle}">
-	      <td class="summaryTableInheritanceCol">
-			<xsl:if test="not(ancestor::ancestors)">
-			<a name="skinpart:{@name}"/>
-			</xsl:if>
-			<xsl:if test="ancestor::ancestors">
-				<img src="images/inheritedSummary.gif" alt="Inherited" title="Inherited" class="inheritedSummaryImage"/>
-			</xsl:if>
-			<xsl:if test="not(ancestor::ancestors)">
-				<xsl:value-of select="$nbsp"/>
-			</xsl:if>
-	      </td>
-	      <td class="summaryTableSignatureCol">
-		<div class="summarySignature">
-			
+	    <tr>
+			<xsl:if test="ancestor::ancestors"><xsl:attribute name="class">inherited</xsl:attribute></xsl:if>
+			<td class="signature">
+				<xsl:if test="not(ancestor::ancestors)">
+					<a name="skinpart:{@name}"/>
+				</xsl:if>
+				<div class="summarySignature">
 		  <xsl:choose>
 		    <xsl:when test="ancestor::ancestors">
 		      <xsl:variable name="destination" select="./@owner"/>
 		      <xsl:variable name="h1" select="substring-after($destination,':')"/>
 		      <xsl:variable name="h2" select="substring-before($destination,':')"/>
-		      <xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-		      <xsl:variable name="gfile" select="concat(replace($destination, ':', '/'),'.html')"/>
+		      <xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+		      <xsl:variable name="gfile" select="concat($baseRef,replace($destination, ':', '/'),'.html')"/>
 		      <xsl:variable name="hyperLink">
 			<xsl:if test="contains($destination,'.')">
 			  <xsl:value-of select="$file"/>
@@ -2370,8 +2213,8 @@
 		    <xsl:variable name="destination" select="./@var_type"/>
 		    <xsl:variable name="h1" select="substring-after($destination,':')"/>
 		    <xsl:variable name="h2" select="substring-before($destination,':')"/>
-		    <xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-		    <xsl:variable name="gfile" select="replace(concat($destination, '.html'), ':', '/')"/>
+		    <xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+		    <xsl:variable name="gfile" select="replace(concat($baseRef, $destination, '.html'), ':', '/')"/>
 		    <xsl:variable name="hyperLink">
 		      <xsl:if test="contains($destination,'.')">
 			<xsl:value-of select="$file"/>
@@ -2476,14 +2319,14 @@
 				<xsl:with-param name="currentPackage" select="$currentPackage"/>
 			</xsl:call-template>
 	      </td>
-	      <td class="summaryTableOwnerCol">
+	      <td class="owner">
 		<xsl:choose>
 		  <xsl:when test="ancestor::ancestors">
 		    <xsl:variable name="destination" select="./@owner"/>
 		    <xsl:variable name="h1" select="substring-after($destination,':')"/>
 		    <xsl:variable name="h2" select="substring-before($destination,':')"/>
-		    <xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-		    <xsl:variable name="gfile" select="concat($destination,'.html')"/>
+		    <xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+		    <xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 		    <xsl:variable name="classLink">
 		      <xsl:if test="contains($destination,'.')">
 			<xsl:value-of select="$file"/>
@@ -2560,66 +2403,33 @@
 		<xsl:variable name="hasInherited" select="count($ancestorNodes/ancestors/effect ) &gt; 0"/>
 		<xsl:if test="$hasEffects or $hasInherited">
 			<a name="effectSummary"/>
-			<div class="summarySection">
-				<div class="summaryTableTitle">
-					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Effects']]/entry[2]/p"/>
-				</div>
-				<xsl:if test="$hasInherited">
-					<div class="showHideLinks">
-						<div id="hideInheritedEffect" class="hideInheritedEffect">
-							<a class="showHideLink" href="#effectSummary" onclick="javascript:setInheritedVisible(false,'Effect');">
-								<img class="showHideLinkImage" src="images/expanded.gif"/>
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedEffects']]/entry[2]/p"/>
-							</a>
-						</div>
-						<div id="showInheritedEffect" class="showInheritedEffect">
-							<a class="showHideLink" href="#effectSummary" onclick="javascript:setInheritedVisible(true,'Effect');">
-								<img class="showHideLinkImage" src="images/collapsed.gif"/>
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedEffects']]/entry[2]/p"/>
-							</a>
-						</div>
-					</div>
-				</xsl:if>
-				<xsl:variable name="tableStyle">
-					<xsl:if test="$hasInherited and not($hasEffects)">
-						<xsl:text>hideInheritedEffect</xsl:text>
-					</xsl:if>
-				</xsl:variable>
-				<table cellspacing="0" cellpadding="3" class="summaryTable {$tableStyle}" id="summaryTableEffect">
-					<tr>
-						<th colspan="2">
-							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Effect']]/entry[2]/p"/>
-						</th>
-						<th>
-							<xsl:call-template name="getLocalizedString">
-								<xsl:with-param name="key">Description</xsl:with-param>
-							</xsl:call-template>
-						</th>
-						<th class="summaryTableOwnerCol">
-							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'DefinedBy']]/entry[2]/p"/>
-						</th>
-					</tr>
+			<div class="summarySection" id="summaryTableEffect">
+				<h3><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Effects']]/entry[2]/p"/></h3>
+				<table cellspacing="0" cellpadding="3">
+					<thead>
+						<tr>
+							<th class="name">
+								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Effect']]/entry[2]/p"/>
+							</th>
+							<th class="description">
+								<xsl:call-template name="getLocalizedString">
+									<xsl:with-param name="key">Description</xsl:with-param>
+								</xsl:call-template>
+							</th>
+							<th class="owner">
+								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'DefinedBy']]/entry[2]/p"/>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
 					<xsl:for-each select="prolog/asMetadata/effects/effect | $ancestorNodes/ancestors/effect">
 						<xsl:sort select="@name" order="ascending" data-type="text" lang="en-US"/>
 						<xsl:variable name="owner" select="@owner"/>
 						<xsl:variable name="ancestorPath" select="ancestor::apiClassifier/apiClassifierDetail/apiClassifierDef"/>
-						<xsl:variable name="rowStyle">
+						<tr>
 							<xsl:if test="ancestor::ancestors">
-								<xsl:text>hideInheritedEffect</xsl:text>
+								<xsl:attribute name="class"><xsl:text>inherited</xsl:text></xsl:attribute>
 							</xsl:if>
-						</xsl:variable>
-						<tr class="{$rowStyle}">
-							<td class="summaryTableInheritanceCol">
-								<xsl:if test="not(ancestor::ancestors)">
-									<a name="effect:{@name}"/>
-								</xsl:if>
-								<xsl:if test="ancestor::ancestors">
-									<img src="images/inheritedSummary.gif" alt="Inherited" title="Inherited" class="inheritedSummaryImage"/>
-								</xsl:if>
-								<xsl:if test="not(ancestor::ancestors)">
-									<xsl:value-of select="$nbsp"/>
-								</xsl:if>
-							</td>
 							<xsl:variable name="classLink">
 								<xsl:variable name="id" select="$owner"/>
 								<xsl:variable name="destination" select="$owner"/>
@@ -2639,8 +2449,8 @@
 										<xsl:value-of select="$destination"/>
 									</xsl:if>
 								</xsl:variable>
-								<xsl:variable name="file" select="concat(translate($h1,'.','/'),'/',$h2,'.html')"/>
-								<xsl:variable name="gfile" select="concat($h2,'.html')"/>
+								<xsl:variable name="file" select="concat($baseRef,translate($h1,'.','/'),'/',$h2,'.html')"/>
+								<xsl:variable name="gfile" select="concat($baseRef,$h2,'.html')"/>
 								<xsl:if test="contains($id,'.')">
 									<xsl:value-of select="$file"/>
 								</xsl:if>
@@ -2648,7 +2458,10 @@
 									<xsl:value-of select="$gfile"/>
 								</xsl:if>
 							</xsl:variable>
-							<td class="summaryTableSignatureCol">
+							<td class="signature">
+								<xsl:if test="not(ancestor::ancestors)">
+									<a name="effect:{@name}"/>
+								</xsl:if>
 								<div class="summarySignature">
 									<xsl:choose>
 										<xsl:when test="ancestor::ancestors">
@@ -2687,6 +2500,7 @@
 									<xsl:text disable-output-escaping="yes">&lt;br/&gt;</xsl:text>
 								</xsl:if>
 								<xsl:variable name="owner" select="$owner"/>
+								<xsl:variable name="baseRef" select="$baseRef"/>
 								<xsl:variable name="packageName" select="$currentPackage"/>
 								<xsl:if test="@deprecatedReplacement or @deprecatedMessage">
 									<span class="label">
@@ -2716,8 +2530,8 @@
 												<xsl:variable name="destination" select="$owner"/>
 												<xsl:variable name="h1" select="substring-after($destination,':')"/>
 												<xsl:variable name="h2" select="substring-before($destination,':')"/>
-												<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-												<xsl:variable name="gfile" select="concat(translate($destination,':','/'),'.html')"/>
+												<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+												<xsl:variable name="gfile" select="concat($baseRef,translate($destination,':','/'),'.html')"/>
 												<xsl:if test="contains($destination,'.')">
 													<xsl:value-of select="$file"/>
 												</xsl:if>
@@ -2797,7 +2611,7 @@
 									</xsl:call-template>
 								</xsl:if>
 							</td>
-							<td class="summaryTableOwnerCol">
+							<td class="owner">
 								<xsl:choose>
 									<xsl:when test="ancestor::ancestors">
 										<xsl:variable name="classLink">
@@ -2819,8 +2633,8 @@
 													<xsl:value-of select="$destination"/>
 												</xsl:if>
 											</xsl:variable>
-											<xsl:variable name="file" select="concat(translate($h1,'.','/'),'/',$h2,'.html')"/>
-											<xsl:variable name="gfile" select="concat($h2,'.html')"/>
+											<xsl:variable name="file" select="concat($baseRef,translate($h1,'.','/'),'/',$h2,'.html')"/>
+											<xsl:variable name="gfile" select="concat($baseRef,$h2,'.html')"/>
 											<xsl:if test="contains($id,'.')">
 												<xsl:value-of select="$file"/>
 											</xsl:if>
@@ -2843,6 +2657,7 @@
 							</td>
 						</tr>
 					</xsl:for-each>
+					</tbody>
 				</table>
 			</div>
 		</xsl:if>
@@ -2895,42 +2710,19 @@
 		<xsl:variable name="hasInherited" select="count($ancestorNodes/ancestors/adobeApiEvent[not(adobeApiEventDetail/adobeApiEventDef/apiDefinedEvent)]) &gt; 0"/>
 		<xsl:if test="$hasEvents or $hasInherited">
 			<a name="eventSummary"/>
-			<div class="summarySection">
-				<div class="summaryTableTitle">
-					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Events']]/entry[2]/p"/>
-				</div>
-				<xsl:if test="$hasInherited">
-					<div class="showHideLinks">
-						<div id="hideInheritedEvent" class="hideInheritedEvent">
-							<a class="showHideLink" href="#eventSummary" onclick="javascript:setInheritedVisible(false,'Event');">
-								<img class="showHideLinkImage" src="images/expanded.gif"/>
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedEvents']]/entry[2]/p"/>
-							</a>
-						</div>
-						<div id="showInheritedEvent" class="showInheritedEvent">
-							<a class="showHideLink" href="#eventSummary" onclick="javascript:setInheritedVisible(true,'Event');">
-								<img class="showHideLinkImage" src="images/collapsed.gif"/>
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedEvents']]/entry[2]/p"/>
-							</a>
-						</div>
-					</div>
-				</xsl:if>
-				<xsl:variable name="tableStyle">
-					<xsl:if test="$hasInherited and not($hasEvents)">
-						<xsl:text>hideInheritedEvent</xsl:text>
-					</xsl:if>
-				</xsl:variable>
-				<table cellspacing="0" cellpadding="3" class="summaryTable {$tableStyle}" id="summaryTableEvent">
+			<div class="summarySection" id="summaryTableEvent">
+				<h3><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Events']]/entry[2]/p"/></h3>
+				<table cellspacing="0" cellpadding="3">
 					<tr>
-						<th>
+						<th class="name">
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Event']]/entry[2]/p"/>
 						</th>
-						<th>
+						<th class="summary">
 							<xsl:call-template name="getLocalizedString">
 								<xsl:with-param name="key">Summary</xsl:with-param>
 							</xsl:call-template>
 						</th>
-						<th class="summaryTableOwnerCol">
+						<th class="owner">
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'DefinedBy']]/entry[2]/p"/>
 						</th>
 					</tr>
@@ -2938,21 +2730,11 @@
 						<xsl:sort select="apiName" order="ascending" data-type="text" lang="en-US"/>
 						<xsl:variable name="name" select="./apiName"/>
 						<xsl:if test="./adobeApiEventDetail/adobeApiEventDef/apiEventType or ./shortdesc">
-							<xsl:variable name="rowStyle">
+							<tr>
 								<xsl:if test="ancestor::ancestors">
-									<xsl:text>hideInheritedEvent</xsl:text>
+									<xsl:attribute name="class"><xsl:text>inherited</xsl:text></xsl:attribute>
 								</xsl:if>
-							</xsl:variable>
-							<tr class="{$rowStyle}">
-								<td class="summaryTableInheritanceCol">
-									<xsl:if test="ancestor::ancestors">
-										<img src="images/inheritedSummary.gif" alt="Inherited" title="Inherited" class="inheritedSummaryImage"/>
-									</xsl:if>
-									<xsl:if test="not(ancestor::ancestors)">
-										<xsl:value-of select="$nbsp"/>
-									</xsl:if>
-								</td>
-								<td class="summaryTableSignatureCol">
+								<td class="signature">
 									<div class="summarySignature">
 										<xsl:choose>
 											<xsl:when test="ancestor::ancestors">
@@ -2990,8 +2772,8 @@
 															<xsl:value-of select="$destination"/>
 														</xsl:if>
 													</xsl:variable>
-													<xsl:variable name="file" select="concat(translate($packageName,'.','/'),'/',$className,'.html')"/>
-													<xsl:variable name="gfile" select="concat($className,'.html')"/>
+													<xsl:variable name="file" select="concat($baseRef,translate($packageName,'.','/'),'/',$className,'.html')"/>
+													<xsl:variable name="gfile" select="concat($baseRef,$className,'.html')"/>
 													<xsl:if test="string-length($packageName) &gt; 0">
 														<xsl:choose>
 															<xsl:when test="$prog_language_name='javascript'"/>
@@ -3014,6 +2796,7 @@
 													<xsl:otherwise>
 														<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 															<xsl:call-template name="insertAIRIcon">
+																<xsl:with-param name="baseRef" select="$baseRef"/>
 															</xsl:call-template>
 															<xsl:value-of select="$nbsp"/>
 														</xsl:if>
@@ -3034,6 +2817,7 @@
 													<xsl:otherwise>
 														<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 															<xsl:call-template name="insertAIRIcon">
+																<xsl:with-param name="baseRef" select="$baseRef"/>
 															</xsl:call-template>
 															<xsl:value-of select="$nbsp"/>
 														</xsl:if>
@@ -3052,7 +2836,7 @@
 										</xsl:if>
 									</div>
 								</td>
-								<td class="summaryTableDescription summaryTableCol">
+								<td class="description">
 									<xsl:if test="$classDeprecated='true'">
 										<xsl:copy-of select="$deprecatedLabel"/>
 										<xsl:text>. </xsl:text>
@@ -3085,7 +2869,7 @@
 										</xsl:if>
 									</xsl:if>
 								</td>
-								<td class="summaryTableOwnerCol">
+								<td class="owner">
 									<xsl:choose>
 										<xsl:when test="ancestor::ancestors">
 											<xsl:variable name="hyperLink">
@@ -3096,8 +2880,8 @@
 												<xsl:variable name="destination" select="concat($packageName,':',$className)"/>
 												<xsl:variable name="h1" select="substring-before($destination,':')"/>
 												<xsl:variable name="h2" select="substring-after($destination,':')"/>
-												<xsl:variable name="file" select="concat(translate($h1,'.','/'),'/',$h2,'.html')"/>
-												<xsl:variable name="gfile" select="concat($h2,'.html')"/>
+												<xsl:variable name="file" select="concat($baseRef,translate($h1,'.','/'),'/',$h2,'.html')"/>
+												<xsl:variable name="gfile" select="concat($baseRef,$h2,'.html')"/>
 												<xsl:if test="contains($destination,'.')">
 													<xsl:choose>
 														<xsl:when test="$prog_language_name='javascript'"/>
@@ -3163,6 +2947,7 @@
 								<xsl:otherwise>
 									<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 										<xsl:call-template name="insertAIRIcon">
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 										<xsl:value-of select="$nbsp"/>
 									</xsl:if>
@@ -3371,8 +3156,8 @@
 									<xsl:variable name="destination" select="adobeApiEventDetail/adobeApiEventDef/adobeApiEventClassifier"/>
 									<xsl:variable name="h1" select="substring-after($destination,':')"/>
 									<xsl:variable name="h2" select="substring-before($destination,':')"/>
-									<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-									<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+									<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+									<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 									<xsl:variable name="eventHyperLink">
 										<xsl:if test="contains($destination,'.')">
 											<xsl:value-of select="$file"/>
@@ -3473,6 +3258,7 @@
 		<xsl:variable name="ancestorNode">
 			<ancestors>
 				<xsl:call-template name="getMethodAncestors">
+					<xsl:with-param name="baseRef" select="$baseRef"/>
 					<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
 					<xsl:with-param name="methodList" select="$newMethodList"/>
 					<xsl:with-param name="baseClass" select="./apiClassifierDetail/apiClassifierDef/apiBaseClassifier"/>
@@ -3480,6 +3266,7 @@
 				</xsl:call-template>
 				<xsl:for-each select="$interfaces/interface">
 					<xsl:call-template name="getMethodAncestors">
+						<xsl:with-param name="baseRef" select="$baseRef"/>
 						<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
 						<xsl:with-param name="methodList" select="$newMethodList"/>
 						<xsl:with-param name="baseClass" select="."/>
@@ -3503,9 +3290,23 @@
 					<a name="protectedMethodSummary"/>
 				</xsl:if>
 			</xsl:if>
-			<div class="summarySection">
-				<div class="summaryTableTitle">
-					<xsl:choose>
+			<xsl:variable name="tableStyle">
+				<xsl:if test="$hasInherited and not($hasMethods)">
+					<xsl:if test="$accessLevel='protected'">
+						<xsl:text>Protected</xsl:text>
+					</xsl:if>
+					<xsl:text>Method</xsl:text>
+				</xsl:if>
+			</xsl:variable>
+			<xsl:variable name="tableId">
+				<xsl:text>summaryTable</xsl:text>
+				<xsl:if test="$accessLevel='protected'">
+					<xsl:text>Protected</xsl:text>
+				</xsl:if>
+				<xsl:text>Method</xsl:text>
+			</xsl:variable>
+			<div class="summarySection" id="{$tableId}">
+				<h3><xsl:choose>
 						<xsl:when test="$isGlobal">
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'GlobalMethods']]/entry[2]/p"/>
 							<xsl:text> </xsl:text>
@@ -3518,90 +3319,37 @@
 							<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ProtectedMethods']]/entry[2]/p"/>
 							<xsl:text> </xsl:text>
 						</xsl:when>
-					</xsl:choose>
-
-				</div>
-				<xsl:if test="$hasInherited">
-					<div class="showHideLinks">
-						<xsl:if test="$accessLevel!='protected'">
-							<div id="hideInheritedMethod" class="hideInheritedMethod">
-								<a class="showHideLink" href="#methodSummary" onclick="javascript:setInheritedVisible(false,'Method');">
-									<img class="showHideLinkImage" src="images/expanded.gif"/>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'HideInheritedPublicMethods']]/entry[2]/p"/>
-								</a>
-							</div>
-							<div id="showInheritedMethod" class="showInheritedMethod">
-								<a class="showHideLink" href="#methodSummary" onclick="javascript:setInheritedVisible(true,'Method');">
-									<img class="showHideLinkImage" src="images/collapsed.gif"/>
-									<xsl:choose>
-										<xsl:when test="$prog_language_name='javascript'"/>
-										<xsl:otherwise>
-											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedPublicMethods']]/entry[2]/p"/>
-										</xsl:otherwise>
-									</xsl:choose>
-
-								</a>
-							</div>
-						</xsl:if>
-						<xsl:if test="$accessLevel='protected'">
-							<div id="hideInheritedProtectedMethod" class="hideInheritedProtectedMethod">
-								<a class="showHideLink" href="#protectedMethodSummary" onclick="javascript:setInheritedVisible(false,'ProtectedMethod');">
-									<img class="showHideLinkImage" src="images/expanded.gif"/>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedProtectedMethods']]/entry[2]/p"/>
-								</a>
-							</div>
-							<div id="showInheritedProtectedMethod" class="showInheritedProtectedMethod">
-								<a class="showHideLink" href="#protectedMethodSummary" onclick="javascript:setInheritedVisible(true,'ProtectedMethod');">
-									<img class="showHideLinkImage" src="images/collapsed.gif"/>
-									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'ShowInheritedProtectedMethods']]/entry[2]/p"/>
-								</a>
-							</div>
-						</xsl:if>
-					</div>
-				</xsl:if>
-				<xsl:variable name="tableStyle">
-					<xsl:if test="$hasInherited and not($hasMethods)">
-						<xsl:text>hideInherited</xsl:text>
-						<xsl:if test="$accessLevel='protected'">
-							<xsl:text>Protected</xsl:text>
-						</xsl:if>
-						<xsl:text>Method</xsl:text>
-					</xsl:if>
-				</xsl:variable>
-				<xsl:variable name="tableId">
-					<xsl:text>summaryTable</xsl:text>
-					<xsl:if test="$accessLevel='protected'">
-						<xsl:text>Protected</xsl:text>
-					</xsl:if>
-					<xsl:text>Method</xsl:text>
-				</xsl:variable>
-				<table cellspacing="0" cellpadding="3" class="summaryTable {$tableStyle}" id="{$tableId}">
-					<tr>
-						<th colspan="2">
-							<xsl:if test="self::apiClassifier">
-								<xsl:text/>
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'MethodMethod']]/entry[2]/p"/>
-							</xsl:if>
-							<xsl:if test="not(self::apiClassifier)">
-								<xsl:text/>
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'FunctionFunction']]/entry[2]/p"/>
-							</xsl:if>
-						</th>
-						<xsl:if test="not($config/options/@docversion='2')">
-							<th class="summaryTableOwnerCol">
-								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'DefinedBy']]/entry[2]/p"/>
+					</xsl:choose></h3>
+				<table cellspacing="0" cellpadding="3">
+					<thead>
+						<tr>
+							<th class="name">
+								<xsl:if test="self::apiClassifier">
+									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'MethodMethod']]/entry[2]/p"/>
+								</xsl:if>
+								<xsl:if test="not(self::apiClassifier)">
+									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'FunctionFunction']]/entry[2]/p"/>
+								</xsl:if>
 							</th>
-						</xsl:if>
-					</tr>
+							<xsl:if test="not($config/options/@docversion='2')">
+								<th class="owner">
+									<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'DefinedBy']]/entry[2]/p"/>
+								</th>
+							</xsl:if>
+						</tr>
+					</thead>
+					<tbody>
 					<xsl:apply-templates
 						select="apiOperation[apiOperationDetail/apiOperationDef/apiAccess/@value=$accessLevel or apiOperationDetail/apiOperationDef/apiAccess/@value=$config/namespaces/namespace[@summaryDisplay=$accessLevel]/.] | apiConstructor[apiConstructorDetail/apiConstructorDef/apiAccess/@value=$accessLevel or apiConstructorDetail/apiConstructorDef/apiAccess/@value=$config/namespaces/namespace[@summaryDisplay=$accessLevel]/.] | $ancestorNode/ancestors/apiOperation[apiOperationDetail/apiOperationDef/apiAccess/@value=$accessLevel or apiOperationDetail/apiOperationDef/apiAccess/@value=$config/namespaces/namespace[@summaryDisplay=$accessLevel]/.] | $ancestorNode/ancestors/apiConstructor[apiConstructorDetail/apiConstructorDef/apiAccess/@value=$accessLevel or apiConstructorDetail/apiConstructorDef/apiAccess/@value=$config/namespaces/namespace[@summaryDisplay=$accessLevel]/.]"
 						mode="summary">
 						<xsl:sort select="local-name()" lang="en-US"/>
 						<xsl:sort select="apiName" order="ascending" lang="en-US"/>
 						<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+						<xsl:with-param name="baseRef" select="$baseRef"/>
 						<xsl:with-param name="accessLevel" select="$accessLevel"/>
 						<xsl:with-param name="currentPackage" select="$currentPackage"/>
 					</xsl:apply-templates>
+					</tbody>
 				</table>
 				<!-- AS2 INHERITED METHODS -->
 				<xsl:if test="$config/options/@docversion='2'">
@@ -3634,6 +3382,7 @@
 				<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
 				<xsl:with-param name="isMethod" select="$className!='package'"/>
 				<xsl:with-param name="className" select="$className"/>
+				<xsl:with-param name="baseRef" select="$baseRef"/>
 			</xsl:apply-templates>
 			<xsl:if test="$constructCall='true'">
 				<xsl:apply-templates select="apiConstructor" mode="detail">
@@ -3641,6 +3390,7 @@
 					<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
 					<xsl:with-param name="isMethod" select="$className!='package'"/>
 					<xsl:with-param name="className" select="$className"/>
+					<xsl:with-param name="baseRef" select="$baseRef"/>
 				</xsl:apply-templates>
 			</xsl:if>
 		</xsl:if>
@@ -3657,6 +3407,7 @@
 			<xsl:apply-templates select="apiValue[not(apiValueDetail/apiValueDef/apiProperty)]" mode="detail">
 				<xsl:sort select="./apiName" order="ascending" lang="en-US"/>
 				<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+				<xsl:with-param name="baseRef" select="$baseRef"/>
 				<xsl:with-param name="isConst" select="$isConst"/>
 			</xsl:apply-templates>
 		</xsl:if>
@@ -3672,6 +3423,7 @@
 			<xsl:apply-templates select="apiValue[apiValueDetail/apiValueDef/apiProperty]" mode="detail">
 				<xsl:sort select="./apiName" order="ascending" lang="en-US"/>
 				<xsl:with-param name="classDeprecated" select="$classDeprecated"/>
+				<xsl:with-param name="baseRef" select="$baseRef"/>
 			</xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
@@ -3680,25 +3432,16 @@
 		<xsl:param name="baseRef" select="''"/>
 		<xsl:param name="accessLevel" select="'public'"/>
 		<xsl:param name="currentPackage" select="ancestor-or-self::apiPackage/apiName"/>
-		<xsl:variable name="rowStyle">
+		<tr>
 			<xsl:if test="ancestor::ancestors">
-				<xsl:text>hideInherited</xsl:text>
-				<xsl:if test="$accessLevel='protected'">
-					<xsl:text>Protected</xsl:text>
-				</xsl:if>
-				<xsl:text>Method</xsl:text>
+				<xsl:attribute name="class">
+					<xsl:text>inherited </xsl:text>
+					<xsl:if test="$accessLevel='protected'">
+						<xsl:text>Protected</xsl:text>
+					</xsl:if>
+				</xsl:attribute>
 			</xsl:if>
-		</xsl:variable>
-		<tr class="{$rowStyle}">
-			<td class="summaryTableInheritanceCol">
-				<xsl:if test="ancestor::ancestors">
-					<img src="images/inheritedSummary.gif" alt="Inherited" title="Inherited" class="inheritedSummaryImage"/>
-				</xsl:if>
-				<xsl:if test="not(ancestor::ancestors)">
-					<xsl:value-of select="$nbsp"/>
-				</xsl:if>
-			</td>
-			<td class="summaryTableSignatureCol">
+			<td class="signature">
 				<div class="summarySignature">
 					<xsl:choose>
 						<xsl:when test="ancestor::ancestors">
@@ -3709,8 +3452,8 @@
 								<xsl:variable name="packageNameText" select="substring-before($id,':')"/>
 								<xsl:variable name="h1" select="substring-before($classNameText,':')"/>
 								<xsl:variable name="h2" select="$packageNameText"/>
-								<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-								<xsl:variable name="gfile" select="concat($packageNameText,'.html')"/>
+								<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+								<xsl:variable name="gfile" select="concat($baseRef,$packageNameText,'.html')"/>
 								<xsl:variable name="packageName">
 									<xsl:choose>
 										<xsl:when test="not(contains($packageNameText,'.')) and string-length($packageNameText) = 0">
@@ -3763,6 +3506,7 @@
 								<xsl:otherwise>
 									<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 										<xsl:call-template name="insertAIRIcon">
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 										<xsl:value-of select="$nbsp"/>
 									</xsl:if>
@@ -3789,6 +3533,7 @@
 									<xsl:otherwise>
 										<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 											<xsl:call-template name="insertAIRIcon">
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 											<xsl:value-of select="$nbsp"/>
 										</xsl:if>
@@ -3805,6 +3550,7 @@
 								<xsl:otherwise>
 									<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 										<xsl:call-template name="insertAIRIcon">
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 										<xsl:value-of select="$nbsp"/>
 									</xsl:if>
@@ -3825,6 +3571,7 @@
 							<xsl:text>:</xsl:text>
 							<xsl:call-template name="processReturnType">
 								<xsl:with-param name="currentPackage" select="$currentPackage"/>
+								<xsl:with-param name="baseRef" select="$baseRef"/>
 							</xsl:call-template>
 						</xsl:if>
 					</xsl:if>
@@ -3859,7 +3606,7 @@
 				</div>
 			</td>
 			<xsl:if test="not($config/options/@docversion='2')">
-				<td class="summaryTableOwnerCol">
+				<td class="owner">
 					<xsl:choose>
 						<xsl:when test="ancestor::ancestors">
 							<xsl:variable name="classLink">
@@ -3868,8 +3615,8 @@
 								<xsl:variable name="packageNameText" select="substring-before($id,':')"/>
 								<xsl:variable name="h1" select="$packageNameText"/>
 								<xsl:variable name="h2" select="substring-before($classNameText,':')"/>
-								<xsl:variable name="file" select="concat(translate($h1,'.','/'),'/',$h2,'.html')"/>
-								<xsl:variable name="gfile" select="concat($packageNameText,'.html')"/>
+								<xsl:variable name="file" select="concat($baseRef,translate($h1,'.','/'),'/',$h2,'.html')"/>
+								<xsl:variable name="gfile" select="concat($baseRef,$packageNameText,'.html')"/>
 								<xsl:if test="contains($id,'.') or string-length($packageNameText) &gt; 0">
 									<xsl:choose>
 										<xsl:when test="$prog_language_name='javascript'"/>
@@ -3931,7 +3678,7 @@
 					</xsl:choose>
 				</xsl:if>
 				<xsl:if test="not($accessLevel='public' or $accessLevel='protected')">
-					<a href="statements.html#{$accessLevel}">
+					<a href="{$baseRef}statements.html#{$accessLevel}">
 						<xsl:value-of select="$accessLevel"/>
 					</a>
 				</xsl:if>
@@ -3957,7 +3704,7 @@
 		</xsl:param>
 		<xsl:choose>
 			<xsl:when test="$config/languageElements[@show='true' and @specialTypes='true']">
-				<a href="specialTypes.html#{$type}">
+				<a href="{$baseRef}specialTypes.html#{$type}">
 					<xsl:value-of select="$type"/>
 				</a>
 			</xsl:when>
@@ -4058,6 +3805,7 @@
 						<xsl:otherwise>
 							<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 								<xsl:call-template name="insertAIRIcon">
+									<xsl:with-param name="baseRef" select="$baseRef"/>
 								</xsl:call-template>
 								<xsl:value-of select="$nbsp"/>
 							</xsl:if>
@@ -4099,6 +3847,7 @@
 					<xsl:text> </xsl:text>
 					<xsl:call-template name="getNamespaceLink">
 						<xsl:with-param name="accessLevel" select="./apiOperationDetail/apiOperationDef/apiAccess/@value"/>
+						<xsl:with-param name="baseRef" select="$baseRef"/>
 					</xsl:call-template>
 					<xsl:text> </xsl:text>
 					<xsl:if test="./apiOperationDetail/apiOperationDef/apiFinal">
@@ -4124,6 +3873,7 @@
 						<xsl:text>:</xsl:text>
 						<xsl:call-template name="processReturnType">
 							<xsl:with-param name="currentPackage" select="ancestor-or-self::apiPackage/apiName"/>
+							<xsl:with-param name="baseRef" select="$baseRef"/>
 						</xsl:call-template>
 					</xsl:if>
 				</code>
@@ -4220,6 +3970,7 @@
 						<xsl:otherwise>
 							<xsl:if test="prolog/asMetadata/apiVersion/apiPlatform[@name='AIR'] and not (prolog/asMetadata/apiVersion/apiPlatform[@name='Flash'])">
 								<xsl:call-template name="insertAIRIcon">
+									<xsl:with-param name="baseRef" select="$baseRef"/>
 								</xsl:call-template>
 								<xsl:value-of select="$nbsp"/>
 							</xsl:if>
@@ -4247,6 +3998,7 @@
 				<code>
 					<xsl:call-template name="getNamespaceLink">
 						<xsl:with-param name="accessLevel" select="apiConstructorDetail/apiConstructorDef/apiAccess/@value"/>
+						<xsl:with-param name="baseRef" select="$baseRef"/>
 					</xsl:call-template>
 					<xsl:if test="$prog_language_name='ActionScript'">
 						<xsl:text> function</xsl:text>
@@ -4327,7 +4079,7 @@
 			<xsl:if test="./apiType or ./apiOperationClassifier">
 				<xsl:if test="./apiType/@value= 'restParam' or ./apiOperationClassifier = 'restParam'">
 					<xsl:if test="$config/languageElements[@show='true' and @statements='true']">
-						<a href="statements.html#..._(rest)_parameter">...</a>
+						<a href="{$baseRef}statements.html#..._(rest)_parameter">...</a>
 					</xsl:if>
 					<xsl:if test="not($config/languageElements[@show='true' and @statements='true'])">
 						<xsl:text>...</xsl:text>
@@ -4341,6 +4093,7 @@
 						<xsl:text>:</xsl:text>
 						<xsl:call-template name="processParamType">
 							<xsl:with-param name="currentPackage" select="$currentPackage"/>
+							<xsl:with-param name="baseRef" select="$baseRef"/>
 						</xsl:call-template>
 					</xsl:if>
 				</xsl:if>
@@ -4371,8 +4124,8 @@
 				<xsl:variable name="destination" select="./apiOperationClassifier"/>
 				<xsl:variable name="h1" select="substring-after($destination,':')"/>
 				<xsl:variable name="h2" select="substring-before($destination,':')"/>
-				<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-				<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+				<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+				<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 				<xsl:variable name="hyperLink">
 					<xsl:if test="contains($destination,'.')">
 						<xsl:if test="$prog_language_name!='javascript'">
@@ -4404,11 +4157,13 @@
 			<xsl:when test="./apiType/@value='' or ./apiType/@value='*' or ./apiType/@value='any'or ./apiOperationClassifier='' or ./apiOperationClassifier='*'">
 				<xsl:call-template name="getSpecialTypeLink">
 					<xsl:with-param name="type" select="'*'"/>
+					<xsl:with-param name="baseRef" select="$baseRef"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="not(./apiOperationClassifier)">
 				<xsl:call-template name="getSimpleClassName">
 					<xsl:with-param name="fullClassName" select="./apiType/@value"/>
+					<xsl:with-param name="baseRef" select="$baseRef"/>
 				</xsl:call-template>
 			</xsl:when>
 		</xsl:choose>
@@ -4435,7 +4190,7 @@
 									</xsl:if>
 								</xsl:variable>
 								<xsl:if test="$config/languageElements[@show='true' and @statements='true']">
-									<a href="statements.html#..._(rest)_parameter">...</a>
+									<a href="{$baseRef}statements.html#..._(rest)_parameter">...</a>
 								</xsl:if>
 								<xsl:if test="not($config/languageElements[@show='true' and @statements='true'])">
 									<xsl:text>...</xsl:text>
@@ -4461,8 +4216,8 @@
 											<xsl:variable name="destination" select="./apiOperationClassifier"/>
 											<xsl:variable name="h1" select="substring-after($destination,':')"/>
 											<xsl:variable name="h2" select="substring-before($destination,':')"/>
-											<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-											<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+											<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+											<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 											<xsl:variable name="hyperLink">
 												<xsl:if test="contains($destination,'.')">
 													<xsl:value-of select="$file"/>
@@ -4494,6 +4249,7 @@
 											</xsl:variable>
 											<xsl:call-template name="getSpecialTypeLink">
 												<xsl:with-param name="type" select="'*'"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 										</xsl:when>
 										<xsl:when test="not(./apiOperationClassifier)">
@@ -4505,6 +4261,7 @@
 											<xsl:text>:</xsl:text>
 											<xsl:call-template name="getSimpleClassName">
 												<xsl:with-param name="fullClassName" select="./apiType/@value"/>
+												<xsl:with-param name="baseRef" select="$baseRef"/>
 											</xsl:call-template>
 										</xsl:when>
 									</xsl:choose>
@@ -4581,6 +4338,7 @@
 										test="apiOperationDetail/apiOperationDef/apiReturn/apiType/@value='' or apiOperationDetail/apiOperationDef/apiReturn/apiType/@value='*' or apiOperationDetail/apiOperationDef/apiReturn/apiType/@value='any' ">
 										<xsl:call-template name="getSpecialTypeLink">
 											<xsl:with-param name="type" select="'*'"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 									</xsl:when>
 									<xsl:when test="apiOperationDetail/apiOperationDef/apiReturn/apiType/@value='Void' and $config/options/@docversion='2'">
@@ -4590,8 +4348,8 @@
 										<xsl:variable name="destination" select="apiOperationDetail/apiOperationDef/apiReturn/apiOperationClassifier"/>
 										<xsl:variable name="h1" select="substring-after($destination,':')"/>
 										<xsl:variable name="h2" select="substring-before($destination,':')"/>
-										<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-										<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+										<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+										<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 										<xsl:variable name="hyperLink">
 											<xsl:if test="contains($destination,'.')">
 												<xsl:value-of select="$file"/>
@@ -4616,6 +4374,7 @@
 									<xsl:when test="not(apiOperationDetail/apiOperationDef/apiReturn/apiOperationClassifier)">
 										<xsl:call-template name="getSimpleClassName">
 											<xsl:with-param name="fullClassName" select="apiOperationDetail/apiOperationDef/apiReturn/apiType/@value"/>
+											<xsl:with-param name="baseRef" select="$baseRef"/>
 										</xsl:call-template>
 									</xsl:when>
 								</xsl:choose>
@@ -4663,8 +4422,8 @@
 						<xsl:if test="count($classHeader_map//apiClassifier[@id=$destination] ) &gt; 0">
 							<xsl:variable name="h1" select="substring-after($destination,':')"/>
 							<xsl:variable name="h2" select="substring-before($destination,':')"/>
-							<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-							<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+							<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+							<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 							<xsl:variable name="hyperLink">
 								<xsl:if test="contains($destination,'.')">
 									<xsl:if test="$prog_language_name!='javascript'">
@@ -5355,17 +5114,13 @@
 			    <xsl:value-of select="boolean(number($hasSkinPart)) or ($hasInheritedSkinPart='true')"/>
 			  </xsl:otherwise>
 			</xsl:choose>
-		      </xsl:with-param>
-		      <xsl:with-param name="showSkinState">
-			<xsl:choose>
-			  <xsl:when test="$prog_language_name='javascript'">
-			    <xsl:value-of select="false()"/>
-			  </xsl:when>
-			  <xsl:otherwise>
-			    <xsl:value-of select="boolean(number($hasSkinState)) or ($hasInheritedSkinState='true')"/>
-			  </xsl:otherwise>
-			</xsl:choose>
-		      </xsl:with-param>			
+			</xsl:with-param>
+			<xsl:with-param name="showSkinState">
+				<xsl:choose>
+					<xsl:when test="$prog_language_name='javascript'"><xsl:value-of select="false()"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="boolean(number($hasSkinState)) or ($hasInheritedSkinState='true')"/></xsl:otherwise>
+				</xsl:choose>
+			</xsl:with-param>
 			<xsl:with-param name="showEffects">
 				<xsl:choose>
 					<xsl:when test="$prog_language_name='javascript'"/>
@@ -5378,7 +5133,7 @@
 				<xsl:choose>
 					<xsl:when test="$prog_language_name='javascript'"/>
 					<xsl:otherwise>
-						<xsl:value-of select="boolean(number($hasEvents)) or ($hasInheritedEvents='true')"/>
+			 			<xsl:value-of select="boolean(number($hasEvents)) or ($hasInheritedEvents='true')"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:with-param>
@@ -5401,11 +5156,13 @@
 				test="./apiOperationDetail/apiOperationDef/apiReturn/apiType/@value='' or ./apiOperationDetail/apiOperationDef/apiReturn/apiType/@value='*' or ./apiOperationDetail/apiOperationDef/apiReturn/apiType/@value='any'">
 				<xsl:call-template name="getSpecialTypeLink">
 					<xsl:with-param name="type" select="'*'"/>
+					<xsl:with-param name="baseRef" select="$baseRef"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="./apiOperationDetail/apiOperationDef/apiReturn/apiType/@value='void'">
 				<xsl:call-template name="getSpecialTypeLink">
 					<xsl:with-param name="type" select="'void'"/>
+					<xsl:with-param name="baseRef" select="$baseRef"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="./apiOperationDetail/apiOperationDef/apiReturn/apiOperationClassifier='Void' and $config/options/@docversion='2'">
@@ -5415,8 +5172,8 @@
 				<xsl:variable name="destination" select="./apiOperationDetail/apiOperationDef/apiReturn/apiOperationClassifier"/>
 				<xsl:variable name="h1" select="substring-after($destination,':')"/>
 				<xsl:variable name="h2" select="substring-before($destination,':')"/>
-				<xsl:variable name="file" select="concat(translate($h2,'.','/'),'/',$h1,'.html')"/>
-				<xsl:variable name="gfile" select="concat($destination,'.html')"/>
+				<xsl:variable name="file" select="concat($baseRef,translate($h2,'.','/'),'/',$h1,'.html')"/>
+				<xsl:variable name="gfile" select="concat($baseRef,$destination,'.html')"/>
 				<xsl:variable name="hyperLink">
 					<xsl:if test="contains($destination,'.')">
 						<xsl:if test="$prog_language_name!='javascript'">
@@ -5448,6 +5205,7 @@
 			<xsl:when test="not(./apiOperationDetail/apiOperationDef/apiReturn/apiOperationClassifier) and ./apiOperationDetail/apiOperationDef/apiReturn/apiType">
 				<xsl:call-template name="getSimpleClassName">
 					<xsl:with-param name="fullClassName" select="./apiOperationDetail/apiOperationDef/apiReturn/apiType/@value"/>
+					<xsl:with-param name="baseRef" select="$baseRef"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
