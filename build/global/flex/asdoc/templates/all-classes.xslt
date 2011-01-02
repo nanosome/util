@@ -21,26 +21,12 @@
 		<xsl:copy-of select="$noLiveDocs"/>
 		<xsl:copy-of select="$docType"/>
 		<xsl:element name="html">
-			<head>
-				<xsl:call-template name="getStyleLink">
-					<xsl:with-param name="link" select="asdoc/link"/>
-				</xsl:call-template>
-				<title>
-					<xsl:choose>
-						<xsl:when test="$prog_language_name='javascript'" />
-						<xsl:otherwise>
-							<xsl:value-of select="$title"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</title>
-				<base target="classFrame"/>
-			</head>
 			<body><div id="body" class="classFrameContent">
 				<xsl:choose>
 					<xsl:when test="$prog_language_name='javascript'"/>
 					<xsl:otherwise>
 						<h3>
-							<a href="class-summary.html" target="classFrame" style="color:black">
+							<a href="class-summary.html" style="color:black">
 								<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'allClasses']]/entry[2]/p"/>
 							</a>
 						</h3>

@@ -232,41 +232,20 @@
 						<xsl:with-param name="packageName" select="$packageName"/>
 					</xsl:call-template>
 				</xsl:variable>
-				<link type="text/css" rel="stylesheet" media="screen">
+				<link type="text/css" rel="stylesheet">
 					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>style.css</xsl:attribute>
+				</link>
+				<link type="text/css" rel="stylesheet" media="screen">
+					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>screen.css</xsl:attribute>
 				</link>
 				<link type="text/css" rel="stylesheet" media="print">
 					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>print.css</xsl:attribute>
 				</link>
-				<link type="text/css" rel="stylesheet">
-					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>override.css</xsl:attribute>
-				</link>
-				<link type="text/css" rel="stylesheet">
-					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>shCore.css</xsl:attribute>
-				</link>
-				<link type="text/css" rel="stylesheet">
-					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>shCoreDefault.css</xsl:attribute>
+				<link rel="shortcut icon">
+					<xsl:attribute name="href"><xsl:value-of select="$baseRef"/>images/favicon.ico</xsl:attribute>
 				</link>
 				<script language="javascript" type="text/javascript">
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>jquery-1.4.4.min.js</xsl:attribute>
-				</script>
-				<script language="javascript" type="text/javascript">
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>jquery.cookie.js</xsl:attribute>
-				</script>
-				<script language="javascript" type="text/javascript">
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>shCore.js</xsl:attribute>
-				</script>
-				<script language="javascript" type="text/javascript">
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>shBrushAS3.js</xsl:attribute>
-				</script>
-				<script language="javascript" type="text/javascript">
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>jquery.cookie.js</xsl:attribute>
-				</script>
-				<script language="javascript" type="text/javascript">
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>asdoc.en.js</xsl:attribute>
-				</script>
-				<script language="javascript" type="text/javascript">
-					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>asdoc.js</xsl:attribute>
+					<xsl:attribute name="src"><xsl:value-of select="$baseRef"/>script.js</xsl:attribute>
 				</script>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -742,8 +721,11 @@
 		<xsl:if test="$showConventions and $prog_language_name!='javascript'">
 			<a href="{$baseRef}conventions.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Conventions']]/entry[2]/p"/></a>&#xA0;|&#xA0;
 		</xsl:if>
+		<a id="fileInformation">
+			<xsl:attribute name="href" select="concat($baseRef,$fileName2)"/>
+			File Information
+		</a>
 		<script language="javascript" type="text/javascript">
-			var sideFrame = '<xsl:value-of select="$fileName2"/>';
 			var baseRef = '<xsl:value-of select="$baseRef"/>';
 		</script>
 	</xsl:template>

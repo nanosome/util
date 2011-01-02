@@ -1,4 +1,4 @@
-terms = {
+var terms = {
 	Frames: "Frames",
 	NoFrames: "No Frames",
 	ShowProperty: "Show Inherited Properties",

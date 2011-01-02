@@ -2,7 +2,7 @@
 	<packages>
 		<package name="nanosome.util" >
 			<shortDescription><![CDATA[
-				Contains all the utils used by various nanosome projects.
+				Contains general utils used by various nanosome projects.
 			]]></shortDescription>
 			<description><![CDATA[
 				The nanosome-util project contains core ActionScript 3 util to
@@ -10,6 +10,53 @@
 				We limit it to the utils necessary to develop our nanosome projects.
 				This covers fast dispatching, disposing, anonymous object access
 				and alike.
+			]]></description>
+		</package>
+		<package name="nanosome.access" >
+			<shortDescription><![CDATA[
+				Contains functionality for reading/writing annonymous objects.
+			]]></shortDescription>
+			<description><![CDATA[
+				Many parts of nanosome deal with annonymous objects. When dealing
+				with annonymous objects there are many small traps that can be
+				easily forgot. Beside that writing it seperatly in all cases makes
+				it easy to have inconsitant behaviours and in some cases its even
+				slower to implement it directly.
+			]]></description>
+		</package>
+		<package name="nanosome.util.list" >
+			<shortDescription><![CDATA[
+				Contains fast link lists used for notifications of listeners or
+				similar use cases.
+			]]></shortDescription>
+			<description><![CDATA[
+				When working with listeners its not a good idea to try to implement
+				the lists to store and access lists for each case again since it
+				has plenty of cases that are neighter easy to implement nor easy
+				to debug. The implementations in this package should allow fast,
+				easy to use well tested lists.
+			]]></description>
+		</package>
+		<package name="nanosome.util.normalize" >
+			<shortDescription><![CDATA[
+				Package for algorithms to work with normalized numbers.
+			]]></shortDescription>
+			<description><![CDATA[
+				It is reasonable to store and work internally with normalized numbers
+				when working with ranged values. This package offers a set of
+				algorithms to deal with them in a standard way, providing essential
+				functionalities for other nanosome projects.
+			]]></description>
+		</package>
+		
+		<package name="nanosome.pool" >
+			<shortDescription><![CDATA[
+				Contains utils to work with instance pools.
+			]]></shortDescription>
+			<description><![CDATA[
+				Instance pools are easily implemented as lists. This package offers
+				functionality to reduce the amount of code when working with
+				instance pools.
 			]]></description>
 		</package>
 	</packages>

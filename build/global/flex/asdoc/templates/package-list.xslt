@@ -14,19 +14,6 @@
 		<xsl:copy-of select="$noLiveDocs" />
 		<xsl:copy-of select="$docType" />
 		<xsl:element name="html">
-			<head>
-				<title>
-					<xsl:value-of
-						select="$asdoc_terms/row[entry[1][p/text() = 'PackageList']]/entry[2]/p" />
-					-
-					<xsl:value-of select="$title-base" />
-				</title>
-				<base target="classFrame" />
-				<xsl:call-template name="getStyleLink">
-					<xsl:with-param name="link" select="asdoc/link" />
-				</xsl:call-template>
-				<script language="javascript" src="asdoc.js" type="text/javascript" />
-			</head>
 			<body><div id="body" class="classFrameContent">
 				<h3>
 					<a href="package-summary.html"

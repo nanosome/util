@@ -26,6 +26,15 @@
 		</classpath>
 	</taskdef>
 	
+	<taskdef name="yuic" classname="com.yahoo.platform.yui.compressor.YUICompressTask">
+		<classpath>
+			<path>
+				<pathelement location="global/yuicompressor-2.4.2.jar"/>
+				<pathelement location="global/YUIAnt.jar"/>
+			</path>
+		</classpath>
+	</taskdef>
+	
 	<target name="init-win" if="windows">
 		<echo>Setting windows environment variables</echo>
 		<property name="exec" value=".exe" environment="true"/>
@@ -83,11 +92,64 @@
 		<fixcrlf srcdir="${temp.path}src" encoding="utf-8" casesensitive="true" eol="unix" includes="*.as"/>
 	</target>
 	
+	<target name="compress-asdoc-scripts">
+		
+		<property name="asdoc" value="global/flex/asdoc/" />
+		<property name="asdoc.raw" value="${asdoc}template-raw" />
+		<property name="asdoc.temp" value="${asdoc}template-temp" />
+		
+		<delete>
+			<fileset dir="${asdoc.temp}" includes="*.js,*.css"/>
+		</delete>
+		<copy todir="${asdoc.temp}">
+			<fileset dir="${asdoc.raw}" includes="*.js,*.css"/>
+		</copy>
+		<!--
+		<yuic linebreak="600" warn="false" munge="yes" preserveallsemicolons="true"
+			outputfolder="${asdoc.temp}">
+			<fileset dir="${asdoc.raw}" includes="*.js,*.css">
+				<exclude name="jquery-1.4.4.min.js" />
+				<exclude name="jquery-ui.js" />
+			</fileset>
+		</yuic>
+		<copy todir="${asdoc.temp}">
+			<fileset dir="${asdoc.raw}" includes="jquery*min.js"/>
+			<fileset dir="${asdoc.raw}" includes="jquery-ui.js"/>
+		</copy>
+		-->
+		<echo>Concatinating to ${asdoc}/templates/script.js</echo>
+		<concat destfile="${asdoc}/templates/script.js">
+			<filelist dir="${asdoc.temp}">
+				<file name="shLegacy.js" />
+				<file name="shCore.js" />
+				<file name="shBrushAS3.js" />
+				<file name="jquery-1.4.4.min.js" />
+				<file name="jquery-ui.js" />
+				<file name="jquery.cookie.js" />
+				<file name="jquery.zebra.js" />
+				<file name="asdoc-index.RequestHandler.js" />
+				<file name="asdoc-index.HashLocationHandler.js" />
+				<file name="asdoc-index.ContentContainerWrapper.js" />
+				<file name="asdoc.en.js" />
+				<file name="asdoc-inheritance.js" />
+				<file name="asdoc.js" />
+			</filelist>
+		</concat>
+		<concat destfile="${asdoc}/templates/style.css">
+			<filelist dir="${asdoc.temp}">
+				<file name="style.css" />
+				<file name="shCore.css" />
+				<file name="shCoreDefault.css" />
+			</filelist>
+		</concat>
+	</target>
+	
 	<target name="create-api-docs" description="create the api documentation"
-			depends="prepare-temp,prepare-sources">
+			depends="prepare-temp,prepare-sources,compress-asdoc-scripts">
 		
 		<echo>Creating API docs from ${temp.path}src</echo>
 		<delete dir="${temp.path}/asdoc-xml" />
+		
 		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
 			taskname="flexhome-fix" >
 			<classpath>
@@ -100,8 +162,9 @@
 			<arg value="global/flexhome-fix.ant"/>
 			<arg value="create-asdoc"/>
 		</java>
+		<delete file="${temp.path}/asdoc/toplevel.xml" />
 		<move file="${temp.path}/asdoc/tempdita" tofile="${temp.path}/asdoc-xml"></move>
-		<zip destfile="${build.file}.asdoc.zip">
+		<zip destfile="${build.file}.asdoc.zip" level="9">
 			<fileset dir="${temp.path}asdoc/" includes="**/*.*" />
 		</zip>
 	</target>

@@ -86,9 +86,9 @@
         </xsl:copy>
       </xsl:otherwise>
     </xsl:choose>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+    <link rel="stylesheet" href="screen.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="print.css" type="text/css" media="print"/>
-    <link rel="stylesheet" href="override.css" type="text/css"/>
 	<link rel="shortcut icon" href="images/favicon.ico"/>
   </xsl:template>
   <xsl:template match="head/link"/>

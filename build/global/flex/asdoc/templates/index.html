@@ -1,29 +1,41 @@
 <html>
 	<head>
-		<title>ActionScript 3.0 Language and Components Reference</title>
-		<link rel="shortcut icon" href="images/favicon.ico"/>
-		<script language="javascript" type="text/javascript">
-		<!--
-		function getSetup() {
-		}
-		-->
-		</script>
+		<title>API Documentation</title>
+		<link type="text/css" rel="stylesheet" media="screen" href="style.css"></link>
+		<link type="text/css" rel="stylesheet" media="print" href="print.css"></link>
+		<link type="text/css" rel="stylesheet" href="override.css"></link>
+		<link rel="shortcut icon" href="images/favicon.ico" />
+		<script language="javascript" type="text/javascript" src="script.js"></script>
 	</head>
-	<frameset cols="175,*" border="2" bordercolor="#AAAAAA" framespacing="1">
-		<frameset rows="140,*" border="2" framespacing="1" bordercolor="#AAAAAA">
-			<frame src="package-list.html" name="packageListFrame" scrolling="yes"/>
-			<frame src="all-classes.html" name="classListFrame" scrolling="yes"/>
-		</frameset>
-		<frame src="package-summary.html" name="classFrame" frameborder="0"/>
-		<noframes>
-			<body>
-				<h2>Frame Alert</h2>
-				<p>
-				This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client.
-				<br/>
-				Link to <a href="package-summary.html">Non-frame version.</a>
-				</p>
-			</body>
-		</noframes>
-	</frameset>
+	<body class="framed">
+		<script language="javascript"><![CDATA[
+			if( $.browser.webkit && loc.indexOf("file://") == 0 ) {
+				document.write( 
+					'<object'
+					+'	id="swfhttprequest" class="hidden"'
+					+'	classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"'
+					+'	codebase="http://fpdownload.adobe.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0">'
+					+'	<param name="movie" value="images/swfhttprequest.swf" />'
+					+'	<param name="allowScriptAccess" value="always" />'
+					+'	<param name="flashVars" value="onload=indexInit" />'
+					+'	<embed'
+					+'		class="hidden"'
+					+'		src="images/swfhttprequest.swf"'
+					+'		flashVars="onload=indexInit"'
+					+'		allowScriptAccess="always"'
+					+'		type="application/x-shockwave-flash"'
+					+'		pluginspage="http://www.adobe.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">'
+					+'	</embed>'
+					+'</object>'
+				);
+			} else {
+				$(document).ready( indexInit );
+			}]]>
+		</script>
+		<div id="vertical-slice"></div>
+		<div id="horizontal-slice"></div>
+		<div id="packagesFrame"></div>
+		<div id="indexFrame"></div>
+		<div id="contentFrame"></div>
+	</body>
 </html>
