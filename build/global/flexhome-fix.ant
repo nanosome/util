@@ -34,7 +34,6 @@
 				compiler.optimize="true"
 				compiler.strict="true"
 				debug="false">
-			<load-config>compiler.conf.xml</load-config>
 			<load-config>compiler.dependencies.xml</load-config>
 			<include-sources dir="${temp.path}src">
 				<include name="**/*.*" />
@@ -47,6 +46,19 @@
 				<creator>Nanosome</creator>
 			</metadata>
 		</compc>
+	</target>
+
+	<target name="create-asdoc-for-swc">
+		<asdoc output="${temp.path}asdoc" failonerror="true" lenient="true" fork="true" keep-xml="true" skip-xsl="true">
+			<compiler.external-library-path dir="${env.FLEX_HOME}">
+				<include name="libs/player/10.1/playerglobal.swc" />
+			</compiler.external-library-path>
+			<metadata title="${project.name}">
+				<creator>Nanosome</creator>
+			</metadata>
+			<doc-sources path-element="${temp.path}src"/>
+			<load-config>../asdoc.conf.xml</load-config>
+		</asdoc>
 	</target>
 	
 	<target name="create-asdoc">

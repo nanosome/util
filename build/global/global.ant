@@ -55,7 +55,10 @@
 		<property name="build.file" value="${build.path}/${project.file}.${DSTAMP}.${build.version}" />
 		<property name="swc.file" value="${swc.path}${project.file}.swc" />
 		<property name="swc.withDependencies.file" value="${swc.path}${project.file}.withDependencies.swc" />
+		<property name="swc.stripped.file" value="${swc.path}${project.file}.min.swc" />
 		<property name="lib.path" value="${build.path}/lib/"/>
+		
+		<mkdir dir="../swc"/>
 	</target>
 	
 	<target name="prepare-temp" depends="init">
@@ -177,6 +180,37 @@
 		</zip>
 	</target>
 	
+	<target name="create-swc-docs" description="create the api documentation for the swc"
+			depends="prepare-temp,prepare-sources">
+		
+		<echo>Creating API docs from ${temp.path}src</echo>
+		<delete dir="${temp.path}/asdoc-xml" />
+		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
+			taskname="flexhome-fix" >
+			<classpath>
+				<pathelement location="${ant.home}/lib/ant-launcher.jar"/>
+			</classpath>
+			<env key="FLEX_HOME" value="${basedir}/${FLEX_HOME}"/>
+			<arg value="-Dtemp.path=${basedir}/${temp.path}"/>
+			<arg value="-Dproject.name=${project.name}"/>
+			<arg value="-buildfile"/>
+			<arg value="global/flexhome-fix.ant"/>
+			<arg value="create-asdoc-for-swc"/>
+		</java>
+		<replace dir="${temp.path}/asdoc" includes="**/*.html">
+			<replacefilter token="@system@" value="nanosome"/>
+			<replacefilter token="@systemHome@" value="http://www.nanosome.in/asdoc"/>
+			<replacefilter token="@projectHome@" value="http://www.nanosome.in/asdoc/${project.shortName}"/>
+			<replacefilter token="@project@" value="${project.shortName}"/>
+			<replacefilter token="@version@" value="${build.version}"/>
+		</replace>
+		<delete file="${temp.path}/asdoc/toplevel.xml" />
+		<move file="${temp.path}/asdoc/tempdita" tofile="${temp.path}/asdoc-xml"></move>
+		<zip destfile="${build.file}.asdoc.zip" level="9">
+			<fileset dir="${temp.path}asdoc/" includes="**/*.*" />
+		</zip>
+	</target>
+	
 	<target name="create-swc" depends="prepare-temp,prepare-sources,create-withDependencies-swc">
 		<echo>Creating ${build.file}.swc from ${temp.path}src</echo>
 		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
@@ -193,15 +227,10 @@
 			<arg value="global/flexhome-fix.ant"/>
 			<arg value="create-swc"/>
 		</java>
-		<echo>Adding asdoc to the swc</echo>
+		<copy file="${build.file}.swc" tofile="${swc.stripped.file}"/>
 		<zip destfile="${build.file}.swc" update="true">
-			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs">
-				<include name="*.*"/>
-				<exclude name="ASDoc_Config.xml"/>
-				<exclude name="overviews.xml"/>
-			</zipfileset>
+			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs" includes="*.*"/>
 		</zip>
-		<mkdir dir="../swc"/>
 		<copy file="${build.file}.swc" tofile="${swc.file}"/>
 	</target>
 	
@@ -209,7 +238,7 @@
 		<available file="compiler.dependencies.xml" />
 	</condition>
 	
-	<target name="create-withDependencies-swc" if="project.compiler-withDependencies-options" depends="create-api-docs">
+	<target name="create-withDependencies-swc" if="project.compiler-withDependencies-options" depends="create-swc-docs">
 		<echo>Creating ${build.file}.withDependencies.swc from ${temp.path}src</echo>
 		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
 			taskname="flexhome-fix" >
@@ -225,15 +254,9 @@
 			<arg value="global/flexhome-fix.ant"/>
 			<arg value="create-swc-dependencies"/>
 		</java>
-		<echo>Adding asdoc to the swc</echo>
 		<zip destfile="${build.file}.withDependencies.swc" update="true">
-			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs">
-				<include name="*.*"/>
-				<exclude name="ASDoc_Config.xml"/>
-				<exclude name="overviews.xml"/>
-			</zipfileset>
+			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs" includes="*.*"/>
 		</zip>
-		<mkdir dir="../swc"/>
 		<copy file="${build.file}.withDependencies.swc" tofile="${swc.withDependencies.file}"/>
 	</target>
 	
