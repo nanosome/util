@@ -135,6 +135,7 @@
 					<xsl:with-param name="link" select="asdoc/link"/>
 				</xsl:call-template>
 				<title>
+					<xsl:text>@system@-@project@ - API - </xsl:text>
 					<xsl:if test="$splitIndex and $letter">
 						<xsl:value-of select="$localizedLetter"/>
 					</xsl:if>

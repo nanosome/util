@@ -86,6 +86,7 @@
 										<xsl:with-param name="packageName" select="$name"/>
 									</xsl:call-template>
 									<title>
+										<xsl:text>@system@-@project@ - API - </xsl:text>
 										<xsl:if test="$isTopLevel='true'">
 											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'TopLevelConstantsFunctions']]/entry[2]/p"/>
 										</xsl:if>

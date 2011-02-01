@@ -103,7 +103,7 @@
 									<xsl:with-param name="link" select="/asdoc/link"/>
 									<xsl:with-param name="packageName" select="$name"/>
 								</xsl:call-template>
-								<title><xsl:value-of select="$title"/></title>
+								<title><xsl:text>@system@-@project@ - API - </xsl:text><xsl:value-of select="$title"/></title>
 							</head>
 							<body><div id="body" class="content">
 								<xsl:if test="$isEclipse">

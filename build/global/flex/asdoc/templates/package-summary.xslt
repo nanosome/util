@@ -41,6 +41,7 @@
 			<head>
 				<xsl:call-template name="getStyleLink"><xsl:with-param name="link" select="asdoc/link"/></xsl:call-template>
 				<title>
+					<xsl:text>@system@-@project@ - API - </xsl:text>
 					<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = $localTitle]]/entry[2]/p"/>
 					<xsl:call-template name="getPageTitlePostFix"/>
 				</title>
@@ -51,25 +52,15 @@
 						<xsl:text>eclipseBody</xsl:text>
 					</xsl:attribute>
 				</xsl:if>
-				<xsl:call-template name="getLinks2">
-					<xsl:with-param name="subTitle">
-						<xsl:call-template name="search-and-replace">
-							<xsl:with-param name="input" select="$asdoc_terms/row[entry[1][p/text() = $localTitle]]/entry[2]/p"/>
-							<xsl:with-param name="search-string" select="' '"/>
-							<xsl:with-param name="replace-string" select="$nbsp"/>
-						</xsl:call-template>
-					</xsl:with-param>
-					<xsl:with-param name="fileName" select="$outfile"/>
-					<xsl:with-param name="showProperties" select="false()"/>
-					<xsl:with-param name="showMethods" select="false()"/>
-					<xsl:with-param name="showPackages" select="false()"/>
-				</xsl:call-template>
 				<div class="MainContent">
 					<xsl:variable name="overviews" select="document($overviewsFile)/overviews"/>
 					<p>
 						<xsl:choose>
 							<xsl:when test="starts-with($useFilter,'mx.')">
 								<xsl:value-of disable-output-escaping="yes" select="$overviews/mx-packages/description/."/>
+							</xsl:when>
+							<xsl:when test="starts-with($useFilter,'flash.')">
+								<xsl:value-of disable-output-escaping="yes" select="$overviews/flash-packages/description/."/>
 							</xsl:when>
 							<xsl:when test="starts-with($useFilter,'flash.')">
 								<xsl:value-of disable-output-escaping="yes" select="$overviews/flash-packages/description/."/>
@@ -85,6 +76,19 @@
 						</xsl:call-template>
 					</xsl:for-each>
 				</div>
+				<xsl:call-template name="getLinks2">
+					<xsl:with-param name="subTitle">
+						<xsl:call-template name="search-and-replace">
+							<xsl:with-param name="input" select="$asdoc_terms/row[entry[1][p/text() = $localTitle]]/entry[2]/p"/>
+							<xsl:with-param name="search-string" select="' '"/>
+							<xsl:with-param name="replace-string" select="$nbsp"/>
+						</xsl:call-template>
+					</xsl:with-param>
+					<xsl:with-param name="fileName" select="$outfile"/>
+					<xsl:with-param name="showProperties" select="false()"/>
+					<xsl:with-param name="showMethods" select="false()"/>
+					<xsl:with-param name="showPackages" select="false()"/>
+				</xsl:call-template>
 				<div class="summarySection">
 					<table cellpadding="3" cellspacing="0">
 						<tr>

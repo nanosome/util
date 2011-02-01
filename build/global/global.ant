@@ -52,7 +52,7 @@
 			<status path="../src" revisionProperty="revision"/>
 		</svn>
 		<property name="build.version" value="${project.version}r${revision}" />
-		<property name="build.file" value="${project.file}.${DSTAMP}.${build.version}" />
+		<property name="build.file" value="${build.path}/${project.file}.${DSTAMP}.${build.version}" />
 		<property name="swc.file" value="${swc.path}${project.file}.swc" />
 		<property name="swc.withDependencies.file" value="${swc.path}${project.file}.withDependencies.swc" />
 		<property name="lib.path" value="${build.path}/lib/"/>
@@ -70,7 +70,7 @@
 		
 		<echo>Replacing @license@, @version@ with ${build.version}, @contributors@ with ${project.contributors} and @date@ with ${DSTAMP} while copying sources from ${basedir}../src to ${basedir}${temp.path}src</echo>
 		
-		<copy includeemptydirs="false" overwrite="true" todir="${temp.path}src" filtering="true" preservelastmodified="true">
+		<copy includeemptydirs="false" overwrite="false" todir="${temp.path}src" filtering="true" preservelastmodified="true">
 			<fileset dir="../src/" excludes="**/*.svn" includes="**/*.as"/>
 			<filterset>
 				<filter token="license" value="${license}"/>
@@ -97,14 +97,15 @@
 		<property name="asdoc" value="global/flex/asdoc/" />
 		<property name="asdoc.raw" value="${asdoc}template-raw" />
 		<property name="asdoc.temp" value="${asdoc}template-temp" />
-		
+
 		<delete>
 			<fileset dir="${asdoc.temp}" includes="*.js,*.css"/>
 		</delete>
+		<!--
 		<copy todir="${asdoc.temp}">
 			<fileset dir="${asdoc.raw}" includes="*.js,*.css"/>
 		</copy>
-		<!--
+		-->
 		<yuic linebreak="600" warn="false" munge="yes" preserveallsemicolons="true"
 			outputfolder="${asdoc.temp}">
 			<fileset dir="${asdoc.raw}" includes="*.js,*.css">
@@ -116,7 +117,6 @@
 			<fileset dir="${asdoc.raw}" includes="jquery*min.js"/>
 			<fileset dir="${asdoc.raw}" includes="jquery-ui.js"/>
 		</copy>
-		-->
 		<echo>Concatinating to ${asdoc}/templates/script.js</echo>
 		<concat destfile="${asdoc}/templates/script.js">
 			<filelist dir="${asdoc.temp}">
@@ -135,6 +135,7 @@
 				<file name="asdoc.js" />
 			</filelist>
 		</concat>
+		<echo>Concatinating to ${asdoc}/templates/style.css</echo>
 		<concat destfile="${asdoc}/templates/style.css">
 			<filelist dir="${asdoc.temp}">
 				<file name="style.css" />
@@ -142,6 +143,7 @@
 				<file name="shCoreDefault.css" />
 			</filelist>
 		</concat>
+		<copy file="${asdoc.temp}/screen.css" tofile="${asdoc}/templates/screen.css"/>
 	</target>
 	
 	<target name="create-api-docs" description="create the api documentation"
@@ -149,7 +151,6 @@
 		
 		<echo>Creating API docs from ${temp.path}src</echo>
 		<delete dir="${temp.path}/asdoc-xml" />
-		
 		<java classname="org.apache.tools.ant.launch.Launcher" fork="true"
 			taskname="flexhome-fix" >
 			<classpath>
@@ -162,6 +163,13 @@
 			<arg value="global/flexhome-fix.ant"/>
 			<arg value="create-asdoc"/>
 		</java>
+		<replace dir="${temp.path}/asdoc" includes="**/*.html">
+			<replacefilter token="@system@" value="nanosome"/>
+			<replacefilter token="@systemHome@" value="http://www.nanosome.in/asdoc"/>
+			<replacefilter token="@projectHome@" value="http://www.nanosome.in/asdoc/${project.shortName}"/>
+			<replacefilter token="@project@" value="${project.shortName}"/>
+			<replacefilter token="@version@" value="${build.version}"/>
+		</replace>
 		<delete file="${temp.path}/asdoc/toplevel.xml" />
 		<move file="${temp.path}/asdoc/tempdita" tofile="${temp.path}/asdoc-xml"></move>
 		<zip destfile="${build.file}.asdoc.zip" level="9">

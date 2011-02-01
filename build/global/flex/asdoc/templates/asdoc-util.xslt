@@ -353,7 +353,6 @@
 		</xsl:if>
 		<div width="100%" class="topLinks" align="right">
 			<span>
-
 				<xsl:if test="$showProperties">
 					<a href="#propertySummary">
 						<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Properties']]/entry[2]/p"/>
@@ -558,123 +557,96 @@
 		</xsl:variable>
 		<xsl:if test="$copyNum='1'">
 			<xsl:if test="not($config/options[@eclipse='true'])">
-				<table class="titleTable" cellpadding="0" cellspacing="0" id="titleTable">
-					<tr class="titleHeader">
-						<td class="logo"><a href="http://nanosome.in" target="_blank">Nanosome</a></td>
-						<td class="titleTableTopNav" align="right">
-							<xsl:choose>
-								<xsl:when test="$prog_language_name='javascript'"/>
-								<xsl:otherwise>
-									<xsl:call-template name="getNavLinks2">
-										<xsl:with-param name="copyNum" select="$copyNum"/>
-										<xsl:with-param name="baseRef" select="$baseRef"/>
-										<xsl:with-param name="showPackages" select="$showPackages"/>
-										<xsl:with-param name="showAllClasses" select="$showAllClasses"/>
-										<xsl:with-param name="showLanguageElements" select="$showLanguageElements"/>
-										<xsl:with-param name="showIndex" select="$showIndex"/>
-										<xsl:with-param name="splitIndex" select="$splitIndex"/>
-										<xsl:with-param name="showAppendixes" select="$showAppendixes"/>
-										<xsl:with-param name="showConventions" select="$showConventions"/>
-										<xsl:with-param name="href" select="$href"/>
-										<xsl:with-param name="fileName" select="$fileName"/>
-										<xsl:with-param name="fileName2" select="$fileName2"/>
-									</xsl:call-template>
-								</xsl:otherwise>
-							</xsl:choose>
-						</td>
-					</tr>
-					<tr class="titleTableRow2">
-						<td class="titleTableSubTitle" id="subTitle" align="left">
-							<xsl:if test="string-length($subTitle)">
-								<xsl:value-of select="$subTitle"/>
+				<div id="titleBar">
+					<div id="titleContainer">
+						<a href="@systemHome@" target="_blank" id="logo">@system@</a>
+						<a href="@projectHome@" id="project" target="_blank">@project@</a>
+						<span id="version">Version: @version@</span>
+					</div>
+					<div id="titleNav">
+						<xsl:choose>
+							<xsl:when test="$prog_language_name='javascript'"/>
+							<xsl:otherwise>
+								<xsl:call-template name="getNavLinks2">
+									<xsl:with-param name="copyNum" select="$copyNum"/>
+									<xsl:with-param name="baseRef" select="$baseRef"/>
+									<xsl:with-param name="showPackages" select="$showPackages"/>
+									<xsl:with-param name="showAllClasses" select="$showAllClasses"/>
+									<xsl:with-param name="showLanguageElements" select="$showLanguageElements"/>
+									<xsl:with-param name="showIndex" select="$showIndex"/>
+									<xsl:with-param name="splitIndex" select="$splitIndex"/>
+									<xsl:with-param name="showAppendixes" select="$showAppendixes"/>
+									<xsl:with-param name="showConventions" select="$showConventions"/>
+									<xsl:with-param name="href" select="$href"/>
+									<xsl:with-param name="fileName" select="$fileName"/>
+									<xsl:with-param name="fileName2" select="$fileName2"/>
+								</xsl:call-template>
+							</xsl:otherwise>
+						</xsl:choose>
+					</div>
+				</div>
+				<div id="subTitleBar">
+					<h2><xsl:value-of select="$subTitle"/></h2>
+					<div id="contentNav">
+						<xsl:if test="$prog_language_name!='javascript'">
+							<xsl:if test="$showProperties=true()">
+								<a href="#propertySummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Properties']]/entry[2]/p"/></a>
 							</xsl:if>
-							<xsl:if test="not(string-length($subTitle))">
-								<xsl:value-of select="$nbsp"/>
+							<xsl:if test="$showPackageProperties">
+								<a href="package.html#propertySummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Properties']]/entry[2]/p"/></a>
 							</xsl:if>
-						</td>
-						<td class="titleTableSubNav" id="subNav" align="right">
-							<xsl:if test="$config/options[@livedocs='true']">
-								<xsl:attribute name="colspan">
-									<xsl:text>2</xsl:text>
-								</xsl:attribute>
+							<xsl:if test="$showConstructors=true()">
+								<a href="#constructorSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constructor']]/entry[2]/p"/></a>
 							</xsl:if>
-							<xsl:if test="$config/options[@ion='true']">
-								<xsl:attribute name="colspan">
-									<xsl:text>2</xsl:text>
-								</xsl:attribute>
+							<xsl:if test="$showMethods=true()">
+								<a href="#methodSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Methods']]/entry[2]/p"/></a>
 							</xsl:if>
-							<xsl:if test="$config/options[@standalonesearch='true']">
-								<xsl:attribute name="colspan">
-									<xsl:text>2</xsl:text>
-								</xsl:attribute>
+							<xsl:if test="$showPackageFunctions">
+								<a href="package.html#methodSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Functions']]/entry[2]/p"/></a>
 							</xsl:if>
-							<xsl:choose>
-								<xsl:when test="$prog_language_name='javascript'"/>
-								<xsl:otherwise>
-									<xsl:if test="$showProperties=true()">
-										<a href="#propertySummary">
-											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Properties']]/entry[2]/p"/>
-										</a>
-									</xsl:if>
-									<xsl:if test="$showPackageProperties">
-										<a href="package.html#propertySummary">
-											<xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Properties']]/entry[2]/p"/>
-										</a>
-									</xsl:if>
-									<xsl:if test="$showConstructors=true()">
-										<a href="#constructorSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constructor']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showMethods=true()">
-										<a href="#methodSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Methods']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showPackageFunctions">
-										<a href="package.html#methodSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Functions']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showEvents=true()">
-										<a href="#eventSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Events']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showStyles=true()">
-										<a href="#styleSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Styles']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showSkinPart=true()">
-										<a href="#SkinPartSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SkinParts']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showSkinState=true()">
-										<a href="#SkinStateSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SkinStates']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showEffects=true()">
-										<a href="#effectSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Effects']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showConstants=true()">
-										<a href="#constantSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constants']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showPackageConstants">
-										<a href="package.html#constantSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constants']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showInterfaces">
-										<a href="package-detail.html#interfaceSummary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Interfaces</xsl:with-param></xsl:call-template></a>
-									</xsl:if>
-									<xsl:if test="$showClasses">
-										<xsl:variable name="href">
-											<xsl:if test="$fileName != 'deprecated'">package-detail.html</xsl:if>
-											<xsl:text>#classSummary</xsl:text>
-										</xsl:variable>
-										<a href="{$href}"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Classes']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showPackageUse">
-										<a href="package-use.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Use']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$showIncludeExamples=true()">
-										<a href="#includeExamplesSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Examples']]/entry[2]/p"/></a>
-									</xsl:if>
-									<xsl:if test="$additionalLinks">
-										<xsl:copy-of select="$additionalLinks"/>
-									</xsl:if>
-								</xsl:otherwise>
-							</xsl:choose>
-						</td>
-					</tr>
-				</table>
+							<xsl:if test="$showEvents=true()">
+								<a href="#eventSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Events']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showStyles=true()">
+								<a href="#styleSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Styles']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showSkinPart=true()">
+								<a href="#SkinPartSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SkinParts']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showSkinState=true()">
+								<a href="#SkinStateSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'SkinStates']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showEffects=true()">
+								<a href="#effectSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Effects']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showConstants=true()">
+								<a href="#constantSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constants']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showPackageConstants">
+								<a href="package.html#constantSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Constants']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showInterfaces">
+								<a href="package-detail.html#interfaceSummary"><xsl:call-template name="getLocalizedString"><xsl:with-param name="key">Interfaces</xsl:with-param></xsl:call-template></a>
+							</xsl:if>
+							<xsl:if test="$showClasses">
+								<xsl:variable name="href">
+									<xsl:if test="$fileName != 'deprecated'">package-detail.html</xsl:if>
+									<xsl:text>#classSummary</xsl:text>
+								</xsl:variable>
+								<a href="{$href}"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Classes']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showPackageUse">
+								<a href="package-use.html"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Use']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$showIncludeExamples=true()">
+								<a href="#includeExamplesSummary"><xsl:value-of select="$asdoc_terms/row[entry[1][p/text() = 'Examples']]/entry[2]/p"/></a>
+							</xsl:if>
+							<xsl:if test="$additionalLinks">
+								<xsl:copy-of select="$additionalLinks"/>
+							</xsl:if>
+						</xsl:if>
+					</div>
+				</div>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>

@@ -120,6 +120,7 @@
 										<xsl:copy-of select="./meta"/>
 									</xsl:for-each>
 									<title>
+										<xsl:text>@system@-@project@ - API - </xsl:text>
 										<xsl:if test="$isTopLevel='false'">
 											<xsl:value-of select="$packageName"/>
 											<xsl:text>.</xsl:text>

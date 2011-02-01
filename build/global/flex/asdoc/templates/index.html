@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>API Documentation</title>
+		<title>@system@-@project@ - API</title>
 		<link type="text/css" rel="stylesheet" media="screen" href="style.css"></link>
 		<link type="text/css" rel="stylesheet" media="print" href="print.css"></link>
 		<link type="text/css" rel="stylesheet" href="override.css"></link>
@@ -9,7 +9,7 @@
 	</head>
 	<body class="framed">
 		<script language="javascript"><![CDATA[
-			if( $.browser.webkit && loc.indexOf("file://") == 0 ) {
+			if( ($.browser.webkit || $.browser.opera) && loc.indexOf("file://") == 0 ) {
 				document.write( 
 					'<object'
 					+'	id="swfhttprequest" class="hidden"'
@@ -34,6 +34,7 @@
 		</script>
 		<div id="vertical-slice"></div>
 		<div id="horizontal-slice"></div>
+		<div id="frameConstraint"></div>
 		<div id="packagesFrame"></div>
 		<div id="indexFrame"></div>
 		<div id="contentFrame"></div>

@@ -30,10 +30,9 @@ function toggleMXMLOnly() {
 		$.cookie( "showMXML", mxmlDiv.is(":hidden"), { expires: 3000, path: "/", domain: document.location.domain } );
 	}
 }
-
 $.fn.asdocify = function() {
 	
-	$( '#subNav a:gt(0)', this ).before( '<span>|</span>' );
+	$( '#contentNav a:gt(0)', this ).before( '<span>|</span>' );
 	
 	$( 'div.summarySection>table', this )
 		.zebra( 'tbody>tr' )
@@ -45,7 +44,7 @@ $.fn.asdocify = function() {
 $(document).ready( function(){
 	
 	$( "body" ).addClass( "jsEnabled" ).asdocify();
-	$( "table#titleTable td.titleTableTopNav" ).append( function() {
+	$( "#titleNav" ).append( function() {
 		
 		function updateFramesLink() {
 			framesLink.attr( 'href', targetLoc + ( document.location.hash || '' ) );

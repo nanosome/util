@@ -10,6 +10,7 @@
 		omit-xml-declaration="yes" use-character-maps="disable" />
 	<xsl:param name="packages_map_name" select="'packagemap.xml'" />
 	<xsl:param name="ditaFileDir" select="''" />
+	<xsl:param name="packageOverviewFile" select="'overviews.xml'"/>
 	<xsl:template match="/">
 		<xsl:copy-of select="$noLiveDocs" />
 		<xsl:copy-of select="$docType" />
@@ -48,6 +49,9 @@
 							<xsl:if test="$isTopLevel='false'">
 								<xsl:variable name="packagePath" select="translate($name,'.','/')" />
 								<a href="{$packagePath}/package-detail.html">
+									<xsl:attribute name="title">
+										<xsl:value-of select="document($packageOverviewFile)/overviews/packages/package[@name=$name]/shortDescription"/>
+									</xsl:attribute>
 									<xsl:value-of select="$name" />
 								</a>
 								<xsl:if test="position() != last()">

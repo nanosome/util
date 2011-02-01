@@ -66,18 +66,13 @@
   <xsl:template match="title">
     <xsl:choose>
         <xsl:when test="$index-file">
-		<xsl:copy>
-		  <xsl:value-of select="$config/windowTitle"/>
-		</xsl:copy>
+			<xsl:copy>
+			  <xsl:value-of select="$config/windowTitle"/>
+			</xsl:copy>
         </xsl:when>
-        <xsl:when test="$package-frame">
+        <xsl:when test="$package-frame or $titleBarFile">
           <title>
-            <xsl:value-of select="$config/title"/>
-          </title>
-        </xsl:when>
-        <xsl:when test="$titleBarFile">
-          <title>
-            <xsl:value-of select="$config/title"/>
+			<xsl:text>@system@-@project@ - API - </xsl:text><xsl:value-of select="$config/title"/>
           </title>
         </xsl:when>
       <xsl:otherwise>

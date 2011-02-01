@@ -51,7 +51,7 @@
 								<xsl:with-param name="packageName" select="$name"/>
 							</xsl:call-template>
 							<title>
-								<xsl:value-of select="$title"/>
+								<xsl:text>@system@-@project@ - API - </xsl:text><xsl:value-of select="$title"/>
 							</title>
 							<base target="classFrame"/>
 						</head>
