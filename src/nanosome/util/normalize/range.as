@@ -1,10 +1,9 @@
 // @license@
 package nanosome.util.normalize {
 	
-	
 	/**
-	 * Shortcut helper to create eighter <code>NormalizeMappedRange</code> (if map given) or
-	 * <code>NormalizeRange</code>
+	 * Shortcut helper to create eighter a <code>NormalizeMappedRange</code> (if
+	 * map given) or <code>NormalizeRange</code>.
 	 * 
 	 * @param min value of 0.0 point
 	 * @param max value of 1.0 point 

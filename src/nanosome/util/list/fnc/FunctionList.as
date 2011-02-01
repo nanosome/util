@@ -65,6 +65,32 @@ package nanosome.util.list.fnc {
 			}
 		}
 		
+		public function executeAndReturn( ...args: Array ): Array {
+			startIterate();
+			var current: FunctionListNode = _first;
+			var result: Array = [];
+			while( current ) {
+				_next = current._next;
+				
+				var fnc: Function = current._strong;
+				if( fnc != null ) {
+					result.push( fnc.apply( null, args ) );
+				} else {
+					fnc = current.weak;
+					if( fnc != null ) {
+						result.push( fnc.apply( null, args ) );
+					} else {
+						removeNode( current );
+					}
+				}
+				current = _next;
+			}
+			stopIterate();
+			if( empty && _onEmpty != null ) {
+				_onEmpty();
+			}
+			return result;
+		}
 		
 		/**
 		 * @inheritDoc

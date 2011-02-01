@@ -13,7 +13,7 @@ package nanosome.util {
 	 * @version 1.0
 	 * @see flash.display.Event
 	 * @see flash.display.DisplayList
-	 * @see nanosome.util.EnterFrame
+	 * @see nanosome.util.ExitFrame
 	 */
 	public class EnterFrame {
 		

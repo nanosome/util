@@ -3,7 +3,7 @@ package nanosome.util.access {
 	import nanosome.util.ChangedPropertyNode;
 	import nanosome.util.ILockable;
 	import nanosome.util.UID;
-	import nanosome.util.createInstance;
+	import nanosome.util.create;
 
 	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
@@ -45,7 +45,7 @@ package nanosome.util.access {
 	 * @version 1.0
 	 * @see ISetterProxy
 	 * @see IGetterProxy
-	 * @see ILockable
+	 * @see nanosome.util.ILockable
 	 */
 	public final class Accessor extends UID {
 		
@@ -82,6 +82,7 @@ package nanosome.util.access {
 		// Maps class name to Modifier instance
 		private static var _objectMap : Object /* String -> Modifier */ = {};
 		
+		// Lookup for the types that are to be concidered simple types
 		private static const SIMPLE_TYPE: Dictionary = new Dictionary();
 		{
 			SIMPLE_TYPE[ int ] = true;
@@ -98,10 +99,10 @@ package nanosome.util.access {
 		 * 
 		 * <p>If you request a Accessor for a unaccessible class which is eighter
 		 * a internal class or not loaded yet you will retrieve the same Accessor
-		 * you would also retreive for <code>null</code> Modifications. This
-		 * certain Accessor can not access the type informations, which leads to
-		 * the inability to respect <code>IPropertiesSetterProxy</code> and the
-		 * also the pre-checks of valid types doesn't work.</p>
+		 * you would also retreive for <code>null</code>. This certain Accessor
+		 * can not access the type informations, which leads to the inability to
+		 * respect <code>IPropertiesSetterProxy</code> and the also the pre-checks
+		 * of valid types doesn't work.</p>
 		 * 
 		 * @param object Instance of a class or the class itself for which
 		 *            a Modifier should be retrieved
@@ -185,7 +186,7 @@ package nanosome.util.access {
 				// .forObject method.
 				if( object is Class ) {
 					try {
-						object = createInstance( object );
+						object = create( object );
 					} catch( e: Error ) {
 						trace( "Warning: '" + typeName + "' can not be properly analyzed, accessFor/Accessor can become slow. Error while instantiation: \n" + e );
 					}
@@ -456,7 +457,18 @@ package nanosome.util.access {
 			return result;
 		}
 		
-		public function updateStorage( source: *, storage: Object, limitToFields: Object = null ): Changes {
+		/**
+		 * If you have a method that should check whether 
+		 * 
+		 * @param target object to see if the properties changed
+		 * @param storage map that contains the former values of this object to
+		 * 					compare to
+		 * @param limitToFields limits the comparsion to a map (String,name of the
+		 * 				field -> Boolean, true if it should bre read ) of fields 
+		 * @return A <code>Changes</code> instance if changes between the former storage
+		 *         object and the current storage object happend, else <code>null</code>.
+		 */
+		public function updateStorage( target: *, storage: Object, limitToFields: Object = null ): Changes {
 			
 			var field: String;
 			var newValue: *;
@@ -465,18 +477,17 @@ package nanosome.util.access {
 			
 			if( _isGetterProxy ) {
 				
-				source =  IGetterProxy( source ).readAll( limitToFields );
+				target =  IGetterProxy( target ).readAll( limitToFields );
 				
 			} else if( _normalReadable ) {
 				
 				var i: int = _normalReadable.length;
-				var dontCheck: Boolean = !limitToFields;
 				var checkArray: Array = limitToFields as Array;
 				while( --i-(-1) ) {
 					field = _normalReadable[i];
-					if( dontCheck || checkArray ? checkArray.indexOf( field ) : limitToFields[ field ] ) {
+					if( !limitToFields || checkArray ? checkArray.indexOf( field ) : limitToFields[ field ] ) {
 						try {
-							newValue = source[ field ];
+							newValue = target[ field ];
 						} catch( e: Error ) {
 							newValue = null;
 						}
@@ -496,9 +507,9 @@ package nanosome.util.access {
 			
 			if( _isDynamic || _isGetterProxy ) {
 				
-				for( field in source ) {
+				for( field in target ) {
 					try {
-						newValue = source[ field ];
+						newValue = target[ field ];
 					} catch( e: Error ) {
 						newValue = null;
 					}
@@ -513,7 +524,7 @@ package nanosome.util.access {
 					}
 				}
 				
-				var sourceAsObject: Object = source;
+				var sourceAsObject: Object = target;
 				
 				for( field in storage ) {
 					if( !sourceAsObject.hasOwnProperty( field ) ) {
@@ -609,7 +620,9 @@ package nanosome.util.access {
 				
 				return IGetterProxy( instance ).read( name );
 				
-			} else if( instance && ( _isDynamic || ( _readableLookup && _readableLookup[ name ] ) ) ) {
+			} else if( instance &&
+						( _isDynamic || ( _readableLookup && _readableLookup[ name ] ) )
+					) {
 				
 				try {
 					return instance[ name ];

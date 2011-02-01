@@ -16,7 +16,7 @@ package nanosome.util.normalize {
 	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 * @version 1.0
-	 * @see nanosome.util.normalize.range
+	 * @see nanosome.util.normalize#range()
 	 */
 	public final class NormalizeRange implements INormalizeRange {
 		

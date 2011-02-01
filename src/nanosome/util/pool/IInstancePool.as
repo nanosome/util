@@ -1,5 +1,4 @@
 // @license@
-
 package nanosome.util.pool {
 	import nanosome.util.IUID;
 	
@@ -13,8 +12,10 @@ package nanosome.util.pool {
 	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 * @version 1.0
-	 * @see nanosome.util.pool.PoolList
-	 * @see nanosome.util.pool.pool
+	 * @see PoolStorage
+	 * @see PoolCleaner
+	 * @see nanosome.util.pool#poolInstance()
+	 * @see nanosome.util.pool#poolFor()
 	 * @see http://en.wikipedia.org/wiki/Object_pool_pattern
 	 */
 	public interface IInstancePool extends IUID {

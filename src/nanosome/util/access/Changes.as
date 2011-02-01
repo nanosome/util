@@ -1,23 +1,43 @@
+// @license@
 package nanosome.util.access {
+	
 	import nanosome.util.IDisposable;
 	import nanosome.util.cleanObject;
 	import nanosome.util.pool.IInstancePool;
 	import nanosome.util.pool.OBJECT_POOL;
 	import nanosome.util.pool.poolFor;
+	
 	/**
- * @author Martin Heidegger mh@leichtgewicht.at
- */
+	 * 
+	 * 
+	 * @author Martin Heidegger mh@leichtgewicht.at
+	 * @version 1.0
+	 */
 	public class Changes implements IDisposable {
 		
+		/**
+		 * 
+		 */
 		public static const POOL: IInstancePool = poolFor( Changes );
 		
-		public const oldValues: Object = OBJECT_POOL.getOrCreate();
-		public const newValues: Object = OBJECT_POOL.getOrCreate();
+		/**
+		 * Map of old values before the change.
+		 */
+		public const oldValues: Object /* String -> Object */ = OBJECT_POOL.getOrCreate();
+		
+		
+		/**
+		 * Map of new values after the change.
+		 */
+		public const newValues: Object /* String -> Object */ = OBJECT_POOL.getOrCreate();
 		
 		public function Changes() {
 			super();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function dispose(): void {
 			cleanObject( oldValues );
 			OBJECT_POOL.returnInstance( oldValues );

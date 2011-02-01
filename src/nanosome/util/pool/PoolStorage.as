@@ -9,9 +9,9 @@ package nanosome.util.pool {
 	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 * @version 1.0
-	 * @see nanosome.util.pool.poolFor
-	 * @see nanosome.util.pool.poolInstance
-	 * @see nanosome.util.pool.returnInstance
+	 * @see nanosome.util.pool#poolFor()
+	 * @see nanosome.util.pool#poolInstance()
+	 * @see nanosome.util.pool#returnInstance()
 	 */
 	public class PoolStorage {
 		

@@ -1,4 +1,9 @@
 <overviews>
+	<all-packages>
+		<description><![CDATA[
+			Working with the ActionScript 3 can put you in 
+		]]></description>
+	</all-packages>
 	<packages>
 		<package name="nanosome.util" >
 			<shortDescription><![CDATA[
