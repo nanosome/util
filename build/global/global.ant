@@ -309,7 +309,6 @@
 		
 		<svn javahl="${javahl}" svnkit="${svnkit}" username="${svn.user}" password="${svn.pwd}">
 			<add><fileset dir="${svn.local.rel.path}" includes="*.zip" /></add>
-			<copy srcPath="../" destPath="../../temp" />
 			<commit message="Released version: ${project.shortName} ${build.version}">
 				<fileset dir="${svn.local.path}" includes="**/*.*"/>
 				<fileset dir="../swc" includes="**/*.*"/>
