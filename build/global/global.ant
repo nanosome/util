@@ -170,8 +170,8 @@
 		</java>
 		<replace dir="${temp.path}/asdoc" includes="**/*.html">
 			<replacefilter token="@system@" value="nanosome"/>
-			<replacefilter token="@systemHome@" value="http://www.nanosome.in/asdoc"/>
-			<replacefilter token="@projectHome@" value="http://www.nanosome.in/asdoc/${project.shortName}"/>
+			<replacefilter token="@systemHome@" value="http://www.nanosome.in"/>
+			<replacefilter token="@projectHome@" value="http://www.nanosome.in/${project.shortName}"/>
 			<replacefilter token="@project@" value="${project.shortName}"/>
 			<replacefilter token="@version@" value="${build.version}"/>
 		</replace>
@@ -201,8 +201,8 @@
 		</java>
 		<replace dir="${temp.path}/asdoc" includes="**/*.html">
 			<replacefilter token="@system@" value="nanosome"/>
-			<replacefilter token="@systemHome@" value="http://www.nanosome.in/asdoc"/>
-			<replacefilter token="@projectHome@" value="http://www.nanosome.in/asdoc/${project.shortName}"/>
+			<replacefilter token="@systemHome@" value="http://www.nanosome.in/"/>
+			<replacefilter token="@projectHome@" value="http://www.nanosome.in/${project.shortName}"/>
 			<replacefilter token="@project@" value="${project.shortName}"/>
 			<replacefilter token="@version@" value="${build.version}"/>
 		</replace>
@@ -311,7 +311,6 @@
 			<add><fileset dir="${svn.local.rel.path}" includes="*.zip" /></add>
 			<commit message="Released version: ${project.shortName} ${build.version}">
 				<fileset dir="${svn.local.path}" includes="**/*.*"/>
-				<fileset dir="../swc" includes="**/*.*"/>
 			</commit>
 		</svn>
 		
