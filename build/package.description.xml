@@ -1,7 +1,15 @@
 <overviews>
 	<all-packages>
 		<description><![CDATA[
-			Working with the ActionScript 3 can put you in 
+			<div id="shortIntroduction">
+				<p>
+					The nanosome-util project contains core ActionScript 3 util to
+					improve the quality or performance of applications or frameworks.
+					We limit it to the utils necessary to develop our nanosome projects.
+					This covers fast dispatching, disposing, anonymous object access
+					and alike.
+				</p>
+			</div> 
 		]]></description>
 	</all-packages>
 	<packages>
@@ -10,11 +18,10 @@
 				Contains general utils used by various nanosome projects.
 			]]></shortDescription>
 			<description><![CDATA[
-				The nanosome-util project contains core ActionScript 3 util to
-				improve the quality or performance of applications or frameworks.
-				We limit it to the utils necessary to develop our nanosome projects.
-				This covers fast dispatching, disposing, anonymous object access
-				and alike.
+				<p>
+					General util for working with flash: language structures, core
+					interfaces, etc. 
+				</p>
 			]]></description>
 		</package>
 		<package name="nanosome.access" >
@@ -22,11 +29,13 @@
 				Contains functionality for reading/writing annonymous objects.
 			]]></shortDescription>
 			<description><![CDATA[
-				Many parts of nanosome deal with annonymous objects. When dealing
-				with annonymous objects there are many small traps that can be
-				easily forgot. Beside that writing it seperatly in all cases makes
-				it easy to have inconsitant behaviours and in some cases its even
-				slower to implement it directly.
+				<p>
+					Many parts of nanosome deal with annonymous objects. When dealing
+					with annonymous objects there are many small traps that can be
+					easily forgot. Beside that writing it seperatly in all cases makes
+					it easy to have inconsitant behaviours and in some cases its even
+					slower to implement it directly.
+				</p>
 			]]></description>
 		</package>
 		<package name="nanosome.util.list" >
@@ -35,11 +44,13 @@
 				similar use cases.
 			]]></shortDescription>
 			<description><![CDATA[
-				When working with listeners its not a good idea to try to implement
-				the lists to store and access lists for each case again since it
-				has plenty of cases that are neighter easy to implement nor easy
-				to debug. The implementations in this package should allow fast,
-				easy to use well tested lists.
+				<p>
+					When working with listeners its not a good idea to try to implement
+					the lists to store and access lists for each case again since it
+					has plenty of cases that are neighter easy to implement nor easy
+					to debug. The implementations in this package should allow fast,
+					easy to use well tested lists.
+				</p>
 			]]></description>
 		</package>
 		<package name="nanosome.util.normalize" >
@@ -47,10 +58,12 @@
 				Package for algorithms to work with normalized numbers.
 			]]></shortDescription>
 			<description><![CDATA[
-				It is reasonable to store and work internally with normalized numbers
-				when working with ranged values. This package offers a set of
-				algorithms to deal with them in a standard way, providing essential
-				functionalities for other nanosome projects.
+				<p>
+					It is reasonable to store and work internally with normalized numbers
+					when working with ranged values. This package offers a set of
+					algorithms to deal with them in a standard way, providing essential
+					functionalities for other nanosome projects.
+				</p>
 			]]></description>
 		</package>
 		

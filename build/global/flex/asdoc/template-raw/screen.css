@@ -572,6 +572,9 @@ div.linkList a {
 #fileInformation {
 	display: none;
 }
+#shortIntroduction {
+	padding-top: 25px;
+}
 /* JQUERY */
 
 .ui-helper-hidden { display: none; }

@@ -52,17 +52,19 @@
 			<status path="../src" revisionProperty="revision"/>
 		</svn>
 		<property name="build.version" value="${project.version}r${revision}" />
-		<property name="build.file" value="${build.path}/${project.file}.${DSTAMP}.${build.version}" />
+		<property name="build.file.name" value="${project.file}.${DSTAMP}.${build.version}" />
+		<property name="build.file" value="${temp.path}/${build.file.name}" />
+		<property name="build.stripped.file" value="${temp.path}/${project.file}.${DSTAMP}.${build.version}.min.swc" />
 		<property name="swc.file" value="${swc.path}${project.file}.swc" />
 		<property name="swc.withDependencies.file" value="${swc.path}${project.file}.withDependencies.swc" />
 		<property name="swc.stripped.file" value="${swc.path}${project.file}.min.swc" />
-		<property name="lib.path" value="${build.path}/lib/"/>
-		
-		<mkdir dir="../swc"/>
+		<property name="build.lib.path" value="${temp.path}/lib/" />
 	</target>
 	
 	<target name="prepare-temp" depends="init">
 		<mkdir dir="${temp.path}" />
+		<mkdir dir="${swc.path}" />
+		<mkdir dir="${build.lib.path}" />
 	</target>
 	
 	<target name="prepare-sources" description="Prepares all sources to be ready for compile etc."
@@ -88,9 +90,9 @@
 				<exclude name="**/*.svn"/>
 			</fileset>
 		</copy>
-		<zip destfile="${build.file}.src.zip">
+		<!--<zip destfile="${build.file}.src.zip">
 			<fileset dir="${temp.path}/src" />
-		</zip>
+		</zip>-->
 		<echo>Fixing all sources in temp directory</echo>
 		<fixcrlf srcdir="${temp.path}src" encoding="utf-8" casesensitive="true" eol="unix" includes="*.as"/>
 	</target>
@@ -228,6 +230,7 @@
 			<arg value="create-swc"/>
 		</java>
 		<copy file="${build.file}.swc" tofile="${swc.stripped.file}"/>
+		<copy file="${build.file}.swc" tofile="${build.stripped.file}"/>
 		<zip destfile="${build.file}.swc" update="true">
 			<zipfileset dir="${temp.path}/asdoc-xml" prefix="docs" includes="*.*"/>
 		</zip>
@@ -262,17 +265,6 @@
 	
 	<target name="prepare-build" description="Prepares a src folder with all files of a build"
 			depends="clean,svn-update,create-api-docs,create-swc,prepare-sources">
-		
-		<echo>Preparing build directory in ${build.path}</echo>
-		<delete dir="${build.path}" />
-		<mkdir dir="${build.path}" />
-		<copy todir="${build.path}">
-			<fileset dir="${temp.path}">
-				<include name="*.swc"/>
-				<include name="*.zip"/>
-			</fileset>
-		</copy>
-		<copy todir="${build.path}" file="../license.txt" />
 		<antcall target="copy-dependencies-to-build-path" />
 	</target>
 	
@@ -287,34 +279,59 @@
 	<target name="build-to-svn" description="Builds a version and pushes it to the SVN"
 			depends="build-to-zip">
 		
-		<property name="svn.build.path" value="${svn.path}/build/${project.file}.${DSTAMP}.${build.version}/"/>
+		<property name="svn.build.path" value="${project.file}.${DSTAMP}.${build.version}/"/>
+		<property name="svn.local.path" value="${temp.path}/svn-release"/>
+		<property name="svn.local.copy" value="${temp.path}svn-copy"/>
+		<property name="svn.local.rel.path" value="${svn.local.path}/${project.file}.${DSTAMP}.${build.version}/"/>
 		
-		<echo>Building ${svn.build.path} in ${build.path}</echo>
+		<echo>Building ${svn.build.path} in ${svn.local.path}</echo>
 		
 		<input addproperty="svn.user">SVN Username</input>
 		<input addproperty="svn.pwd">SVN Password</input> 
 		
+		<delete dir="${svn.local.path}"/>
+		<delete dir="${svn.local.copy}"/>
+		<mkdir dir="${svn.local.path}"/>
+		
 		<svn javahl="${javahl}" svnkit="${svnkit}" username="${svn.user}" password="${svn.pwd}">
-			<mkdir url="${svn.build.path}" message="Build preparation" />
-			<checkout url="${svn.build.path}" destpath="${build.path}/" />
-			<add recurse="true">
-				<fileset dir="${build.path}" >
-					<include name="**/*.*"/>
-				</fileset>
-			</add>
-			<commit message="Tagged version: ${project.version}" dir="${build.path}/"/>
+			<checkout url="${svn.path}build/" destpath="${svn.local.path}" recurse="false"/>
+			<copy srcPath="../swc" destPath="${svn.local.path}"/>
+			<move srcPath="${svn.local.path}/swc" destPath="${svn.local.rel.path}" />
+			<move srcPath="${svn.local.rel.path}/${project.file}.swc" destPath="${svn.local.rel.path}/${build.file.name}.swc" />
+			<move srcPath="${svn.local.rel.path}/${project.file}.min.swc" destPath="${svn.local.rel.path}/${build.file.name}.min.swc" />
+		</svn>
+		
+		<copy todir="${svn.local.rel.path}">
+			<fileset dir="${temp.path}" includes="*.zip" />
+		</copy>
+
+		<antcall target="move-svn-dependencies" />
+		
+		<svn javahl="${javahl}" svnkit="${svnkit}" username="${svn.user}" password="${svn.pwd}">
+			<add><fileset dir="${svn.local.rel.path}" includes="*.zip" /></add>
+			<copy srcPath="../" destPath="../../temp" />
+			<commit message="Released version: ${project.shortName} ${build.version}">
+				<fileset dir="${svn.local.path}" includes="**/*.*"/>
+				<fileset dir="../swc" includes="**/*.*"/>
+			</commit>
 		</svn>
 		
 	</target>
-			
-	<target name="build-to-zip" description="Builds a version and zips it"
-			depends="prepare-build">
+	
+	<target name="build-to-zip" description="Builds a version and zips it" depends="prepare-build">
 		<zip destfile="${build.file}.zip">
-			<fileset dir="${build.path}" />
+			<fileset dir="${temp.path}/" includes="src/**/*.*,asdoc/**/*.*,**/*.swc,lib/**.*"/>
+			<fileset dir="../" includes="license.txt"/>
 		</zip>
 	</target>
 	
-	<target name="clean" depends="prepare-temp">
+	<target name="move-svn-dependencies" if="project.compiler-withDependencies-options">
+		<svn javahl="${javahl}" svnkit="${svnkit}" username="${svn.user}" password="${svn.pwd}">
+			<move srcPath="${svn.local.rel.path}/${project.file}.withDependencies.swc" destPath="${svn.local.rel.path}/${build.file.name}.withDependencies.swc"/>
+		</svn>
+	</target>
+	
+	<target name="clean">
 		<delete dir="${temp.path}" />
 	</target>
 	

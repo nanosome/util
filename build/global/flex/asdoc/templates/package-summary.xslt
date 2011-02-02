@@ -54,22 +54,20 @@
 				</xsl:if>
 				<div class="MainContent">
 					<xsl:variable name="overviews" select="document($overviewsFile)/overviews"/>
-					<p>
-						<xsl:choose>
-							<xsl:when test="starts-with($useFilter,'mx.')">
-								<xsl:value-of disable-output-escaping="yes" select="$overviews/mx-packages/description/."/>
-							</xsl:when>
-							<xsl:when test="starts-with($useFilter,'flash.')">
-								<xsl:value-of disable-output-escaping="yes" select="$overviews/flash-packages/description/."/>
-							</xsl:when>
-							<xsl:when test="starts-with($useFilter,'flash.')">
-								<xsl:value-of disable-output-escaping="yes" select="$overviews/flash-packages/description/."/>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:value-of disable-output-escaping="yes" select="$overviews/all-packages/description/."/>
-							</xsl:otherwise>
-						</xsl:choose>
-					</p>
+					<xsl:choose>
+						<xsl:when test="starts-with($useFilter,'mx.')">
+							<p><xsl:value-of disable-output-escaping="yes" select="$overviews/mx-packages/description/."/></p>
+						</xsl:when>
+						<xsl:when test="starts-with($useFilter,'flash.')">
+							<p><xsl:value-of disable-output-escaping="yes" select="$overviews/flash-packages/description/."/></p>
+						</xsl:when>
+						<xsl:when test="starts-with($useFilter,'flash.')">
+							<p><xsl:value-of disable-output-escaping="yes" select="$overviews/flash-packages/description/."/></p>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:copy-of select="$overviews/all-packages/description/*"  />
+						</xsl:otherwise>
+					</xsl:choose>
 					<xsl:for-each select="$overviews/all-packages">
 						<xsl:call-template name="sees">
 							<xsl:with-param name="xrefId" select="'all-packages'"/>
