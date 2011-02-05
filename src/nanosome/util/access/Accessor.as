@@ -100,7 +100,7 @@ package nanosome.util.access {
 		private static var _objectMap : Object /* String -> Modifier */ = {};
 		
 		// Lookup for the types that are to be concidered simple types
-		private static const SIMPLE_TYPE: Dictionary = new Dictionary();
+		private static const SIMPLE_TYPE : Dictionary = new Dictionary();
 		{
 			SIMPLE_TYPE[ int ] = true;
 			SIMPLE_TYPE[ uint ] = true;
@@ -233,9 +233,10 @@ package nanosome.util.access {
 						name = XML( writeAble.@name ).toString();
 						_writableLookup[ name ] = true;
 						try {
-							_writableTypeLookup[ name ] = getDefinitionByName( writeAble.@type );
+							_writableTypeLookup[ name ] = getDefinitionByName( writeAble.@type ) || Object;
 						} catch( e: Error ) {
 							// If the type is not accessible it't not possible to do a verification!
+							_writableTypeLookup[ name ] = Object;
 						}
 					}
 				}
@@ -258,9 +259,10 @@ package nanosome.util.access {
 							}
 							_readWriteable.push( name );
 							try {
-								_readWriteableTypeLookup[ name ] = getDefinitionByName( readAble.@type );
+								_readWriteableTypeLookup[ name ] = getDefinitionByName( readAble.@type ) || Object;
 							} catch( e: Error ) {
 								// If the type is not accessible it't not possible to do a verification!
+								_readWriteableTypeLookup[ name ] = Object;
 							}
 						}
 						
