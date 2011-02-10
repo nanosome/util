@@ -1,3 +1,4 @@
+// @license@
 package nanosome.util.list.fnc {
 	import nanosome.util.pool.poolFor;
 	import nanosome.util.pool.IInstancePool;

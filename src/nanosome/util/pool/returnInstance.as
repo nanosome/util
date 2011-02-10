@@ -1,3 +1,4 @@
+// @license@ 
 package nanosome.util.pool {
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.getDefinitionByName;

@@ -1,3 +1,4 @@
+// @license@
 package nanosome.util.normalize {
 	import nanosome.util.INormalize;
 	

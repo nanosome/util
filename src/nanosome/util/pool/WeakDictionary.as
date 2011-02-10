@@ -1,3 +1,4 @@
+// @license@ 
 package nanosome.util.pool {
 	
 	import nanosome.util.IDisposable;

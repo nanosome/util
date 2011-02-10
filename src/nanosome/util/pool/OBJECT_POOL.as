@@ -1,3 +1,4 @@
+// @license@ 
 package nanosome.util.pool {
 	/**
 	 * @author Martin Heidegger mh@leichtgewicht.at
