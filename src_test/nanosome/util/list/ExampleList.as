@@ -10,38 +10,38 @@ package nanosome.util.list {
 		
 		private var _first: ExampleListNode;
 		private var _next: ExampleListNode;
+		private var _firstLevel: Boolean;
 		
 		public function ExampleList() {
 			super( POOL_STORAGE.getOrCreate( ExampleListNode ) );
 		}
 
 		public function iterate(): * {
-			startIterate();
-			if( !_next ) {
-				stopIterate();
+			if( !_isIterating ) {
+				_isIterating = true;
 				_next = _first;
-				return null;
 			}
 			if( !_next ) {
-				stopIterate();
+				_isIterating = false;
+				_next = null;
+				stopIteration();
 				return null;
 			}
 			var content: * = _next._content;
 			_next = _next._next;
-			stopIterate();
 			return content;
 		}
 		
 		public function pseudoIterate(): void {
-			startIterate();
+			_firstLevel = _isIterating ? subIterate() : _isIterating = true;
 		}
 		
 		public function pseudoStopIterate(): void {
-			stopIterate();
+			_firstLevel ? stopIteration() : stopSubIteration();
 		}
 		
 		public function get allWeak(): Array {
-			startIterate();
+			var first: Boolean = _isIterating ? subIterate() : _isIterating = true;
 			var all: Array = [];
 			var current: ExampleListNode = _first;
 			while( current ) {
@@ -50,12 +50,12 @@ package nanosome.util.list {
 				}
 				current = current._next;
 			}
-			stopIterate();
+			first ? stopIteration() : stopSubIteration();
 			return all;
 		}
 		
 		public function get allNormal(): Array {
-			startIterate();
+			var first: Boolean = _isIterating ? subIterate() : _isIterating = true;
 			var all: Array = [];
 			var current: ExampleListNode = _first;
 			while( current ) {
@@ -64,7 +64,7 @@ package nanosome.util.list {
 				}
 				current = current._next;
 			}
-			stopIterate();
+			first ? stopIteration() : stopSubIteration();
 			return all;
 		}
 

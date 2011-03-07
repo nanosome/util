@@ -1,6 +1,8 @@
 package nanosome.util {
 	
 	import flexunit.framework.TestCase;
+	
+	
 	/**
 	 * @author Martin Heidegger
 	 */
@@ -90,7 +92,7 @@ package nanosome.util {
 			assertEquals( a11.p9, 9 );
 			assertEquals( a11.p10, 10 );
 			assertEquals( a11.p11, 11 );
-			var a12: Constructor12 = create( Constructor11, null, [1,2,3,4,5,6,7,8,9,10,11,12] );
+			var a12: Constructor12 = create( Constructor12, null, [1,2,3,4,5,6,7,8,9,10,11,12] );
 			assertEquals( a12.p1, 1 );
 			assertEquals( a12.p2, 2 );
 			assertEquals( a12.p3, 3 );
@@ -183,7 +185,7 @@ package nanosome.util {
 			assertEquals( a11.p9, 9 );
 			assertEquals( a11.p10, 10 );
 			assertEquals( a11.p11, 11 );
-			var a12: Constructor12 = create( Constructor11, {p1:1,p2:2,p3:3,p4:4,p5:5,p6:6,p7:7,p8:8,p9:9,p10:10,p11:11,p12:12} );
+			var a12: Constructor12 = create( Constructor12, {p1:1,p2:2,p3:3,p4:4,p5:5,p6:6,p7:7,p8:8,p9:9,p10:10,p11:11,p12:12} );
 			assertEquals( a12.p1, 1 );
 			assertEquals( a12.p2, 2 );
 			assertEquals( a12.p3, 3 );

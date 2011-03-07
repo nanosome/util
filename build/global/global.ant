@@ -170,8 +170,8 @@
 		</java>
 		<replace dir="${temp.path}/asdoc" includes="**/*.html">
 			<replacefilter token="@system@" value="nanosome"/>
-			<replacefilter token="@systemHome@" value="http://www.nanosome.in"/>
-			<replacefilter token="@projectHome@" value="http://www.nanosome.in/${project.shortName}"/>
+			<replacefilter token="@systemHome@" value="http://nanosome.org"/>
+			<replacefilter token="@projectHome@" value="http://nanosome.org/${project.shortName}"/>
 			<replacefilter token="@project@" value="${project.shortName}"/>
 			<replacefilter token="@version@" value="${build.version}"/>
 		</replace>

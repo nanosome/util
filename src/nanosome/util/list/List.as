@@ -107,16 +107,18 @@ package nanosome.util.list {
 	 * <p>In order to provider error-free iterations its necessary to provide the
 	 * list with the next element that you are about to process after the current one.
 	 * This way it can modify the next entry in case of remove calls during iteration.
-	 * <code>startIteration()</code> and <code>stopIteration()</code> are required
-	 * around your iteration in order to provide a possiblity to stack <code>next</code>
-	 * propery for having more than one iteration possible within a call stack.
-	 * </p>
+	 * Since most of the time just one level of iteration is needed, its better
+	 * to avoid sub-routine calls. Which is why on first level we use a boolean flag
+	 * and on later levels we use <code>subIterate()</code>, <code>stopSubIteration()</code>
+	 * and <code>stopIteration()</code> to provide a possiblity to stack
+	 * <code>next</code> propery for having more than one iteration possible
+	 * within a call stack.</p>
 	 * 
 	 * <listing version="3">
 	 *   class MyList extends List {
 	 *     ...
 	 *     public function iterate(): void {
-	 *       startIteration();
+	 *       var first: Boolean = _isIterating ? subIterate() : _isIterating = true;
 	 *       var current: MyListNode = _first;
 	 *       while( current ) {
 	 *         _next = current.next;
@@ -126,7 +128,7 @@ package nanosome.util.list {
 	 *         
 	 *         current = _next;
 	 *       }
-	 *       stopIteration();
+	 *       first ? stopIteration() : stopSubIteration();
 	 *     }
 	 *   }
 	 * </listing>
@@ -139,7 +141,7 @@ package nanosome.util.list {
 	 *   class MyList extends List {
 	 *     ...
 	 *     public function iterate(): void {
-	 *       startIteration();
+	 *       var first: Boolean = _isIterating ? subIterate() : _isIterating = true;
 	 *       var current: MyListNode = _first;
 	 *       while( current ) {
 	 *         _next = current.next;
@@ -161,7 +163,7 @@ package nanosome.util.list {
 	 *         
 	 *         current = _next;
 	 *       }
-	 *       stopIteration();
+	 *       first ? stopIteration() : stopSubIteration();
 	 *     }
 	 *   }
 	 * </listing>
@@ -371,33 +373,26 @@ package nanosome.util.list {
 		/**
 		 * @inheritDoc
 		 */
-		override protected function startIterate(): int {
-			var iter: int = super.startIterate();
-			if( iter > 0 ) {
-				// Just create a stack if the iteration depth is bigger 0!
-				if( !_nextStack ) {
-					_nextStack = ARRAY_POOL.getOrCreate();
-				}
-				// Add the current value of next and preserve it to resume the former iteratio
-				_nextStack.push( next );
+		protected function subIterate(): Boolean {
+			// Just create a stack if the iteration depth is bigger 0!
+			if( !_nextStack ) {
+				_nextStack = ARRAY_POOL.getOrCreate();
 			}
-			return iter;
+			// Add the current value of next and preserve it to resume the former iteratio
+			_nextStack.push( next );
+			return false;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		override protected function stopIterate() : void {
-			super.stopIterate();
-			if( _nextStack ) {
-				if( _nextStack.length > 0 ) {
-					// Resume with the previous iteration ...
-					next = _nextStack.pop();
-				} else {
-					// ... or clear the iteration stack
-					ARRAY_POOL.returnInstance( _nextStack );
-					_nextStack = null;
-				}
+		protected function stopSubIteration(): void {
+			// Resume with the previous iteration ...
+			next = _nextStack.pop();
+			if( _nextStack.length > 0 ) {
+				// ... or clear the iteration stack
+				ARRAY_POOL.returnInstance( _nextStack );
+				_nextStack = null;
 			}
 		}
 		

@@ -21,8 +21,10 @@ package nanosome.util.list {
 		// For performance reason store the pool in a local scope
 		private static const WEAK_DICT_POOL: IInstancePool = WeakDictionary.POOL;
 		
-		// Stack-depth of iteration
-		private var _iterDepth: int = -1;
+		/**
+		 * <code>true</code> while beeing in the first level of iteration
+		 */
+		protected var _isIterating: Boolean;
 		
 		// Queue of entries that should be added after the iteration
 		private var _addQueue: Array /* Object */;
@@ -74,7 +76,7 @@ package nanosome.util.list {
 				WEAK_DICT_POOL.returnInstance( _addQueueWeakMap );
 				_addQueueWeakMap = null;
 			}
-			_iterDepth = -1;
+			_isIterating = false;
 		}
 		
 		public function get containsNonWeak(): Boolean {
@@ -100,7 +102,7 @@ package nanosome.util.list {
 				// to indifferent values.
 				return false;
 			} else {
-				if( _iterDepth > -1 ) {
+				if( _isIterating ) {
 					
 					if( containsInRegistry( value ) && weak == isWeakRegistered( value ) ) {
 						// If it was already modified in the queue, remove potential entries in queue
@@ -165,34 +167,24 @@ package nanosome.util.list {
 			}
 		}
 		
-		/**
-		 * Starts a iteration
-		 * 
-		 * @return depth of iteration
-		 */
-		protected function startIterate(): int {
-			return ++_iterDepth;
-		}
 		
 		/**
 		 * Stops a iteration
 		 */
-		protected function stopIterate(): void {
-			--_iterDepth;
-			if( _iterDepth == -1 ) {
-				if( _addQueue ) {
-					var queue: Array = _addQueue;
-					var queueMap: WeakDictionary = _addQueueWeakMap;
-					
-					_addQueue = null;
-					_addQueueWeakMap = null;
-					
-					while( queue.length ) {
-						var content: * = queue.shift();
-						safeAdd( content, queueMap[ content ] );
-					}
-					WEAK_DICT_POOL.returnInstance( queueMap );
+		protected function stopIteration(): void {
+			_isIterating = false;
+			if( _addQueue ) {
+				var queue: Array = _addQueue;
+				var queueMap: WeakDictionary = _addQueueWeakMap;
+				
+				_addQueue = null;
+				_addQueueWeakMap = null;
+				
+				while( queue.length ) {
+					var content: * = queue.shift();
+					safeAdd( content, queueMap[ content ] );
 				}
+				WEAK_DICT_POOL.returnInstance( queueMap );
 			}
 		}
 		

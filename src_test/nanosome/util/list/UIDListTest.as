@@ -30,7 +30,6 @@ package nanosome.util.list {
 			assertEquals( _list.iterate(), null );
 			assertEquals( _list.iterate(), _a );
 			_list.add( _b );
-			assertEquals( _list.iterate(), _b );
 			assertEquals( _list.iterate(), null );
 			assertEquals( _list.iterate(), _a );
 			assertEquals( _list.iterate(), _b );

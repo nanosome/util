@@ -20,49 +20,62 @@ package nanosome.util {
 	 */
 	public function create( clazz: Class, props: Object = null, args: Array = null ): * {
 		var result: *;
-		if( !args ) {
-			result = new clazz();
+		args = args || EMPTY_ARRAY;
+		var l: int = CACHE[ clazz ];
+		if( l < 1 ) {
+			// Store one variable more to do it properly
+			CACHE[ clazz ] = ( l = describeType( clazz ).factory
+									.constructor.parameter.(@optional!="true").length() ) + 1;
 		} else {
-			var l: int = CACHE[ clazz ];
-			if( isNaN( l ) ) {
-				l = CACHE[ clazz ] = describeType( clazz ).factory
-						.constructor.parameter.(@optional!="true").length();
-			}
-			switch( l ) {
-				case 0:
-					result = new clazz();
-				case 1:
-					result = new clazz( args[0] );
-				case 2:
-					result = new clazz( args[0], args[1] );
-				case 3:
-					result = new clazz( args[0], args[1], args[2] );
-				case 4:
-					result = new clazz( args[0], args[1], args[2], args[3] );
-				case 5:
-					result = new clazz( args[0], args[1], args[2], args[3], args[4] );
-				case 6:
-					result = new clazz( args[0], args[1], args[2], args[3], args[4],
-						args[5] );
-				case 7:
-					result = new clazz( args[0], args[1], args[2], args[3], args[4],
-						args[5], args[6] );
-				case 8:
-					result = new clazz( args[0], args[1], args[2], args[3], args[4],
-						args[5], args[6], args[7] );
-				case 9:
-					result = new clazz( args[0], args[1], args[2], args[3], args[4],
-						args[5], args[6], args[7], args[8] );
-				case 10:
-					result = new clazz( args[0], args[1], args[2], args[3], args[4],
-						args[5], args[6], args[7], args[8], args[9] );
-				case 11:
-					result = new clazz( args[0], args[1], args[2], args[3], args[4],
-						args[5], args[6], args[7], args[8], args[9], args[10] );
-				case 12:
-					result = new clazz( args[0], args[1], args[2], args[3], args[4],
-						args[5], args[6], args[7], args[8], args[9], args[10], args[11] );
-			}
+			l--;
+		}
+		switch( l ) {
+			case 0:
+				result = new clazz();
+				break;
+			case 1:
+				result = new clazz( args[0] );
+				break;
+			case 2:
+				result = new clazz( args[0], args[1] );
+				break;
+			case 3:
+				result = new clazz( args[0], args[1], args[2] );
+				break;
+			case 4:
+				result = new clazz( args[0], args[1], args[2], args[3] );
+				break;
+			case 5:
+				result = new clazz( args[0], args[1], args[2], args[3], args[4] );
+				break;
+			case 6:
+				result = new clazz( args[0], args[1], args[2], args[3], args[4],
+					args[5] );
+				break;
+			case 7:
+				result = new clazz( args[0], args[1], args[2], args[3], args[4],
+					args[5], args[6] );
+				break;
+			case 8:
+				result = new clazz( args[0], args[1], args[2], args[3], args[4],
+					args[5], args[6], args[7] );
+				break;
+			case 9:
+				result = new clazz( args[0], args[1], args[2], args[3], args[4],
+					args[5], args[6], args[7], args[8] );
+				break;
+			case 10:
+				result = new clazz( args[0], args[1], args[2], args[3], args[4],
+					args[5], args[6], args[7], args[8], args[9] );
+				break;
+			case 11:
+				result = new clazz( args[0], args[1], args[2], args[3], args[4],
+					args[5], args[6], args[7], args[8], args[9], args[10] );
+				break;
+			case 12:
+				result = new clazz( args[0], args[1], args[2], args[3], args[4],
+					args[5], args[6], args[7], args[8], args[9], args[10], args[11] );
+				break;
 		}
 		if( !result ) {
 			throw new Error( "Class not instantiatable, too many arguments." );
@@ -85,3 +98,4 @@ package nanosome.util {
 import flash.utils.Dictionary;
 
 const CACHE: Dictionary = new Dictionary();
+const EMPTY_ARRAY: Array = [];

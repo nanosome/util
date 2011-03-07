@@ -1,11 +1,9 @@
 // @license@ 
 package nanosome.util.list.fnc {
+	
+	import nanosome.util.pool.poolFor;
 	import nanosome.util.list.List;
 	import nanosome.util.list.ListNode;
-	import nanosome.util.pool.poolFor;
-
-	import flash.events.Event;
-	
 	
 	/**
 	 * List of functions to be executed in a row.
@@ -21,12 +19,16 @@ package nanosome.util.list.fnc {
 		// First node in the list to be executed
 		private var _first: FunctionListNode;
 		
+		// Template of a function to be called when the list is empty
 		private var _onEmpty : Function;
 		
+		// Next in the list
 		private var _next: FunctionListNode;
 		
 		/**
 		 * Creates a new <code>FunctionList</code> instance
+		 * 
+		 * @param onEmpty Function to be called if the list is empty after iteration
 		 */
 		public function FunctionList( onEmpty: Function = null ) {
 			super( poolFor( FunctionListNode ) );
@@ -39,7 +41,7 @@ package nanosome.util.list.fnc {
 		 * @param e Event that can be passed-in, will not be used
 		 */
 		public function executeStraight( ...args: Array ): void {
-			startIterate();
+			var first: Boolean = _isIterating ? subIterate() : _isIterating = true;
 			var current: FunctionListNode = _first;
 			while( current ) {
 				_next = current._next;
@@ -58,14 +60,14 @@ package nanosome.util.list.fnc {
 				
 				current = _next;
 			}
-			stopIterate();
+			first ? stopIteration() : stopSubIteration();
 			if( empty && _onEmpty != null ) {
 				_onEmpty();
 			}
 		}
 		
 		public function execute( ...args: Array ): void {
-			startIterate();
+			var first: Boolean = _isIterating ? subIterate() : _isIterating = true;
 			var current: FunctionListNode = _first;
 			while( current ) {
 				_next = current._next;
@@ -83,14 +85,14 @@ package nanosome.util.list.fnc {
 				}
 				current = _next;
 			}
-			stopIterate();
+			first ? stopIteration() : stopSubIteration();
 			if( empty && _onEmpty != null ) {
 				_onEmpty();
 			}
 		}
 		
 		public function executeAndReturn( ...args: Array ): Array {
-			startIterate();
+			var first: Boolean = _isIterating ? subIterate() : _isIterating = true;
 			var current: FunctionListNode = _first;
 			var result: Array = [];
 			while( current ) {
@@ -109,7 +111,7 @@ package nanosome.util.list.fnc {
 				}
 				current = _next;
 			}
-			stopIterate();
+			first ? stopIteration() : stopSubIteration();
 			if( empty && _onEmpty != null ) {
 				_onEmpty();
 			}

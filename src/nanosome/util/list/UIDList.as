@@ -235,33 +235,26 @@ package nanosome.util.list {
 		/**
 		 * @inheritDoc
 		 */
-		override protected function startIterate(): int {
-			var iter: int = super.startIterate();
-			if( iter == 1 ) {
+		protected function subIterate(): Boolean {
+			if( !_nextStack ) {
 				// Just create a stack if the iteration depth is bigger 0!
 				_nextStack = ARRAY_POOL.getOrCreate();
 			}
 			// Add the current value of next and preserve it to resume the former iteratio
-			if( _nextStack ) {
-				_nextStack.push( next );
-			}
-			return iter;
+			_nextStack.push( next );
+			return false;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		override protected function stopIterate() : void {
-			super.stopIterate();
-			if( _nextStack ) {
-				if( _nextStack.length > 0 ) {
-					// Resume with the previous iteration ...
-					next = _nextStack.pop();
-				} else {
-					// ... or clear the iteration stack
-					ARRAY_POOL.returnInstance( _nextStack );
-					_nextStack = null;
-				}
+		protected function stopSubIteration() : void {
+			// Resume with the previous iteration ...
+			next = _nextStack.pop();
+			if( _nextStack.length > 0 ) {
+				// ... or clear the iteration stack
+				ARRAY_POOL.returnInstance( _nextStack );
+				_nextStack = null;
 			}
 		}
 		
