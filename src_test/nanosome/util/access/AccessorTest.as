@@ -1,8 +1,7 @@
 package nanosome.util.access {
-	import org.flexunit.asserts.assertStrictlyEquals;
-	import nanosome.util.ChangedPropertyNode;
 	import flexunit.framework.TestCase;
 
+	import nanosome.util.ChangedPropertyNode;
 	import nanosome.util.pool.InstancePool;
 	import nanosome.util.pool.POOL_STORAGE;
 
@@ -16,18 +15,18 @@ package nanosome.util.access {
 		private static const changePool: InstancePool = POOL_STORAGE.getOrCreate( ChangedPropertyNode );
 
 		public function testAccess(): void {
-			var facade: Accessor = Accessor.forObject( null );
+			var facade: Accessor = accessFor( null );
 			assertNotNull( facade );
-			facade = Accessor.forObject( {} );
-			assertEquals( facade, Accessor.forObject( {} ) );
+			facade = accessFor( {} );
+			assertEquals( facade, accessFor( {} ) );
 			assertEquals( "Facades returned for a class have to match the facade for an instance",
-						  facade, Accessor.forObject( Object ) );
+						  facade, accessFor( Object ) );
 		}
 		
 		public function testInternal(): void {
 			var intern: InternalClass = new InternalClass();
-			var facade: Accessor = Accessor.forObject( intern );
-			assertFalse( Accessor.forObject( null ) == facade );
+			var facade: Accessor = accessFor( intern );
+			assertFalse( accessFor( null ) == facade );
 			
 			assertTrue( "Allowed to set content to proper type", facade.write( intern, "content", 1 ) );
 			assertFalse( "Not allowed to set the content to wrong type", facade.write( intern, "content", {} ) );
@@ -37,7 +36,7 @@ package nanosome.util.access {
 		
 		public function testObject(): void {
 			var obj: Object = {};
-			var facade: Accessor = Accessor.forObject( obj );
+			var facade: Accessor = accessFor( obj );
 			assertTrue( facade.write( obj, "test", true ) );
 			assertTrue( obj["test"] );
 			assertTrue( facade.write( obj, "test", null ) );
@@ -93,7 +92,7 @@ package nanosome.util.access {
 		
 		public function testDynamicClass(): void {
 			var dynamicInstance: DynamicClass = new DynamicClass( int.MAX_VALUE );
-			var accessor: Accessor = Accessor.forObject( dynamicInstance );
+			var accessor: Accessor = accessFor( dynamicInstance );
 			
 			assertTrue( accessor.hasReadableProperty( "normal" ) );
 			assertTrue( accessor.hasWritableProperty( "normal" ) );
@@ -178,7 +177,7 @@ package nanosome.util.access {
 		
 		private function writeAll( useList: Boolean ): void {
 			var dynamicInstance: DynamicClass = new DynamicClass( int.MAX_VALUE-1 );
-			var facade: Accessor = Accessor.forObject( dynamicInstance );
+			var facade: Accessor = accessFor( dynamicInstance );
 			
 			var obj: Object = {};
 			var arr: Array = [];

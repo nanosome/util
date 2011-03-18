@@ -58,12 +58,6 @@
 				Package for algorithms to work with normalized numbers.
 			]]></shortDescription>
 			<description><![CDATA[
-				<p>
-					It is reasonable to store and work internally with normalized numbers
-					when working with ranged values. This package offers a set of
-					algorithms to deal with them in a standard way, providing essential
-					functionalities for other nanosome projects.
-				</p>
 			]]></description>
 		</package>
 		
