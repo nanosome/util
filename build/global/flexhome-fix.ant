@@ -17,11 +17,13 @@
 				debug="false">
 			<load-config>compiler.conf.xml</load-config>
 			<include-sources dir="${temp.path}src">
-				<include name="**/*.*" />
+				<include name="**/*.as" />
 			</include-sources>
 			<compiler.keep-as3-metadata>Observable</compiler.keep-as3-metadata>
 			<compiler.external-library-path dir="${env.FLEX_HOME}" append="true">
 				<include name="libs/player/10.1/playerglobal.swc" />
+				<include name="libs/mx/mx.swc" />
+				<include name="libs/framework.swc" />
 			</compiler.external-library-path>
 			<metadata title="${project.name}">
 				<creator>Nanosome</creator>
@@ -36,11 +38,13 @@
 				debug="false">
 			<load-config>compiler.dependencies.xml</load-config>
 			<include-sources dir="${temp.path}src">
-				<include name="**/*.*" />
+				<include name="**/*.as" />
 			</include-sources>
 			<compiler.keep-as3-metadata>Observable</compiler.keep-as3-metadata>
 			<compiler.external-library-path dir="${FLEX_HOME}" append="true">
 				<include name="libs/player/10.1/playerglobal.swc" />
+				<include name="libs/mx/mx.swc" />
+				<include name="libs/framework.swc" />
 			</compiler.external-library-path>
 			<metadata title="${project.name}">
 				<creator>Nanosome</creator>
@@ -50,8 +54,10 @@
 
 	<target name="create-asdoc-for-swc">
 		<asdoc output="${temp.path}asdoc" failonerror="true" lenient="true" fork="true" keep-xml="true" skip-xsl="true">
-			<compiler.external-library-path dir="${env.FLEX_HOME}">
+			<compiler.external-library-path dir="${env.FLEX_HOME}" append="true">
 				<include name="libs/player/10.1/playerglobal.swc" />
+				<include name="libs/mx/mx.swc" />
+				<include name="libs/framework.swc" />
 			</compiler.external-library-path>
 			<metadata title="${project.name}">
 				<creator>Nanosome</creator>
@@ -63,8 +69,10 @@
 	
 	<target name="create-asdoc">
 		<asdoc output="${temp.path}asdoc" failonerror="true" lenient="true" fork="true" keep-xml="true">
-			<compiler.external-library-path dir="${env.FLEX_HOME}">
+			<compiler.external-library-path dir="${env.FLEX_HOME}" append="true">
 				<include name="libs/player/10.1/playerglobal.swc" />
+				<include name="libs/mx/mx.swc" />
+				<include name="libs/framework.swc" />
 			</compiler.external-library-path>
 			<metadata title="${project.name}">
 				<creator>Nanosome</creator>
