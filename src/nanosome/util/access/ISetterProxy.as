@@ -23,8 +23,8 @@ package nanosome.util.access {
 		 * @param value Value that the property should get
 		 * @return <code>true</code> if the property was accepted properly
 		 */
-		function write( name: String, value: * ): Boolean;
-
-		function remove( property: String ): Boolean;
+		function write( name: QName, value: * ): Boolean;
+		
+		function remove( property: QName ): Boolean;
 	}
 }

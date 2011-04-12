@@ -20,9 +20,11 @@ package nanosome.util.access {
 		 * Gets one property of the instance.
 		 * 
 		 * @param name Name of the property
+		 * @param ns Namespace of the property 
+		 * @param fullName Name of the property including the namespace
 		 * @return value of the property
 		 */
-		function read( name: * ): *;
+		function read( name: QName ): *;
 		
 		/**
 		 * Gets all properties of the instance.

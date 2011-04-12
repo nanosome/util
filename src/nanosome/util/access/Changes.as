@@ -3,9 +3,7 @@ package nanosome.util.access {
 	
 	import nanosome.util.IDisposable;
 	import nanosome.util.cleanObject;
-	import nanosome.util.pool.IInstancePool;
 	import nanosome.util.pool.OBJECT_POOL;
-	import nanosome.util.pool.poolFor;
 	
 	/**
 	 * 
@@ -14,11 +12,6 @@ package nanosome.util.access {
 	 * @version 1.0
 	 */
 	public class Changes implements IDisposable {
-		
-		/**
-		 * 
-		 */
-		public static const POOL: IInstancePool = poolFor( Changes );
 		
 		/**
 		 * Map of old values before the change.

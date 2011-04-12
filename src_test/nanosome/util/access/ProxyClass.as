@@ -36,8 +36,8 @@ package nanosome.util.access {
 			_observable = observable;
 		}
 		
-		public function write(name : String, value : *) : Boolean {
-			if( name == "not_valid") {
+		public function write( name: QName, value: * ) : Boolean {
+			if( name.toString() == "not_valid") {
 				return false;
 			} else {
 				_changedProperties[ name ] = value;
@@ -48,7 +48,7 @@ package nanosome.util.access {
 		public function setAll(target : *, targetProxy : Accessor = null ) : void {
 		}
 		
-		public function read(name : *) : * {
+		public function read( name: QName ): * {
 		}
 		
 		public function readAll( fields: Object = null, connectableOnly : Boolean = false ) : Object {
@@ -56,7 +56,7 @@ package nanosome.util.access {
 			};
 		}
 		
-		public function remove( field: String ): Boolean {
+		public function remove( name: QName ): Boolean {
 			return false;
 		}
 		

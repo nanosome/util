@@ -28,7 +28,7 @@ package nanosome.util {
 		/**
 		 * The name of the property that changed
 		 */
-		public var name: String;
+		public var name: QName;
 		
 		/**
 		 * The old value of that property
