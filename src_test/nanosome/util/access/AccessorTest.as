@@ -6,9 +6,7 @@ package nanosome.util.access {
 	import nanosome.util.pool.POOL_STORAGE;
 
 	import flash.utils.Dictionary;
-
 	
-
 	/**
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 */
@@ -30,31 +28,31 @@ package nanosome.util.access {
 			var facade: Accessor = accessFor( intern );
 			assertFalse( accessFor( null ) == facade );
 			
-			assertTrue( "Allowed to set content to proper type", facade.write( intern, qname( "content" ), 1 ) );
-			assertFalse( "Not allowed to set the content to wrong type", facade.write( intern, qname( "content" ), {} ) );
-			assertTrue( "Allowed to set primitive types even without proper type", facade.write( intern, qname( "content" ), "1.0" ) );
-			assertFalse( "Not allowed to set just any variable", facade.write( intern, qname( "content" ), "a" ) );
-			assertTrue( "Allowed to set content to proper type", facade.write( intern, qname( sample + "::content3" ), 1 ) );
-			assertTrue( "Allowed to set content to proper type", facade.write( intern, qname( sample + "::content3" ), 2 ) );
+			assertTrue( "Allowed to set content to proper type", facade.prop( "content" ).writer.write( intern, 1 ) );
+			assertFalse( "Not allowed to set the content to wrong type", facade.prop( "content" ).writer.write( intern, {} ) );
+			assertTrue( "Allowed to set primitive types even without proper type", facade.prop( "content" ).writer.write( intern, "1.0" ) );
+			assertFalse( "Not allowed to set just any variable", facade.prop( "content" ).writer.write( intern, "a" ) );
+			assertTrue( "Allowed to set content to proper type", facade.prop( sample + "::content3" ).writer.write( intern, 1 ) );
+			assertTrue( "Allowed to set content to proper type", facade.prop( sample + "::content3" ).writer.write( intern, 2 ) );
 			assertEquals( intern.sample::content3, 2 );
 			
 			assertObjectEquals( {
-					content: 1,
+					content: 0,
 					content2: 0,
 					"nanosome.util::content3": 2
 				}, 
-				facade.readAll( intern )
+				readAll( intern, null, true, facade )
 			);
 			assertObjectEquals( {
-					c1: 1,
+					c1: 0,
 					c2: 0,
 					c3: 2
 				},
-				facade.readMapped( intern, {
+				readMapped( intern, toPropMap({
 					content: "c1",
 					content2: "c2",
 					"nanosome.util::content3": "c3"
-				})
+				}, facade ) )
 			);
 			
 			var changes1: Object = {
@@ -66,14 +64,16 @@ package nanosome.util.access {
 				content3: 7
 			};
 			
+			var changesDict: Dictionary = toDict( changes1, facade );
+			
 			var failedChanges: Array = [];
 			for( var i: String in changes1 ) if( i == "content3" || i == "content1" || i == "a1" ) failedChanges.push( qname( i ) );
 			
-			assertObjectEquals( failedChanges, facade.writeAll( intern, changes1 ) );
+			assertObjectEquals( failedChanges, writeAll( intern, changes1, facade ) );
 			assertEquals( 2, intern.content );
 			assertEquals( 4, intern.content2 );
 			assertEquals( 6, intern.sample::content3 );
-			assertObjectEquals( failedChanges, facade.writeAllByNodes( intern, getChangedNode( changes1, {
+			assertObjectEquals( failedChanges, writeAllByNodes( intern, getChangedNode( changes1, {
 				a1: "froop",
 				content: 12,
 				content1: 14,
@@ -93,20 +93,40 @@ package nanosome.util.access {
 			expChanges.newValues[ "content2" ] = 16;
 			expChanges.newValues[ "nansome.util::content3" ] = 18;
 			
-			assertObjectEquals( expChanges, facade.updateStorage( intern, storage ) );
+			assertObjectEquals( expChanges, refreshStorage( intern, storage, null, facade ) );
 			assertObjectEquals( {
 				content: 12,
 				content2: 16,
 				"nanosome.util::content3": 18
 			}, storage );
 		}
+
+		private function toPropMap( object: Object, sourceFacade: Accessor, targetFacade: Accessor = null ): Dictionary {
+			if( !targetFacade ) {
+				targetFacade = accessFor( Object );
+			}
+			var result: Dictionary = new Dictionary();
+			for( var sourceName: String in object ) {
+				result[ sourceFacade.prop( sourceName ) ] = targetFacade.prop( object[ sourceName ] ); 
+			}
+			return result;
+		}
+
+		private function toDict( props: Object, facade: Accessor ): Dictionary {
+			var dict: Dictionary = new Dictionary();
+			for( var name: String in props ) {
+				dict[ facade.prop( name ) ] = props[ name ];
+			}
+			return dict;
+		}
 		
 		public function testObject(): void {
 			var obj: Object = {};
 			var facade: Accessor = accessFor( obj );
-			assertTrue( facade.write( obj, qname( "test" ), true ) );
+			var test: PropertyAccess = facade.prop( "test" ); 
+			assertTrue( test.writer.write( obj, true ) );
 			assertTrue( obj["test"] );
-			assertTrue( facade.write( obj, qname( "test" ), null ) );
+			assertTrue( test.writer.write( obj, null ) );
 			assertNull( obj["test"] );
 			
 			var first: ChangedPropertyNode = changePool.getOrCreate();
@@ -121,17 +141,13 @@ package nanosome.util.access {
 			
 			second.addTo( first );
 			
-			facade.writeAllByNodes( obj, first );
+			writeAllByNodes( obj, first );
 			
 			assertEquals( obj["test"], "a" );
 			assertEquals( obj["test2"], "b" );
 			
-			assertTrue( facade.hasReadableProperty( "test" ) );
-			assertTrue( facade.hasWritableProperty( "test" ) );
-			assertFalse( facade.isSendingChangeEvent( qname( "test" ) ) );
-			
-			assertObjectEquals( obj, facade.readAll( obj, null, true ) );
-			assertFalse( obj === facade.readAll( obj, null, true ) );
+			assertObjectEquals( obj, readAll( obj, null, true, facade ) );
+			assertFalse( obj === readAll( obj, null, true, facade ) );
 		}
 		
 		public function testProxyBehaviour(): void {
@@ -141,72 +157,93 @@ package nanosome.util.access {
 			var originalArr: Array = [];
 			
 			proxy.bindable = originalArr;
-			assertTrue( accessor.write( proxy, qname( "bindable" ), null ) );
+			assertTrue( accessor.prop( "bindable" ).writer.write( proxy, null ) );
 			assertObjectEquals( {
 				"bindable": null
 			}, proxy.changedProperties );
 			assertNotNull( proxy.bindable );
 			
 			var arr2: Array = [];
-			assertTrue( accessor.write( proxy, qname( "bindable" ), arr2 ) );
+			assertTrue(  accessor.prop( "bindable" ).writer.write( proxy, arr2 ) );
 			assertObjectEquals( {
 				"bindable": arr2
 			}, proxy.changedProperties );
 			assertEquals( originalArr, proxy.bindable );
 			
-			assertFalse( accessor.write( proxy, qname( "not_valid" ), 123 ) );
+			assertNull( accessor.prop( "not_valid" ) );
 		}
 		
 		public function testDynamicClass(): void {
 			var dynamicInstance: DynamicClass = new DynamicClass( int.MAX_VALUE );
 			var accessor: Accessor = accessFor( dynamicInstance );
 			
-			assertTrue( accessor.hasReadableProperty( "normal" ) );
-			assertTrue( accessor.hasWritableProperty( "normal" ) );
-			assertFalse( accessor.isSendingChangeEvent( qname( "normal" ) ) );
-			
-			assertTrue( accessor.hasReadableProperty( "internalClass" ) );
-			assertTrue( accessor.hasWritableProperty( "internalClass" ) );
-			assertFalse( accessor.isSendingChangeEvent( qname( "internalClass" ) ) );
-			
-			assertTrue( accessor.hasReadableProperty( "bindable" ) );
-			assertTrue( accessor.hasWritableProperty( "bindable" ) );
-			assertTrue( accessor.isSendingChangeEvent( qname( "bindable" ) ) );
-			
-			assertTrue( accessor.hasReadableProperty( "observable" ) );
-			assertTrue( accessor.hasWritableProperty( "observable" ) );
-			assertTrue( accessor.isSendingChangeEvent( qname( "observable" ) ) );
-			
-			assertTrue( accessor.hasReadableProperty( "anyproperty" ) );
-			assertTrue( accessor.hasWritableProperty( "anyproperty" ) );
-			assertFalse( accessor.isSendingChangeEvent( qname( "anyproperty" ) ) );
 			
 			var obj: Object = {};
 			var arr: Array = [];
 			var arr2: Array = [];
 			dynamicInstance.normal = arr2;
-			assertFalse( accessor.write( dynamicInstance, qname( "normal" ), obj ) );
+			
+			var prop: PropertyAccess = accessor.prop( "normal" );
+			assertFalse( prop.reader.bindable );
+			assertFalse( prop.reader.observable );
+			assertNull( prop.reader.sendingEvent );
+			
+			assertFalse( prop.writer.write( dynamicInstance, obj ) );
 			assertStrictlyEquals( arr2, dynamicInstance.normal );
-			assertTrue( accessor.write( dynamicInstance, qname( "normal" ), arr ) );
+			
+			assertTrue( prop.writer.write( dynamicInstance, arr ) );
 			assertStrictlyEquals( arr, dynamicInstance.normal );
 			
-			dynamicInstance.bindable = arr2;
-			assertFalse( accessor.write( dynamicInstance, qname( "bindable" ), obj ) );
-			assertStrictlyEquals( arr2, dynamicInstance.bindable );
-			assertTrue( accessor.write( dynamicInstance, qname( "bindable" ), arr ) );
+			
+			prop = accessor.prop( "internalClass" );
+			assertFalse( prop.reader.bindable );
+			assertFalse( prop.reader.observable );
+			assertNull( prop.reader.sendingEvent );
+			
+			/*
+			assertFalse( prop.writer.write( dynamicInstance, obj ) );
+			assertStrictlyEquals( arr2, dynamicInstance.normal );
+			
+			assertTrue( prop.writer.write( dynamicInstance, arr ) );
+			assertStrictlyEquals( arr, dynamicInstance.normal );
+			 */
+			
+			prop = accessor.prop( "bindable" );
+			assertTrue( prop.reader.bindable );
+			assertFalse( prop.reader.observable );
+			assertEquals( "propertyChange", prop.reader.sendingEvent );
+			
+			assertFalse( prop.writer.write( dynamicInstance, obj ) );
+			assertNull( dynamicInstance.bindable );
+			
+			assertTrue( prop.writer.write( dynamicInstance, arr ) );
 			assertStrictlyEquals( arr, dynamicInstance.bindable );
 			
-			dynamicInstance.observable = arr2;
-			assertFalse( accessor.write( dynamicInstance, qname( "observable" ), obj ) );
-			assertStrictlyEquals( arr2, dynamicInstance.observable );
-			assertTrue( accessor.write( dynamicInstance, qname( "observable" ), arr ) );
+			
+			
+			prop = accessor.prop( "observable" );
+			assertFalse( prop.reader.bindable );
+			assertTrue( prop.reader.observable );
+			assertNull( prop.reader.sendingEvent );
+			
+			assertFalse( prop.writer.write( dynamicInstance, obj ) );
+			assertNull( dynamicInstance.observable );
+			
+			assertTrue( prop.writer.write( dynamicInstance, arr ) );
 			assertStrictlyEquals( arr, dynamicInstance.observable );
 			
-			dynamicInstance["anyproperty"] = arr;
-			assertTrue( accessor.write( dynamicInstance, qname( "anyproperty" ), obj ) );
+			
+			
+			prop = accessor.prop( "anyproperty" );
+			assertFalse( prop.reader.bindable );
+			assertFalse( prop.reader.observable );
+			assertNull( prop.reader.sendingEvent );
+			
+			assertTrue( prop.writer.write( dynamicInstance, obj ) );
 			assertStrictlyEquals( obj, dynamicInstance["anyproperty"] );
-			assertTrue( accessor.write( dynamicInstance, qname( "anyproperty" ), 1 ) );
-			assertStrictlyEquals( 1, dynamicInstance["anyproperty"]);
+			
+			assertTrue( prop.writer.write( dynamicInstance, 1 ) );
+			assertStrictlyEquals( 1, dynamicInstance["anyproperty"] );
 			
 			assertObjectEquals( {
 					wasLocked: false,
@@ -218,7 +255,7 @@ package nanosome.util.access {
 					observable: arr,
 					anyproperty: 1,
 					uid: int.MAX_VALUE
-				}, accessor.readAll( dynamicInstance, null, true )
+				}, readAll( dynamicInstance, null, true, accessor )
 			);
 			
 			assertObjectEquals( {
@@ -230,19 +267,19 @@ package nanosome.util.access {
 					uid: int.MAX_VALUE,
 					wasLocked: false,
 					wasUnlocked: false
-				}, accessor.readAll( dynamicInstance, null, false )
+				}, readAll( dynamicInstance, null, false, accessor )
 			);
 		}
 		
 		public function testWriteAllByNodes(): void {
-			writeAll( true );
+			doWriteAll( true );
 		}
 		
 		public function testWriteAll(): void {
-			writeAll( false );
+			doWriteAll( false );
 		}
 		
-		private function writeAll( useList: Boolean ): void {
+		private function doWriteAll( useList: Boolean ): void {
 			var dynamicInstance: DynamicClass = new DynamicClass( int.MAX_VALUE-1 );
 			var facade: Accessor = accessFor( dynamicInstance );
 			
@@ -259,10 +296,10 @@ package nanosome.util.access {
 			
 			if( useList ) {
 				node = createNodes( properties );
-				facade.writeAllByNodes( dynamicInstance, node );
+				writeAllByNodes( dynamicInstance, node, null, facade );
 				node.returnAll();
 			} else {
-				facade.writeAll( dynamicInstance, properties );
+				writeAll( dynamicInstance, properties, facade );
 			}
 			
 			assertTrue( dynamicInstance.wasLocked );
@@ -283,10 +320,10 @@ package nanosome.util.access {
 			
 			if( useList ) {
 				node = createNodes( properties );
-				facade.writeAllByNodes( dynamicInstance, node );
+				writeAllByNodes( dynamicInstance, node, null, facade );
 				node.returnAll();
 			} else {
-				facade.writeAll( dynamicInstance, properties );
+				writeAll( dynamicInstance, properties, facade );
 			}
 			
 			assertTrue( dynamicInstance.locked );

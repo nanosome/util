@@ -29,7 +29,9 @@ package nanosome.util.access {
 		
 		try {
 			return _objectMap[ typeName ] || ( _objectMap[ typeName ] = new Accessor( typeName, object ) );
-		} catch( e: Error ) {}
+		} catch( e: Error ) {
+			// trace( e.getStackTrace() );
+		}
 		
 		// If the instanciation doesn't work, treat the class as
 		// completly dynamic!

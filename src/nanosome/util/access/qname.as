@@ -8,7 +8,7 @@ package nanosome.util.access {
 		if( q ) {
 			str = QName( input ).toString();
 			q = storage[ str ] || ( storage[ str ] = q );
-		} else {
+		} else if( input is String ) {
 			str = input as String;
 			q = storage[ str ];
 			if( !q ) {
@@ -20,6 +20,8 @@ package nanosome.util.access {
 				}
 				storage[ str ] = q;
 			}
+		} else {
+			q = null;
 		}
 		return q;
 	}

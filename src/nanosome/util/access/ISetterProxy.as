@@ -1,5 +1,6 @@
 // @license@ 
 package nanosome.util.access {
+	import flash.events.IEventDispatcher;
 	
 	/**
 	 * <code>ISetterProxy</code> is a definition for classes that allow the
@@ -14,7 +15,7 @@ package nanosome.util.access {
 	 * @see IGetterProxy
 	 * @see Accessor
 	 */
-	public interface ISetterProxy {
+	public interface ISetterProxy extends IEventDispatcher {
 		
 		/**
 		 * Sets one property of the instance.
@@ -23,7 +24,7 @@ package nanosome.util.access {
 		 * @param value Value that the property should get
 		 * @return <code>true</code> if the property was accepted properly
 		 */
-		function write( name: QName, value: * ): Boolean;
+		function write( property: QName, value: * ): Boolean;
 		
 		function remove( property: QName ): Boolean;
 	}

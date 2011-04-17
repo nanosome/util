@@ -1,5 +1,6 @@
 // @license@ 
 package nanosome.util.access {
+	import flash.events.IEventDispatcher;
 	
 	
 	/**
@@ -14,7 +15,7 @@ package nanosome.util.access {
 	 * @see ISetterProxy
 	 * @see Accessor
 	 */
-	public interface IGetterProxy {
+	public interface IGetterProxy extends IEventDispatcher {
 		
 		/**
 		 * Gets one property of the instance.
@@ -25,15 +26,5 @@ package nanosome.util.access {
 		 * @return value of the property
 		 */
 		function read( name: QName ): *;
-		
-		/**
-		 * Gets all properties of the instance.
-		 * 
-		 * @param fields Fields that should be read
-		 * @param connectableOnly Only the properties that are eigther <code>[Bindable]</code>
-		 *        or <code>Connectable</code>
-		 * @return Mapping of all property names to all values
-		 */
-		function readAll( fields: Object = null, connectableOnly: Boolean = false ): Object/* String -> Object */;
 	}
 }

@@ -63,6 +63,26 @@ package nanosome.util.access {
 		public function get changedProperties() : Object {
 			return _changedProperties;
 		}
+
+		public function isObservable( name: QName ): Boolean {
+			return false;
+		}
+
+		public function isBindable( name: QName ): Boolean {
+			return false;
+		}
+
+		public function getSendingEvent( name: QName ): String {
+			return "";
+		}
+
+		public function hasWritableProperty( fullName: String ): Boolean {
+			return false;
+		}
+
+		public function hasReadableProperty( fullName: String ): Boolean {
+			return false;
+		}
 	}
 }
 
