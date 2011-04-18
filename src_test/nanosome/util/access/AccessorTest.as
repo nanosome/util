@@ -64,8 +64,6 @@ package nanosome.util.access {
 				content3: 7
 			};
 			
-			var changesDict: Dictionary = toDict( changes1, facade );
-			
 			var failedChanges: Array = [];
 			for( var i: String in changes1 ) if( i == "content3" || i == "content1" || i == "a1" ) failedChanges.push( qname( i ) );
 			
@@ -110,14 +108,6 @@ package nanosome.util.access {
 				result[ sourceFacade.prop( sourceName ) ] = targetFacade.prop( object[ sourceName ] ); 
 			}
 			return result;
-		}
-
-		private function toDict( props: Object, facade: Accessor ): Dictionary {
-			var dict: Dictionary = new Dictionary();
-			for( var name: String in props ) {
-				dict[ facade.prop( name ) ] = props[ name ];
-			}
-			return dict;
 		}
 		
 		public function testObject(): void {
@@ -271,6 +261,23 @@ package nanosome.util.access {
 			);
 		}
 		
+		public function testCustomEvents(): void {
+			var test: BindableClass = new BindableClass();
+			var facade: Accessor = accessFor( test );
+			
+			var propAny: PropertyAccess = facade.prop( "any" );
+			assertFalse( "Bindables with custom events are not 'regularily' bindable.", propAny.reader.bindable );
+			assertEquals( "The event has to match 'someEvent' like described in the event.", "someEvent", propAny.reader.sendingEvent );
+			
+			var propAnyEvent: PropertyAccess = facade.prop( "anyEvent" );
+			assertFalse( "Bindables with custom events are not 'regularily' bindable.", propAnyEvent.reader.bindable );
+			assertEquals( "The event has to match 'someEvent' like described in the event.", "someEvent", propAnyEvent.reader.sendingEvent );
+			
+			var propContent4: PropertyAccess = facade.prop( sample + "::content4" );
+			assertFalse( "Bindables with namespaces are not per se bindable...", propContent4.reader.bindable );
+			assertEquals( "Since its not bindable it would be good to get the 'propertyChange' event.", "propertyChange", propContent4.reader.sendingEvent );
+		}
+		
 		public function testWriteAllByNodes(): void {
 			doWriteAll( true );
 		}
@@ -354,4 +361,16 @@ class InternalClass {
 	public var content: int;
 	public var content2: int;
 	sample var content3: int;
+}
+
+class BindableClass {
+	
+	[Bindable]
+	sample var content4: int;
+	
+	[Bindable("someEvent")]
+	public var any: int;
+	
+	[Bindable(event="someEvent")]
+	public var anyEvent: int;
 }

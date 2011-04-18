@@ -234,12 +234,12 @@ package nanosome.util.access {
 					if( bindableXML.length() > 0 ) {
 						event = "propertyChange";
 						var eventXML: XMLList =
-							bindableXML["arg"].( @key=="event" );
+							bindableXML["arg"];
 						if( eventXML.length() > 0 ) {
 							event = eventXML.@value;
 						}
 						// Someone can write "propertyChange" into 
-						if( event == "propertyChange" ) {
+						if( event == "propertyChange" && qName.uri == "" ) {
 							bindable = true;
 							_hasBindable = true;
 						}
