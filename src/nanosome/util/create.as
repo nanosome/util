@@ -1,6 +1,7 @@
 // @license@ 
 package nanosome.util {
 	
+	import nanosome.util.access.qname;
 	import flash.utils.describeType;
 	
 	/**
@@ -84,8 +85,8 @@ package nanosome.util {
 			if( result is ILockable ) {
 				ILockable( result ).lock();
 			}
-			for( var propName: String in props ) {
-				result[propName] = props[propName];
+			for( var propName: * in props ) {
+				result[ qname(propName) ] = props[propName];
 			}
 			if( result is ILockable ) {
 				ILockable( result ).unlock();
@@ -94,7 +95,6 @@ package nanosome.util {
 		return result;
 	}
 }
-
 import flash.utils.Dictionary;
 
 const CACHE: Dictionary = new Dictionary();
