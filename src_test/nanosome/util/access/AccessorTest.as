@@ -29,9 +29,9 @@ package nanosome.util.access {
 			assertFalse( accessFor( null ) == facade );
 			
 			assertTrue( "Allowed to set content to proper type", facade.prop( "content" ).writer.write( intern, 1 ) );
-			assertFalse( "Not allowed to set the content to wrong type", facade.prop( "content" ).writer.write( intern, {} ) );
+			assertTrue( "Not allowed to set the content to wrong type", facade.prop( "content" ).writer.write( intern, {} ) );
 			assertTrue( "Allowed to set primitive types even without proper type", facade.prop( "content" ).writer.write( intern, "1.0" ) );
-			assertFalse( "Not allowed to set just any variable", facade.prop( "content" ).writer.write( intern, "a" ) );
+			assertTrue( "Not allowed to set just any variable", facade.prop( "content" ).writer.write( intern, "a" ) );
 			assertTrue( "Allowed to set content to proper type", facade.prop( sample + "::content3" ).writer.write( intern, 1 ) );
 			assertTrue( "Allowed to set content to proper type", facade.prop( sample + "::content3" ).writer.write( intern, 2 ) );
 			assertEquals( intern.sample::content3, 2 );

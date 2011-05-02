@@ -1,5 +1,6 @@
 // @license@ 
 package nanosome.util.pool {
+	import nanosome.util.create;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.describeType;
 	
@@ -47,7 +48,7 @@ package nanosome.util.pool {
 		 * @inheritDoc
 		 */
 		public function getOrCreate(): * {
-			return _list ? ( _list.pop() || new _clazz() ) : new _clazz();
+			return _list ? ( _list.pop() || create( _clazz ) ) : create( _clazz );
 		}
 		
 		/**

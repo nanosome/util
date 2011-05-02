@@ -1,9 +1,9 @@
 // @license@ 
 package nanosome.util.list.fnc {
 	
-	import nanosome.util.pool.poolFor;
 	import nanosome.util.list.List;
 	import nanosome.util.list.ListNode;
+	import nanosome.util.pool.poolFor;
 	
 	/**
 	 * List of functions to be executed in a row.
@@ -41,6 +41,7 @@ package nanosome.util.list.fnc {
 		 * @param e Event that can be passed-in, will not be used
 		 */
 		public function executeStraight( ...args: Array ): void {
+			
 			var first: Boolean = _isIterating ? subIterate() : _isIterating = true;
 			var current: FunctionListNode = _first;
 			while( current ) {
